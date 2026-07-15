@@ -1,0 +1,78 @@
+version: '3.9'
+
+services:
+
+  # ───────────────────────── API (FastAPI) ──────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: redteam-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./reports:/app/reports
+      - ./logs:/app/logs
+      - ./database:/app/database
+      - ./models:/app/models
+      - ./data:/app/data
+    environment:
+      - PYTHONUNBUFFERED=1
+      - NEO4J_ENABLED=false
+      - DATABASE_URL=sqlite:///database/redteam.db
+    restart: unless-stopped
+    command: ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+
+  # ─────────────────────── CLI Scanner (main.py) ───────────────────
+  scanner:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: redteam-scanner
+    stdin_open: true
+    tty: true
+    network_mode: "host"
+    volumes:
+      - ./reports:/app/reports
+      - ./logs:/app/logs
+      - ./database:/app/database
+      - ./models:/app/models
+      - ./data:/app/data
+    environment:
+      - PYTHONUNBUFFERED=1
+      - NEO4J_ENABLED=false
+    restart: "no"
+    command: ["python", "main.py"]
+
+  # ───────────────────────── Neo4j (Optional) ────────────────────────
+  neo4j:
+    image: neo4j:5-community
+    container_name: redteam-graph
+    environment:
+      NEO4J_AUTH: "neo4j/password123"
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - neo4j_data:/data
+    restart: unless-stopped
+    profiles: ["with-graph"]
+
+  # ─────────────────────── PostgreSQL (Optional) ─────────────────────
+  postgres:
+    image: postgres:15-alpine
+    container_name: redteam-db
+    environment:
+      POSTGRES_DB: redteam
+      POSTGRES_USER: scanner
+      POSTGRES_PASSWORD: scanner123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    profiles: ["with-db"]
+
+volumes:
+  neo4j_data:
+  postgres_data:

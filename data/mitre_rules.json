@@ -1,0 +1,118 @@
+{
+  "exploit/unix/ftp/vsftpd_234_backdoor": {
+    "techniques": [
+      {"id": "T1190", "name": "Exploit Public-Facing Application"},
+      {"id": "T1059.004", "name": "Unix Shell"}
+    ],
+    "tactic": "initial-access"
+  },
+  "exploit/multi/samba/usermap_script": {
+    "techniques": [
+      {"id": "T1210", "name": "Exploitation of Remote Services"},
+      {"id": "T1059.004", "name": "Unix Shell"}
+    ],
+    "tactic": "lateral-movement"
+  },
+  "exploit/unix/misc/distcc_exec": {
+    "techniques": [
+      {"id": "T1190", "name": "Exploit Public-Facing Application"},
+      {"id": "T1059.004", "name": "Unix Shell"}
+    ],
+    "tactic": "initial-access"
+  },
+  "exploit/unix/irc/unreal_ircd_3281_backdoor": {
+    "techniques": [
+      {"id": "T1190", "name": "Exploit Public-Facing Application"},
+      {"id": "T1059", "name": "Command and Scripting Interpreter"}
+    ],
+    "tactic": "initial-access"
+  },
+  "exploit/windows/smb/ms17_010_eternalblue": {
+    "techniques": [
+      {"id": "T1210", "name": "Exploitation of Remote Services"},
+      {"id": "T1190", "name": "Exploit Public-Facing Application"}
+    ],
+    "tactic": "lateral-movement"
+  },
+  "exploit/windows/smb/ms08_067_netapi": {
+    "techniques": [
+      {"id": "T1210", "name": "Exploitation of Remote Services"}
+    ],
+    "tactic": "lateral-movement"
+  },
+  "exploit/windows/rdp/cve_2019_0708_bluekeep": {
+    "techniques": [
+      {"id": "T1210", "name": "Exploitation of Remote Services"}
+    ],
+    "tactic": "lateral-movement"
+  },
+  "exploit/linux/samba/is_known_pipename": {
+    "techniques": [
+      {"id": "T1210", "name": "Exploitation of Remote Services"},
+      {"id": "T1059.004", "name": "Unix Shell"}
+    ],
+    "tactic": "lateral-movement"
+  },
+  "exploit/multi/http/struts2_content_type_ognl": {
+    "techniques": [
+      {"id": "T1190", "name": "Exploit Public-Facing Application"},
+      {"id": "T1059", "name": "Command and Scripting Interpreter"}
+    ],
+    "tactic": "initial-access"
+  },
+  "exploit/unix/webapp/drupal_drupalgeddon2": {
+    "techniques": [
+      {"id": "T1190", "name": "Exploit Public-Facing Application"}
+    ],
+    "tactic": "initial-access"
+  },
+  "exploit/multi/java_rmi_server": {
+    "techniques": [
+      {"id": "T1210", "name": "Exploitation of Remote Services"},
+      {"id": "T1059", "name": "Command and Scripting Interpreter"}
+    ],
+    "tactic": "lateral-movement"
+  },
+  "ssh": {
+    "techniques": [
+      {"id": "T1110", "name": "Brute Force"},
+      {"id": "T1021.004", "name": "SSH"}
+    ],
+    "tactic": "credential-access"
+  },
+  "ftp": {
+    "techniques": [
+      {"id": "T1110", "name": "Brute Force"},
+      {"id": "T1041", "name": "Exfiltration Over C2 Channel"}
+    ],
+    "tactic": "credential-access"
+  },
+  "telnet": {
+    "techniques": [
+      {"id": "T1110", "name": "Brute Force"},
+      {"id": "T1078", "name": "Valid Accounts"}
+    ],
+    "tactic": "credential-access"
+  },
+  "mysql": {
+    "techniques": [
+      {"id": "T1190", "name": "Exploit Public-Facing Application"},
+      {"id": "T1110", "name": "Brute Force"}
+    ],
+    "tactic": "initial-access"
+  },
+  "rdp": {
+    "techniques": [
+      {"id": "T1110", "name": "Brute Force"},
+      {"id": "T1021.001", "name": "Remote Desktop Protocol"}
+    ],
+    "tactic": "credential-access"
+  },
+  "web": {
+    "techniques": [
+      {"id": "T1190", "name": "Exploit Public-Facing Application"},
+      {"id": "T1083", "name": "File and Directory Discovery"}
+    ],
+    "tactic": "initial-access"
+  }
+}
