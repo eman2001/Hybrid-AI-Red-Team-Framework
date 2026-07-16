@@ -84,3 +84,36 @@ const response = await fetch(
 return await response.json();
 
 }
+export async function getAttackChain(){
+
+const response = await fetch(
+`${API}/api/attack-chain/`
+);
+
+return await response.json();
+
+}
+
+
+
+export async function getDashboardAnalytics(){
+
+const response = await fetch(
+`${API}/api/analytics/dashboard`
+);
+
+return await response.json();
+
+}
+
+
+
+export async function getMitreHeatmap(){
+
+const response = await fetch(
+`${API}/api/mitre/heatmap`
+);
+
+return await response.json();
+
+}

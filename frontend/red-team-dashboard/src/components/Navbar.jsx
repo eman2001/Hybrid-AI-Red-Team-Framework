@@ -1,30 +1,25 @@
-function Navbar(){
+function Navbar({ toggleSidebar }) {
 
 return (
 
 <header className="navbar">
 
+<button 
+className="menu-btn"
+onClick={toggleSidebar}
+>
+☰
+</button>
 
-<div>
 
 <h3>
-Hybrid AI Red Team Framework
+Security Operations Center
 </h3>
 
-<span>
-Security Operations Center
+
+<span className="online">
+🟢 System Online
 </span>
-
-</div>
-
-
-<div className="status">
-
-<span className="dot"></span>
-
-API Online
-
-</div>
 
 
 </header>
@@ -32,6 +27,5 @@ API Online
 )
 
 }
-
 
 export default Navbar;

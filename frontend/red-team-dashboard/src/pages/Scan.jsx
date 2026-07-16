@@ -1,213 +1,426 @@
-import {useState,useEffect} from "react";
+import { useState, useEffect } from "react";
 
 import {
-startScan,
-getProgress
+    startScan,
+    getProgress
 } from "../api/apiClient";
 
 
 function Scan(){
 
 
-const [target,setTarget]=useState("");
+    const [target,setTarget] = useState("");
 
-const [lhost,setLhost]=useState(
-"10.0.2.4"
-);
+    const [lhost,setLhost] = useState(
+        "10.0.2.4"
+    );
 
 
-const [loading,setLoading]=useState(false);
+    const [loading,setLoading] = useState(false);
 
 
-const [progress,setProgress]=useState({
-phase:0,
-title:"Waiting",
-progress:0
-});
+    const [progress,setProgress] = useState({
 
+        phase:0,
+        title:"Waiting",
+        progress:0,
+        status:"idle"
 
+    });
 
-useEffect(()=>{
 
 
-let timer;
+    // ===============================
+    // Progress Polling
+    // ===============================
 
+    useEffect(()=>{
 
-if(loading){
 
+        let timer;
 
-timer=setInterval(async()=>{
 
-const data =
-await getProgress();
+        if(loading){
 
 
-setProgress(data);
+            timer = setInterval(async()=>{
 
 
+                try{
 
-if(data.status==="completed"){
 
-setLoading(false);
+                    const data = await getProgress();
 
-}
 
+                    setProgress(data);
 
-},2000);
 
 
-}
+                    if(
+                        data.status === "completed"
+                        ||
+                        data.status === "failed"
+                    ){
 
+                        setLoading(false);
 
+                    }
 
-return ()=>clearInterval(timer);
 
 
-},[loading]);
+                }
+                catch(err){
 
+                    console.log(err);
 
+                }
 
 
+            },2000);
 
-async function run(){
 
 
-setLoading(true);
+        }
 
 
-await startScan(
-target,
-lhost
-);
 
+        return ()=>clearInterval(timer);
 
-}
 
 
+    },[loading]);
 
 
-return (
 
-<div>
 
 
-<h1>
-Hybrid AI Red Team Scan
-</h1>
 
+    // ===============================
+    // Start Scan
+    // ===============================
 
+    async function run(){
 
-<div>
 
+        if(!target){
 
-<label>
-Target
-</label>
+            alert("Please enter target IP");
 
-<input
+            return;
 
-value={target}
+        }
 
-onChange={
-e=>setTarget(e.target.value)
-}
 
-placeholder="192.168.1.100"
+        setLoading(true);
 
-/>
 
+        setProgress({
 
+            phase:0,
+            title:"Starting Scan",
+            progress:0,
+            status:"running"
 
-<label>
-LHOST
-</label>
+        });
 
 
-<input
 
-value={lhost}
+        await startScan(
+            target,
+            lhost
+        );
 
-onChange={
-e=>setLhost(e.target.value)
-}
 
-/>
+    }
 
 
-<button
-onClick={run}
-disabled={loading}
->
 
-{
-loading?
-"Scanning...":
-"Start Scan"
-}
 
-</button>
 
 
-</div>
+    return (
 
+    <div className="scan-page">
 
 
+        {/* HEADER */}
 
-<div className="progress">
+        <div className="scan-header">
 
 
-<h2>
-Phase {progress.phase}/12
-</h2>
+            <h1>
+                🔥 Hybrid AI Red Team Scan
+            </h1>
 
 
-<h3>
-{progress.title}
-</h3>
+            <p>
+                Automated reconnaissance, vulnerability analysis
+                and MITRE ATT&CK mapping
+            </p>
 
 
+        </div>
 
-<div
-style={{
-width:"500px",
-height:"25px",
-border:"1px solid gray"
-}}
->
 
 
-<div
 
-style={{
 
-width:`${progress.progress}%`,
-height:"100%",
-background:"green"
 
-}}
+        {/* SCAN CARD */}
 
->
+        <div className="scan-card">
 
 
-</div>
+            <div className="input-group">
 
 
-</div>
+                <label>
+                    🎯 Target
+                </label>
 
 
-<p>
-{progress.progress}%
-</p>
+                <input
 
+                    value={target}
 
-</div>
+                    onChange={
+                        e=>setTarget(e.target.value)
+                    }
 
+                    placeholder="192.168.1.100"
 
+                />
 
-</div>
 
+            </div>
 
-)
+
+
+
+
+            <div className="input-group">
+
+
+                <label>
+                    🖥 LHOST
+                </label>
+
+
+                <input
+
+                    value={lhost}
+
+                    onChange={
+                        e=>setLhost(e.target.value)
+                    }
+
+                />
+
+
+            </div>
+
+
+
+
+
+            <button
+
+                className="scan-btn"
+
+                onClick={run}
+
+                disabled={loading}
+
+            >
+
+                {
+
+                    loading ?
+
+                    "⚡ Scanning..."
+
+                    :
+
+                    "🚀 Start Scan"
+
+                }
+
+
+            </button>
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+        {/* PROGRESS */}
+
+        <div className="progress-card">
+
+
+            <div className="progress-title">
+
+
+                <h2>
+                    Scan Progress
+                </h2>
+
+
+                <span>
+
+                    Phase {progress.phase}/12
+
+                </span>
+
+
+            </div>
+
+
+
+
+
+            <h3>
+
+                {progress.title}
+
+            </h3>
+
+
+
+
+
+            <div className="progress-bar">
+
+
+                <div
+
+                className="progress-fill"
+
+                style={{
+
+                    width:`${progress.progress}%`
+
+                }}
+
+                >
+
+                </div>
+
+
+            </div>
+
+
+
+
+
+            <div className="progress-info">
+
+
+                <strong>
+                    {progress.progress}%
+                </strong>
+
+
+                <span>
+
+                    Status:
+                    {" "}
+
+                    {progress.status}
+
+                </span>
+
+
+            </div>
+
+
+
+        </div>
+
+
+
+
+
+
+
+        {/* PHASES */}
+
+        <div className="phase-card">
+
+
+            <h2>
+                Pipeline Stages
+            </h2>
+
+
+
+            <div className="phases">
+
+
+            {
+            [
+                "Reconnaissance",
+                "Network Scanning",
+                "Service Detection",
+                "Vulnerability Analysis",
+                "Threat Intelligence",
+                "Exploit Mapping",
+                "MITRE ATT&CK",
+                "Attack Chain",
+                "Risk Analysis",
+                "AI Reasoning",
+                "Report Generation",
+                "Completed"
+
+            ].map((item,index)=>(
+
+
+                <div
+
+                key={index}
+
+                className={
+                    progress.phase > index
+                    ?
+                    "phase done"
+                    :
+                    "phase"
+                }
+
+                >
+
+                    <span>
+                        {index+1}
+                    </span>
+
+                    {item}
+
+                </div>
+
+
+            ))
+
+            }
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+    </div>
+
+
+    )
 
 
 }

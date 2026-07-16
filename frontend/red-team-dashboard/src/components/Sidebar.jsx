@@ -1,65 +1,100 @@
 import { Link } from "react-router-dom";
 
 
-function Sidebar(){
+function Sidebar({open, close}) {
+
 
 return (
 
-<aside className="sidebar">
+<>
 
-    <div className="logo">
-
-        <h2>
-            ⚔ Red Team AI
-        </h2>
-
-        <p>
-            Hybrid Security Platform
-        </p>
-
-    </div>
+<div
+className={`overlay ${open ? "show":""}`}
+onClick={close}
+/>
 
 
-    <nav>
+<aside className={`sidebar ${open ? "active":""}`}>
 
 
-        <Link to="/">
-            🏠 Dashboard
-        </Link>
+<div className="sidebar-header">
+
+<h2>
+⚔ Red Team AI
+</h2>
 
 
-        <Link to="/scan">
-            🔍 Start Scan
-        </Link>
+<button
+className="close-btn"
+onClick={close}
+>
+✕
+</button>
+
+</div>
 
 
-        <Link to="/vulnerabilities">
-            ⚠ Vulnerabilities
-        </Link>
+
+<nav>
 
 
-        <Link to="/mitre">
-            🎯 MITRE ATT&CK
-        </Link>
+<Link to="/" onClick={close}>
+🏠 Dashboard
+</Link>
 
 
-        <Link to="/attack-chain">
-            🔗 Attack Chain
-        </Link>
+<Link to="/scan" onClick={close}>
+🔍 Start Scan
+</Link>
 
 
-        <Link to="/reports">
-            📄 Reports
-        </Link>
+<Link to="/vulnerabilities" onClick={close}>
+🛡 Vulnerabilities
+</Link>
 
 
-    </nav>
+<Link to="/mitre" onClick={close}>
+🎯 MITRE ATT&CK
+</Link>
+
+
+<Link to="/attack-chain" onClick={close}>
+🔗 Attack Chain
+</Link>
+
+
+<Link to="/reports" onClick={close}>
+📊 Reports
+</Link>
+
+
+</nav>
+
+
+
+<div className="sidebar-footer">
+
+<span>
+Hybrid AI Framework
+</span>
+
+<br/>
+
+<small>
+v2.0.0
+</small>
+
+</div>
+
 
 
 </aside>
 
 
+</>
+
 )
+
 
 }
 

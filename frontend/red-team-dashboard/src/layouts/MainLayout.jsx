@@ -1,4 +1,5 @@
-import { Outlet } from "react-router-dom";
+import {Outlet} from "react-router-dom";
+import {useState} from "react";
 
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
@@ -6,21 +7,39 @@ import Navbar from "../components/Navbar";
 
 function MainLayout(){
 
+
+const [open,setOpen]=useState(false);
+
+
+
 return (
 
 <div className="app-layout">
 
-    <Sidebar/>
 
-    <div className="main-area">
+<Navbar 
+toggleSidebar={()=>setOpen(true)}
+/>
 
-        <Navbar/>
 
-        <main className="content">
-            <Outlet />
-        </main>
 
-    </div>
+<Sidebar
+
+open={open}
+
+close={()=>setOpen(false)}
+
+/>
+
+
+
+<main className="content">
+
+<Outlet/>
+
+</main>
+
+
 
 </div>
 
