@@ -82,28 +82,28 @@ function Vulnerabilities(){
 
     const critical =
         vulns.filter(
-            v=>v.severity==="Critical"
+            v=>v.severity==="critical"
         ).length;
 
 
 
     const high =
         vulns.filter(
-            v=>v.severity==="High"
+            v=>v.severity==="high"
         ).length;
 
 
 
     const medium =
         vulns.filter(
-            v=>v.severity==="Medium"
+            v=>v.severity==="medium"
         ).length;
 
 
 
     const low =
         vulns.filter(
-            v=>v.severity==="Low"
+            v=>v.severity==="low"
         ).length;
 
 
