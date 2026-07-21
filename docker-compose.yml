@@ -42,7 +42,7 @@ services:
       - PYTHONUNBUFFERED=1
       - NEO4J_ENABLED=false
     restart: "no"
-    command: ["python", "main.py"]
+    command: ["python", "-m", "engine.main"]
 
   # ───────────────────────── Neo4j (Optional) ────────────────────────
   neo4j:

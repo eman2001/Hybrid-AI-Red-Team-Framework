@@ -17,6 +17,7 @@ from engine.config.database  import init_db, ping
 from engine.config.logging_config import setup_logging
 
 from backend.api.dashboard import router as dashboard_router
+from backend.api.activity import router as activity_router
 from engine.modules.api.routes import (
     scan_router, vuln_router, mitre_router,
     analytics_router, chain_router, graph_router, ti_router,
@@ -57,7 +58,7 @@ for router in [scan_router, vuln_router, mitre_router,
 
 # Dashboard API
 app.include_router(dashboard_router)
-
+app.include_router(activity_router)
 # ── Startup / shutdown ────────────────────────────────────────
 @app.on_event("startup")
 async def startup():

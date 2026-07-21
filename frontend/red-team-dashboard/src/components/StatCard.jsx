@@ -5,26 +5,32 @@ icon
 }){
 
 
-return (
+return(
 
 <div className="stat-card">
 
 
 <div className="stat-icon">
+
 {icon}
+
 </div>
 
 
-<div>
 
-<p>
+<div className="stat-content">
+
+
+<span>
 {title}
-</p>
+</span>
+
 
 
 <h2>
 {value}
 </h2>
+
 
 
 </div>

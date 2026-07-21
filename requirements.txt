@@ -39,6 +39,7 @@ requests==2.32.2
 
 # ── Reporting ────────────────────────────────────────────────
 jinja2==3.1.4
+fpdf2==2.8.2
 # reportlab==4.1.0          # uncomment for PDF generation
 # weasyprint==62.3          # alternative PDF engine
 

@@ -1,12 +1,32 @@
 import { useEffect, useState } from "react";
 
+import {
+  ShieldCheck,
+  ShieldAlert,
+  Target,
+  Activity,
+  AlertTriangle,
+  GitBranch
+} from "lucide-react";
+
+
+import StatCard from "../components/StatCard";
+import ActivityFeed from "../components/ActivityFeed";
+
+
 
 function Dashboard(){
 
 
 const [vulnerabilities,setVulnerabilities]=useState([]);
+
 const [techniques,setTechniques]=useState([]);
+
 const [chain,setChain]=useState({});
+
+const [activities,setActivities]=useState([]);
+
+
 
 
 useEffect(()=>{
@@ -17,11 +37,16 @@ loadDashboard();
 
 
 
+
+
 async function loadDashboard(){
 
 
 try{
 
+
+
+// Vulnerabilities
 
 const vulnRes =
 await fetch(
@@ -33,12 +58,15 @@ const vulnData =
 await vulnRes.json();
 
 
-
 setVulnerabilities(
-    vulnData.vulnerabilities || []
+vulnData.vulnerabilities || []
 );
 
 
+
+
+
+// MITRE Techniques
 
 const mitreRes =
 await fetch(
@@ -50,12 +78,16 @@ const mitreData =
 await mitreRes.json();
 
 
-
 setTechniques(
-    mitreData.techniques || []
+mitreData.techniques || []
 );
 
 
+
+
+
+
+// Attack Chain
 
 const chainRes =
 await fetch(
@@ -71,94 +103,225 @@ setChain(chainData);
 
 
 
+
+
+
+// Activity Feed (Real Engine Data)
+
+const activityRes =
+await fetch(
+"http://127.0.0.1:8000/api/activity/"
+);
+
+
+const activityData =
+await activityRes.json();
+
+
+
+setActivities(
+activityData.activities || []
+);
+
+
+
 }
+
 catch(error){
 
 console.log(
 "Dashboard Error:",
 error
-)
-
-}
+);
 
 
 }
 
 
+}
 
-return (
+
+
+
+
+
+return(
+
+
+<div className="dashboard">
+
+
+
+
+
+<div className="dashboard-header">
+
+
+<div className="dashboard-title">
+
+
+
+<div className="dashboard-logo">
+
+<ShieldCheck size={35}/>
+
+</div>
+
+
 
 <div>
 
-
 <h1>
-Hybrid AI Red Team Dashboard
+Hybrid AI Red Team SOC
 </h1>
 
 
+</div>
 
-<div className="cards">
 
 
-<div className="card">
+</div>
 
-<h3>
-Vulnerabilities
-</h3>
 
-<p>
-{
-vulnerabilities.length
+
+</div>
+
+
+
+
+
+
+
+<div className="stats-grid">
+
+
+
+
+
+<StatCard
+
+icon={<ShieldAlert size={30}/>}
+
+title="Vulnerabilities"
+
+value={vulnerabilities.length}
+
+/>
+
+
+
+
+
+
+
+<StatCard
+
+icon={<Target size={30}/>}
+
+title="MITRE Techniques"
+
+value={techniques.length}
+
+/>
+
+
+
+
+
+
+
+<StatCard
+
+icon={<GitBranch size={30}/>}
+
+title="Attack Phases"
+
+value={chain.phase_count || 0}
+
+/>
+
+
+
+
+
+
+
+
+<StatCard
+
+icon={<AlertTriangle size={30}/>}
+
+title="Critical Threats"
+
+value={
+vulnerabilities.filter(
+v =>
+v.severity?.toLowerCase()==="critical"
+).length
 }
-</p>
 
-</div>
-
-
-
-<div className="card">
-
-<h3>
-MITRE Techniques
-</h3>
-
-<p>
-{
-techniques.length
-}
-</p>
-
-</div>
+/>
 
 
 
-<div className="card">
-
-<h3>
-Attack Phases
-</h3>
-
-<p>
-{
-chain.phase_count || 0
-}
-</p>
-
-</div>
 
 
 </div>
 
 
 
+
+
+
+
+
+<div className="panel">
 
 
 <h2>
-Latest Vulnerabilities
+
+<Activity size={22}/>
+
+ Activity Feed
+
 </h2>
 
 
-<table border="1">
+
+
+<ActivityFeed
+
+activities={activities}
+
+/>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<div className="panel">
+
+
+<h2>
+
+<ShieldAlert size={22}/>
+
+ Latest Vulnerabilities
+
+</h2>
+
+
+
+
+
+<table>
 
 
 <thead>
@@ -169,13 +332,16 @@ Latest Vulnerabilities
 Host
 </th>
 
+
 <th>
 CVE
 </th>
 
+
 <th>
 Severity
 </th>
+
 
 <th>
 CVSS
@@ -184,49 +350,83 @@ CVSS
 
 </tr>
 
+
 </thead>
+
+
+
+
 
 
 <tbody>
 
 
+
 {
-vulnerabilities.map(
-(v,i)=>(
+
+vulnerabilities
+.slice(0,8)
+.map((v,i)=>(
+
+
 
 <tr key={i}>
 
+
 <td>
-{v.host}
+{v.host || "N/A"}
 </td>
 
 
+
 <td>
-{v.cve}
+{v.cve || "-"}
 </td>
 
 
-<td>
-{v.severity}
-</td>
+
 
 
 <td>
-{v.cvss}
+
+
+<span 
+className={`severity ${v.severity?.toLowerCase()}`}
+>
+
+{v.severity || "Unknown"}
+
+</span>
+
+
 </td>
+
+
+
+
+
+<td>
+
+{v.cvss || "-"}
+
+</td>
+
+
 
 
 </tr>
 
 
-)
 
-)
+))
+
 
 }
 
 
+
 </tbody>
+
 
 
 </table>
@@ -234,31 +434,55 @@ vulnerabilities.map(
 
 
 
+</div>
+
+
+
+
+
+
+
+
+
+<div className="panel">
+
 
 <h2>
-MITRE ATT&CK Techniques
+
+<Target size={22}/>
+
+ MITRE ATT&CK Coverage
+
 </h2>
 
 
 
-<table border="1">
+
+
+
+<table>
 
 
 <thead>
 
+
 <tr>
+
 
 <th>
 ID
 </th>
 
+
 <th>
 Technique
 </th>
 
+
 <th>
 Tactic
 </th>
+
 
 <th>
 Confidence
@@ -267,53 +491,83 @@ Confidence
 
 </tr>
 
+
+
 </thead>
+
+
+
+
 
 
 <tbody>
 
 
+
+
 {
-techniques.map(
-(t,i)=>(
+
+techniques
+.slice(0,8)
+.map((t,i)=>(
+
+
 
 <tr key={i}>
 
 
 <td>
-{t.technique_id}
+{t.technique_id || "-"}
 </td>
+
 
 
 <td>
-{t.technique_name}
+{t.technique_name || "-"}
 </td>
+
 
 
 <td>
-{t.tactic}
+{t.tactic || "-"}
 </td>
+
 
 
 <td>
-{t.confidence}
+{t.confidence || "-"}
 </td>
+
 
 
 </tr>
 
-)
 
-)
+
+))
+
 
 }
+
 
 
 
 </tbody>
 
 
+
 </table>
+
+
+
+
+
+</div>
+
+
+
+
+
 
 
 
@@ -324,6 +578,7 @@ techniques.map(
 
 
 }
+
 
 
 export default Dashboard;

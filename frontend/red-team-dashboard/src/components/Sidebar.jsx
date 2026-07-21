@@ -1,12 +1,74 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+
+import {
+  LayoutDashboard,
+  Search,
+  ShieldAlert,
+  Crosshair,
+  GitBranch,
+  FileText,
+  Settings,
+  X,
+  ShieldCheck
+} from "lucide-react";
 
 
-function Sidebar({open, close}) {
+function Sidebar({ open, close }) {
+
+
+const menuItems = [
+
+{
+name:"Dashboard",
+path:"/",
+icon:<LayoutDashboard size={20}/>
+},
+
+{
+name:"Start Scan",
+path:"/scan",
+icon:<Search size={20}/>
+},
+
+{
+name:"Vulnerabilities",
+path:"/vulnerabilities",
+icon:<ShieldAlert size={20}/>
+},
+
+{
+name:"MITRE ATT&CK",
+path:"/mitre",
+icon:<Crosshair size={20}/>
+},
+
+{
+name:"Attack Chain",
+path:"/attack-chain",
+icon:<GitBranch size={20}/>
+},
+
+{
+name:"Reports",
+path:"/reports",
+icon:<FileText size={20}/>
+},
+
+
+{
+name:"Settings",
+path:"/settings",
+icon:<Settings size={20}/>
+}
+
+];
+
 
 
 return (
 
 <>
+
 
 <div
 className={`overlay ${open ? "show":""}`}
@@ -14,22 +76,45 @@ onClick={close}
 />
 
 
+
 <aside className={`sidebar ${open ? "active":""}`}>
 
 
 <div className="sidebar-header">
 
+
+<div className="brand">
+
+
+<div className="brand-icon">
+<ShieldCheck size={28}/>
+</div>
+
+
+<div>
+
 <h2>
-⚔ Red Team AI
+Hybrid AI
 </h2>
+
+<span>
+Red Team
+</span>
+
+</div>
+
+
+</div>
+
 
 
 <button
 className="close-btn"
 onClick={close}
 >
-✕
+<X size={22}/>
 </button>
+
 
 </div>
 
@@ -38,34 +123,30 @@ onClick={close}
 <nav>
 
 
-<Link to="/" onClick={close}>
-🏠 Dashboard
-</Link>
+{
+menuItems.map((item)=>(
+
+<NavLink
+key={item.name}
+to={item.path}
+onClick={close}
+className={({isActive}) =>
+isActive ? "active-link" : ""
+}
+>
 
 
-<Link to="/scan" onClick={close}>
-🔍 Start Scan
-</Link>
+{item.icon}
+
+<span>
+{item.name}
+</span>
 
 
-<Link to="/vulnerabilities" onClick={close}>
-🛡 Vulnerabilities
-</Link>
+</NavLink>
 
-
-<Link to="/mitre" onClick={close}>
-🎯 MITRE ATT&CK
-</Link>
-
-
-<Link to="/attack-chain" onClick={close}>
-🔗 Attack Chain
-</Link>
-
-
-<Link to="/reports" onClick={close}>
-📊 Reports
-</Link>
+))
+}
 
 
 </nav>
@@ -74,15 +155,16 @@ onClick={close}
 
 <div className="sidebar-footer">
 
-<span>
-Hybrid AI Framework
-</span>
 
-<br/>
+<strong>
+Hybrid AI Framework
+</strong>
+
 
 <small>
-v2.0.0
+Version 2.1.0
 </small>
+
 
 </div>
 
@@ -94,7 +176,6 @@ v2.0.0
 </>
 
 )
-
 
 }
 

@@ -43,7 +43,10 @@ def execute_scan(
     lhost
 ):
 
+ 
+
     try:
+   
 
         # البداية
         update(

@@ -34,7 +34,8 @@ from engine.modules.ai                 import AIPipeline
 from engine.modules.reporting          import ReportGenerator
 from engine.modules.social_engineering import SocialEngineeringModule
 from backend.core.progress import update, finish, reset
-from backend.core.progress import update
+from backend.storage.activity_store import add_activity
+
 
 # ── OWASP Web Security Module (NEW) ──────────────────────────────────
 from engine.modules.web_security import (
@@ -145,6 +146,12 @@ def run_owasp_web_scan(target_url):
 def run_pipeline(target: str, lhost: str):
     reset()
 
+    add_activity(
+        title="New Scan Started",
+        description=f"Scanning target {target}",
+        activity_type="primary",
+        icon="scan"
+    )
     # استخرج الـ IP من URL لو المستخدم حط http://
     import re as _re
     _ip_match = _re.search(r'https?://([\d.]+)', target)
@@ -167,6 +174,13 @@ def run_pipeline(target: str, lhost: str):
     live_hosts = recon.discover_hosts()
     if not live_hosts:
         print("[-] No live hosts. Halting."); return
+    
+    add_activity(
+    title="Recon Completed",
+    description=f"Discovered {len(live_hosts)} live hosts",
+    activity_type="info",
+    icon="recon"
+    )
 
     # ── Phase 2: Scanning + OWASP Web Security ────────────────────────
     update(
@@ -177,13 +191,19 @@ def run_pipeline(target: str, lhost: str):
     print("\n[Phase 2] Scanning & Service Enumeration")
     scanner      = ScannerModule(live_hosts[0])
     scan_results = scanner.scan_target()
+   
     
     # Run OWASP web security scan (adds web vulnerability detection)
     owasp_results = run_owasp_web_scan(target)
     
     if not scan_results or all(len(d["ports"]) == 0 for d in scan_results.values()):
         print("[-] No open ports found. Halting."); return
-
+    add_activity(
+    title="Scanning Completed",
+    description="Port and service enumeration finished",
+    activity_type="info",
+    icon="scan"
+    )
     # ── Phase 3: Vulnerability Mapping ────────────────────────────────
     update(
     3,
@@ -193,7 +213,7 @@ def run_pipeline(target: str, lhost: str):
     print("\n[Phase 3] Vulnerability Mapping (ExploitDB + Fallback + OWASP)")
     vuln_mapper   = VulnMapperModule()
     vuln_findings = vuln_mapper.map_vulnerabilities(scan_results)
-    
+
     # Merge OWASP findings into vulnerability list
     if owasp_results.get('owasp_findings'):
         for owasp_vuln in owasp_results['owasp_findings']:
@@ -212,7 +232,12 @@ def run_pipeline(target: str, lhost: str):
     
     if not vuln_findings:
         print("[-] No vulnerabilities mapped. Halting."); return
-
+    add_activity(
+    title="Vulnerability Analysis Completed",
+    description=f"{len(vuln_findings)} vulnerabilities identified",
+    activity_type="warning",
+    icon="shield"
+    )
     # ── Phase 4: Threat Intelligence Enrichment ───────────────────────
     update(
     4,
@@ -233,7 +258,12 @@ def run_pipeline(target: str, lhost: str):
               f"EPSS={f.get('epss', 0):.3f} "
               f"KEV={'YES' if f.get('in_kev') else 'no'} "
               f"TScore={f['threat_score']}")
-
+    add_activity(
+    title="Threat Intelligence Enrichment",
+    description="CVSS EPSS KEV analysis completed",
+    activity_type="info",
+    icon="activity"
+    )
     # ── Phase 5: Risk Engine ──────────────────────────────────────────
     update(
     5,
@@ -245,7 +275,12 @@ def run_pipeline(target: str, lhost: str):
     high_risk_findings = risk_engine.filter_by_risk(vuln_findings, threshold=30)
     if not high_risk_findings:
         print("[-] No high-risk targets. Halting."); return
-
+    add_activity(
+    title="Risk Assessment Completed",
+    description=f"{len(high_risk_findings)} high risk findings detected",
+    activity_type="warning",
+    icon="alert"
+    )
     # ── Phase 6: Exploitation ─────────────────────────────────────────
     update(
     6,
@@ -255,7 +290,12 @@ def run_pipeline(target: str, lhost: str):
     exploiter       = ExploiterModule(lhost)
     exploit_results = exploiter.run_exploits(high_risk_findings)
     log.info("Exploitation complete — %d attempts", len(exploit_results))
-
+    add_activity(
+    title="Exploitation Phase Completed",
+    description=f"{len(exploit_results)} exploitation attempts executed",
+    activity_type="warning",
+    icon="target"
+    )
     # ── Phase 7: Post-Exploitation ────────────────────────────────────
     update(
     7,
@@ -319,7 +359,13 @@ def run_pipeline(target: str, lhost: str):
         print(f"  [Sigma] {len(sigma_results)} detection rules generated")
     else:
         sigma_results = []
-
+    
+    add_activity(
+    title="MITRE ATT&CK Mapping Completed",
+    description=f"{len(merged_techs)} techniques mapped",
+    activity_type="success",
+    icon="target"
+    )
     # ── Phase 9: AI Enrichment ────────────────────────────────────────
     update(
     9,
@@ -338,7 +384,8 @@ def run_pipeline(target: str, lhost: str):
 
     if ai_results.get("recommendations"):
         print(f"  [AI] {len(ai_results['recommendations'])} remediation recommendations")
-
+        
+    
     # ── Phase 10: Attack Graph ────────────────────────────────────────
     update(
     10,
@@ -362,6 +409,12 @@ def run_pipeline(target: str, lhost: str):
     else:
         print("  [Graph] Neo4j disabled — using in-memory graph")
 
+    add_activity(
+    title="Attack Graph Generated",
+    description="Attack paths and relationships analyzed",
+    activity_type="success",
+    icon="activity"
+    )
     # ── Phase 11: Social Engineering ─────────────────────────────────
     update(
     11,
@@ -424,6 +477,12 @@ def run_pipeline(target: str, lhost: str):
     except Exception as e:
         log.warning("DB save skipped: %s", e)
 
+    add_activity(
+    title="Report Generated",
+    description="Final security assessment report created",
+    activity_type="primary",
+    icon="file"
+    )
     # ── Final Summary ─────────────────────────────────────────────────
     print(f"\n{'=' * 62}")
     print(f"[+] Session ID    : {session_id}")
@@ -440,6 +499,8 @@ def run_pipeline(target: str, lhost: str):
     print(f"[+] ATT&CK Heatmap: reports/attack_layer_{ts}.json")
     print(f"[+] ATT&CK Chain  : reports/attack_chain_{ts}.json")
     print(f"{'=' * 62}")
+
+    finish()
     return {
     "session_id": session_id,
     "target": target,
@@ -458,12 +519,7 @@ def run_pipeline(target: str, lhost: str):
     "risk_summary": risk_summary,
     "timestamp": ts
 	}
-    finish()
-    return {
-    "session_id": session_id,
-    "target": target,
-    "status": "completed"
-    }
+
 
 def main():
     print("=" * 62)

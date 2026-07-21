@@ -6,6 +6,7 @@ from backend.schemas.responses import ScanResponse
 from backend.services.scan_service import start_scan
 from backend.storage.sessions import get_session
 from backend.services.report_service import generate_report
+from backend.api.activity import router as activity_router
 
 from engine.modules.api.routes.vulnerabilities import router as vuln_router
 from engine.modules.api.routes.mitre import router as mitre_router
@@ -26,7 +27,7 @@ def startup_event():
 app.include_router(vuln_router)
 app.include_router(mitre_router)
 app.include_router(chain_router)
-
+app.include_router(activity_router)
 
 # اختبار أن الـ API يعمل
 @app.get("/")
