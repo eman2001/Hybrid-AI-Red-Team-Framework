@@ -1,43 +1,80 @@
-function SummaryCards({ vulnerabilities, techniques }) {
+import {
+  AlertTriangle,
+  ShieldAlert,
+  Target
+} from "lucide-react";
 
-    const critical =
-        vulnerabilities.filter(
-            v => v.severity === "critical"
-        ).length;
+import StatCard from "./StatCard";
 
-    const high =
-        vulnerabilities.filter(
-            v => v.severity === "high"
-        ).length;
 
-    return (
+function SummaryCards({
+  vulnerabilities = [],
+  techniques = []
+}) {
+  const severityCount = (
+    severity
+  ) => vulnerabilities.filter(
+    (item) =>
+      String(
+        item.severity || ""
+      ).toLowerCase() === severity
+  ).length;
 
-        <div className="summary-grid">
 
-            <div className="card">
-                <h3>Total Vulnerabilities</h3>
-                <h1>{vulnerabilities.length}</h1>
-            </div>
+  const critical =
+    severityCount("critical");
 
-            <div className="card">
-                <h3>Critical</h3>
-                <h1>{critical}</h1>
-            </div>
+  const high =
+    severityCount("high");
 
-            <div className="card">
-                <h3>High</h3>
-                <h1>{high}</h1>
-            </div>
 
-            <div className="card">
-                <h3>MITRE Techniques</h3>
-                <h1>{techniques.length}</h1>
-            </div>
+  return (
+    <div className="summary-grid">
 
-        </div>
+      <StatCard
+        icon={
+          <ShieldAlert size={27} />
+        }
+        title="Total Vulnerabilities"
+        value={vulnerabilities.length}
+        hint="Detected findings"
+      />
 
-    );
 
+      <StatCard
+        icon={
+          <AlertTriangle size={27} />
+        }
+        title="Critical"
+        value={critical}
+        hint="Immediate remediation"
+        variant="critical"
+      />
+
+
+      <StatCard
+        icon={
+          <AlertTriangle size={27} />
+        }
+        title="High"
+        value={high}
+        hint="High-priority findings"
+        variant="high"
+      />
+
+
+      <StatCard
+        icon={
+          <Target size={27} />
+        }
+        title="MITRE Techniques"
+        value={techniques.length}
+        hint="Mapped techniques"
+      />
+
+    </div>
+  );
 }
+
 
 export default SummaryCards;

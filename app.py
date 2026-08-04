@@ -20,7 +20,7 @@ from backend.api.dashboard import router as dashboard_router
 from backend.api.activity import router as activity_router
 from engine.modules.api.routes import (
     scan_router, vuln_router, mitre_router,
-    analytics_router, chain_router, graph_router, ti_router,
+    analytics_router, chain_router, graph_router, ti_router,report_router,
 )
 
 # ── Logging ───────────────────────────────────────────────────
@@ -52,7 +52,7 @@ app.add_middleware(
 
 # ── Routers ───────────────────────────────────────────────────
 for router in [scan_router, vuln_router, mitre_router,
-               analytics_router, chain_router, graph_router, ti_router]:
+               analytics_router, chain_router, graph_router, ti_router,report_router]:
     app.include_router(router)
 
 

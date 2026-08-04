@@ -1,0 +1,217 @@
+/* =====================================================
+   GLOBAL RESPONSIVE RULES
+   Hybrid AI Red Team Framework
+===================================================== */
+
+
+/* =====================================================
+   LARGE SCREENS
+===================================================== */
+
+@media (min-width: 1500px) {
+  .content {
+    padding-left: 34px;
+    padding-right: 34px;
+  }
+}
+
+
+/* =====================================================
+   TABLET
+===================================================== */
+
+@media (max-width: 1180px) {
+  :root {
+    --sidebar-width: 280px;
+  }
+
+  .content {
+    margin-left: 0 !important;
+  }
+
+  .page-container,
+  .dashboard,
+  .scan-page,
+  .vulnerabilities-page,
+  .mitre-page,
+  .attack-chain-page,
+  .reports-page {
+    max-width: 100%;
+  }
+}
+
+
+/* =====================================================
+   SMALL TABLET
+===================================================== */
+
+@media (max-width: 900px) {
+  .content {
+    padding: 20px;
+  }
+
+  .panel,
+  .app-card,
+  .scan-panel,
+  .vuln-panel,
+  .mitre-panel,
+  .attack-chain-panel,
+  .reports-panel {
+    border-radius: 14px;
+  }
+
+  .page-header {
+    gap: 16px;
+  }
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 620px) {
+  .content {
+    padding: 14px;
+  }
+
+  .panel,
+  .app-card,
+  .scan-panel,
+  .vuln-panel,
+  .mitre-panel,
+  .attack-chain-panel,
+  .reports-panel {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .page-header-content {
+    align-items: flex-start;
+  }
+
+  .page-header-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .page-header h1 {
+    font-size: 25px;
+  }
+
+  .table-wrap,
+  .vuln-table-wrap,
+  .mitre-table-wrap {
+    margin-left: -2px;
+    margin-right: -2px;
+  }
+
+  button,
+  .primary-button,
+  .action-button,
+  .scan-btn,
+  .report-action-button {
+    min-height: 44px;
+  }
+}
+
+
+/* =====================================================
+   VERY SMALL MOBILE
+===================================================== */
+
+@media (max-width: 420px) {
+  .content {
+    padding: 10px;
+  }
+
+  .navbar-brand-copy h2 {
+    font-size: 14px;
+  }
+
+  .navbar-brand-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .red-sidebar {
+    width: calc(100vw - 24px);
+  }
+
+  .panel-header,
+  .scan-panel-header,
+  .vuln-filter-header,
+  .vuln-table-heading,
+  .mitre-panel-header,
+  .attack-chain-panel-header,
+  .reports-panel-header {
+    gap: 10px;
+  }
+
+  .panel-title h2,
+  .scan-panel-heading h2,
+  .vuln-panel-heading h2,
+  .mitre-panel-heading h2,
+  .attack-chain-panel-heading h2,
+  .reports-panel-heading h2 {
+    font-size: 16px;
+  }
+}
+
+
+/* =====================================================
+   PRINT
+===================================================== */
+
+@media print {
+  .top-navbar,
+  .red-sidebar,
+  .red-sidebar-overlay,
+  .reports-action-panel,
+  .panel-action,
+  .report-action-button {
+    display: none !important;
+  }
+
+  .content {
+    margin-left: 0 !important;
+    padding: 0 !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .panel,
+  .app-card,
+  .scan-panel,
+  .vuln-panel,
+  .mitre-panel,
+  .attack-chain-panel,
+  .reports-panel {
+    box-shadow: none !important;
+    border: 1px solid #cccccc !important;
+  }
+}
+
+
+/* =====================================================
+   REDUCED MOTION
+===================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

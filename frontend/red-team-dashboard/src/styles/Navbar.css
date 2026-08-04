@@ -1,0 +1,456 @@
+/* =====================================================
+   RED TEAM NAVBAR
+===================================================== */
+
+.top-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  width: 100%;
+  min-height: 86px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 24px;
+
+  padding: 14px 28px;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(239, 35, 60, 0.035),
+      transparent 38%
+    ),
+    rgba(7, 9, 13, 0.96);
+
+  border-bottom: 1px solid var(--border);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  box-shadow:
+    0 12px 35px rgba(0, 0, 0, 0.2);
+}
+
+
+/* =====================================================
+   LEFT SIDE
+===================================================== */
+
+.navbar-left {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 18px;
+}
+
+
+.navbar-brand {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+}
+
+
+.navbar-brand-icon {
+  width: 50px;
+  height: 50px;
+
+  flex: 0 0 auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: var(--primary);
+
+  background:
+    linear-gradient(
+      145deg,
+      var(--primary-soft),
+      rgba(255, 255, 255, 0.015)
+    );
+
+  border: 1px solid var(--primary-border);
+
+  border-radius: 14px;
+
+  box-shadow:
+    0 0 0 1px rgba(239, 35, 60, 0.04),
+    0 0 24px rgba(239, 35, 60, 0.13);
+}
+
+
+.navbar-brand-copy {
+  min-width: 0;
+}
+
+
+.navbar-brand-copy h2 {
+  margin: 0;
+
+  color: var(--text);
+
+  font-size: 22px;
+  font-weight: 800;
+
+  letter-spacing: -0.025em;
+  white-space: nowrap;
+}
+
+
+.navbar-brand-copy h2 span {
+  color: var(--primary);
+}
+
+
+.navbar-brand-copy p {
+  margin: 5px 0 0;
+
+  color: var(--muted);
+
+  font-size: 12px;
+  letter-spacing: 0.035em;
+
+  white-space: nowrap;
+}
+
+
+/* =====================================================
+   NAVBAR ACTIONS
+===================================================== */
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+
+  gap: 11px;
+}
+
+
+.navbar-icon-btn {
+  position: relative;
+
+  width: 46px;
+  height: 46px;
+
+  flex: 0 0 auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  color: var(--text-soft);
+
+  background:
+    linear-gradient(
+      145deg,
+      var(--card-elevated),
+      var(--card)
+    );
+
+  border: 1px solid var(--border);
+  border-radius: 11px;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.navbar-icon-btn:hover {
+  color: var(--primary);
+
+  background:
+    linear-gradient(
+      145deg,
+      var(--primary-soft),
+      var(--card)
+    );
+
+  border-color: var(--primary-border);
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 10px 25px rgba(127, 29, 29, 0.2);
+}
+
+
+.navbar-icon-btn:active {
+  transform: translateY(0);
+}
+
+
+.navbar-icon-btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+
+
+/* =====================================================
+   MENU BUTTON
+===================================================== */
+
+.navbar-menu-btn {
+  color: var(--primary);
+ display: flex;
+  border-color: var(--primary-border);
+
+  background:
+    linear-gradient(
+      145deg,
+      var(--primary-soft),
+      var(--card)
+    );
+}
+
+
+/* =====================================================
+   ENGINE STATUS
+===================================================== */
+
+.navbar-engine-status {
+  min-height: 48px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 8px 15px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(239, 35, 60, 0.08),
+      rgba(255, 255, 255, 0.012)
+    );
+
+  border: 1px solid rgba(239, 35, 60, 0.3);
+  border-radius: 11px;
+}
+
+
+.engine-status-dot {
+  position: relative;
+
+  width: 10px;
+  height: 10px;
+
+  flex: 0 0 auto;
+
+  background: var(--primary);
+
+  border-radius: 50%;
+
+  box-shadow:
+    0 0 0 5px rgba(239, 35, 60, 0.08),
+    0 0 15px rgba(239, 35, 60, 0.75);
+}
+
+
+.engine-status-dot::after {
+  content: "";
+
+  position: absolute;
+  inset: -6px;
+
+  border: 1px solid rgba(239, 35, 60, 0.42);
+  border-radius: 50%;
+
+  animation: engine-pulse 1.8s infinite;
+}
+
+
+.navbar-engine-status strong {
+  display: block;
+
+  color: var(--text);
+
+  font-size: 13px;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+
+.navbar-engine-status small {
+  display: block;
+
+  margin-top: 3px;
+
+  color: var(--muted);
+
+  font-size: 10px;
+
+  white-space: nowrap;
+}
+
+
+/* =====================================================
+   NOTIFICATION BUTTON
+===================================================== */
+
+.notification-button {
+  margin-right: 2px;
+}
+
+
+.notification-badge {
+  position: absolute;
+
+  top: -6px;
+  right: -6px;
+
+  width: 22px;
+  height: 22px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      145deg,
+      var(--primary),
+      var(--primary-dark)
+    );
+
+  border: 2px solid var(--bg);
+  border-radius: 50%;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  box-shadow:
+    0 0 14px rgba(239, 35, 60, 0.45);
+}
+
+
+/* =====================================================
+   ANIMATION
+===================================================== */
+
+@keyframes engine-pulse {
+  0% {
+    transform: scale(0.65);
+    opacity: 0.9;
+  }
+
+  70% {
+    transform: scale(1.45);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1.45);
+    opacity: 0;
+  }
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 900px) {
+  .top-navbar {
+    min-height: 74px;
+
+    padding: 11px 16px;
+  }
+
+
+  .navbar-brand-copy h2 {
+    font-size: 18px;
+  }
+
+
+  .navbar-brand-copy p {
+    display: none;
+  }
+
+
+  .navbar-engine-status {
+    display: none;
+  }
+}
+
+
+@media (max-width: 560px) {
+  .top-navbar {
+    gap: 10px;
+
+    padding-inline: 12px;
+  }
+
+
+  .navbar-left {
+    gap: 10px;
+  }
+
+
+  .navbar-brand {
+    gap: 9px;
+  }
+
+
+  .navbar-brand-icon {
+    width: 41px;
+    height: 41px;
+
+    border-radius: 11px;
+  }
+
+
+  .navbar-brand-copy h2 {
+    max-width: 145px;
+
+    font-size: 15px;
+    white-space: normal;
+    line-height: 1.15;
+  }
+
+
+  .navbar-brand-copy h2 span {
+    display: block;
+
+    margin-top: 2px;
+  }
+
+
+  .navbar-actions {
+    gap: 7px;
+  }
+
+
+  .navbar-icon-btn {
+    width: 40px;
+    height: 40px;
+
+    border-radius: 10px;
+  }
+
+
+  .notification-button {
+    display: none;
+  }
+}

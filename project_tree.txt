@@ -1,0 +1,545 @@
+.
+├── app.py
+├── backend
+│   ├── api
+│   │   ├── activity.py
+│   │   └── dashboard.py
+│   ├── core
+│   │   └── progress.py
+│   ├── llm
+│   │   ├──  __init__.py
+│   │   ├── ollama_provider.py
+│   │   ├── prompts.py
+│   │   └── provider.py
+│   ├── main.py
+│   ├── schemas
+│   │   ├── __init__.py
+│   │   ├── requests.py
+│   │   └── responses.py
+│   ├── services
+│   │   ├── __init__.py
+│   │   ├── report_formatter.py
+│   │   ├── report_service.py
+│   │   └── scan_service.py
+│   ├── storage
+│   │   ├── activity_store.py
+│   │   ├── __init__.py
+│   │   └── sessions.py
+│   └── websocket_manager.py
+├── cti
+├── data
+│   ├── cve_cache.json
+│   ├── edb_to_msf_index.json
+│   ├── enterprise-attack.json
+│   ├── kev_catalog.json
+│   ├── mitre_rules.json
+│   ├── payload_cache.json
+│   ├── post_exploit_training.csv
+│   ├── stix_training.csv
+│   ├── training_data.csv
+│   └── web_vulnerability_metadata.json
+├── database
+│   └── redteam.db
+├── docker-compose.yml
+├── Dockerfile
+├── Dockerfile.api
+├── engine
+│   ├── config
+│   │   ├── constants.py
+│   │   ├── database.py
+│   │   ├── default_wordlists.py
+│   │   ├── __init__.py
+│   │   ├── logging_config.py
+│   │   └── settings.py
+│   ├── database
+│   │   ├── __init__.py
+│   │   ├── models
+│   │   │   ├── exploit_result.py
+│   │   │   ├── __init__.py
+│   │   │   ├── mitre_finding.py
+│   │   │   ├── report.py
+│   │   │   ├── scan_session.py
+│   │   │   └── vulnerability.py
+│   │   ├── redteam.db
+│   │   └── repository.py
+│   ├── logs
+│   │   └── redteam.log
+│   ├── main.py
+│   ├── models
+│   │   ├── mitre_classifier.pkl
+│   │   ├── post_exploit_model.pkl
+│   │   └── vuln_model.pkl
+│   ├── modules
+│   │   ├── adversary_profiles
+│   │   │   ├── apt28.py
+│   │   │   ├── apt29.py
+│   │   │   ├── fin7.py
+│   │   │   ├── __init__.py
+│   │   │   ├── lazarus.py
+│   │   │   ├── similarity_engine.py
+│   │   │   └── volt_typhoon.py
+│   │   ├── ai
+│   │   │   ├── adversary_similarity.py
+│   │   │   ├── ai_pipeline.py
+│   │   │   ├── attack_path_predictor.py
+│   │   │   ├── dataset_builder.py
+│   │   │   ├── explainable_ai.py
+│   │   │   ├── feature_engineering.py
+│   │   │   ├── __init__.py
+│   │   │   ├── mitre_predictor.py
+│   │   │   ├── model_evaluator.py
+│   │   │   ├── model_registry.py
+│   │   │   ├── model_trainer.py
+│   │   │   ├── recommendation_engine.py
+│   │   │   ├── risk_predictor.py
+│   │   │   └── training_pipeline.py
+│   │   ├── analytics
+│   │   │   ├── ai_analytics.py
+│   │   │   ├── coverage_analytics.py
+│   │   │   ├── dashboard_metrics.py
+│   │   │   ├── __init__.py
+│   │   │   ├── mitre_analytics.py
+│   │   │   ├── risk_analytics.py
+│   │   │   └── threat_analytics.py
+│   │   ├── api
+│   │   │   ├── dependencies
+│   │   │   │   └── db.py
+│   │   │   ├── __init__.py
+│   │   │   ├── middleware
+│   │   │   │   └── logging_middleware.py
+│   │   │   ├── routes
+│   │   │   │   ├── analytics.py
+│   │   │   │   ├── attack_chain.py
+│   │   │   │   ├── attack_graph.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── mitre.py
+│   │   │   │   ├── report_routes.py
+│   │   │   │   ├── scan.py
+│   │   │   │   ├── threat_intelligence.py
+│   │   │   │   └── vulnerabilities.py
+│   │   │   └── schemas
+│   │   │       └── __init__.py
+│   │   ├── attack_chain
+│   │   │   ├── chain_builder.py
+│   │   │   ├── chain_visualizer.py
+│   │   │   ├── __init__.py
+│   │   │   ├── phase_mapper.py
+│   │   │   └── tactic_linker.py
+│   │   ├── attack_graph
+│   │   │   ├── Attack chain integrator · PY
+│   │   │   ├── Attack chain integrator·PY
+│   │   │   ├── graph_analyzer.py
+│   │   │   ├── graph_builder.py
+│   │   │   ├── graph_exporter.py
+│   │   │   ├── __init__.py
+│   │   │   ├── neo4j_connector.py
+│   │   │   └── networkx_builder.py
+│   │   ├── attack_path
+│   │   │   ├── critical_path_analyzer.py
+│   │   │   ├── exposure_engine.py
+│   │   │   ├── __init__.py
+│   │   │   ├── path_prioritizer.py
+│   │   │   └── path_ranker.py
+│   │   ├── detection
+│   │   │   ├── detection_coverage.py
+│   │   │   ├── detection_scoring.py
+│   │   │   ├── hunt_recommendations.py
+│   │   │   ├── __init__.py
+│   │   │   ├── log_source_mapper.py
+│   │   │   └── sigma_mapper.py
+│   │   ├── exploiter
+│   │   │   ├── exploit_correlator.py
+│   │   │   ├── exploit_path_builder.py
+│   │   │   ├── exploit_probability.py
+│   │   │   ├── exploit_ranker.py
+│   │   │   ├── exploit_simulation.py
+│   │   │   ├── __init__.py
+│   │   │   ├── mitre_exploit_mapper.py
+│   │   │   └── payload_fetcher.py
+│   │   ├── __init__.py
+│   │   ├── llm
+│   │   │   ├── __init__.py
+│   │   │   ├── llm_engine.py
+│   │   │   ├── pdf_generator.py
+│   │   │   ├── prompts.py
+│   │   │   ├── report_service.py
+│   │   │   ├── report_writer.py
+│   │   │   └── summary_builder.py
+│   │   ├── mitre
+│   │   │   ├── chain_builder.py
+│   │   │   ├── confidence_fusion.py
+│   │   │   ├── coverage_analyzer.py
+│   │   │   ├── cve_enricher.py
+│   │   │   ├── heatmap_generator.py
+│   │   │   ├── __init__.py
+│   │   │   ├── mitre_engine.py
+│   │   │   ├── ml_classifier.py
+│   │   │   ├── ml_resolver.py
+│   │   │   ├── post_exploit_mapper.py
+│   │   │   ├── rule_resolver.py
+│   │   │   ├── stix_resolver.py
+│   │   │   ├── tactic_statistics.py
+│   │   │   ├── technique_merger.py
+│   │   │   └── technique_statistics.py
+│   │   ├── os_support
+│   │   │   ├── __init__.py
+│   │   │   ├── linux_mapper.py
+│   │   │   ├── linux_post_mapper.py
+│   │   │   ├── os_detector.py
+│   │   │   ├── service_profiles.py
+│   │   │   ├── windows_mapper.py
+│   │   │   └── windows_post_mapper.py
+│   │   ├── post_exploitation
+│   │   │   ├── attack_chain_integrator.py
+│   │   │   ├── credential_mapper.py
+│   │   │   ├── discovery_mapper.py
+│   │   │   ├── __init__.py
+│   │   │   ├── lateral_movement_mapper.py
+│   │   │   ├── mitre_post_mapper.py
+│   │   │   ├── persistence_mapper.py
+│   │   │   └── privilege_escalation_mapper.py
+│   │   ├── recon
+│   │   │   ├── asset_inventory.py
+│   │   │   ├── host_discovery.py
+│   │   │   ├── __init__.py
+│   │   │   ├── os_detection.py
+│   │   │   └── service_discovery.py
+│   │   ├── reporting
+│   │   │   ├── executive_report.py
+│   │   │   ├── __init__.py
+│   │   │   ├── json_reporter.py
+│   │   │   ├── mitre_report.py
+│   │   │   ├── pdf_reporter.py
+│   │   │   ├── report_generator.py
+│   │   │   └── threat_report.py
+│   │   ├── risk_engine.py
+│   │   ├── scanner
+│   │   │   ├── __init__.py
+│   │   │   ├── json_parser.py
+│   │   │   ├── nmap_parser.py
+│   │   │   ├── service_fingerprint.py
+│   │   │   └── xml_parser.py
+│   │   ├── social_engineering.py
+│   │   ├── threat_intelligence
+│   │   │   ├── cvss_engine.py
+│   │   │   ├── epss_engine.py
+│   │   │   ├── __init__.py
+│   │   │   ├── kev_engine.py
+│   │   │   ├── product_intelligence.py
+│   │   │   ├── threat_correlation.py
+│   │   │   ├── threat_score.py
+│   │   │   └── vendor_intelligence.py
+│   │   ├── vulnerability
+│   │   │   ├── cpe_resolver.py
+│   │   │   ├── cve_mapper.py
+│   │   │   ├── __init__.py
+│   │   │   ├── severity_classifier.py
+│   │   │   ├── vuln_correlator.py
+│   │   │   └── vulnerability_repository.py
+│   │   └── web_security
+│   │       ├── auth_failure_checker.py
+│   │       ├── broken_access_control_checker.py
+│   │       ├── cryptographic_failure_checker.py
+│   │       ├── __init__.py
+│   │       ├── injection_checker.py
+│   │       ├── mitre_engine.py
+│   │       ├── ml_resolver.py
+│   │       ├── models.py
+│   │       ├── nikto_connector.py
+│   │       ├── nuclei_connector.py
+│   │       ├── owasp_engine.py
+│   │       ├── owasp_report_builder.py
+│   │       ├── repository.py
+│   │       ├── security_misconfiguration_checker.py
+│   │       ├── ssrf_checker.py
+│   │       ├── technology_detector.py
+│   │       ├── vulnerable_components_checker.py
+│   │       ├── web_asset_discovery.py
+│   │       ├── web_findings.py
+│   │       └── zap_connector.py
+│   └── reports
+│       ├── attack_chain_20260628_104325.json
+│       ├── attack_chain_20260628_105636.json
+│       ├── attack_layer_20260628_104325.json
+│       ├── attack_layer_20260628_105636.json
+│       └── json
+│           ├── attack_report_20260628_110620.json
+│           ├── attack_report_20260707_130139.json
+│           ├── attack_report_20260707_130727.json
+│           ├── attack_report_20260707_131233.json
+│           ├── attack_report_20260707_131330.json
+│           ├── attack_report_20260707_134032.json
+│           ├── attack_report_20260708_100601.json
+│           └── attack_report_20260708_103750.json
+├── fetch_owasp_from_github.sh
+├── frontend
+│   └── red-team-dashboard
+│       ├── eslint.config.js
+│       ├── index.html
+│       ├── package.json
+│       ├── package-lock.json
+│       ├── public
+│       │   ├── favicon.svg
+│       │   └── icons.svg
+│       ├── README.md
+│       ├── src
+│       │   ├── api
+│       │   │   └── apiClient.js
+│       │   ├── App.jsx
+│       │   ├── components
+│       │   │   ├── ActivityFeed.jsx
+│       │   │   ├── AttackGraphViz.jsx
+│       │   │   ├── MitreChart.jsx
+│       │   │   ├── Navbar.jsx
+│       │   │   ├── SeverityChart.jsx
+│       │   │   ├── Sidebar.backup.jsx
+│       │   │   ├── Sidebar.jsx
+│       │   │   ├── StatCard.jsx
+│       │   │   └── SummaryCards.jsx
+│       │   ├── hooks
+│       │   │   ├── useAPI.js
+│       │   │   ├── useDashboard.js
+│       │   │   └── useScan.js
+│       │   ├── index.backup.css
+│       │   ├── index.css
+│       │   ├── layouts
+│       │   │   └── MainLayout.jsx
+│       │   ├── main.jsx
+│       │   ├── pages
+│       │   │   ├── AttackChain.jsx
+│       │   │   ├── Dashboard.jsx
+│       │   │   ├── Mitre.jsx
+│       │   │   ├── Reports.jsx
+│       │   │   ├── Scan.jsx
+│       │   │   └── Vulnerabilities.jsx
+│       │   ├── routes
+│       │   │   └── AppRoutes.jsx
+│       │   └── styles
+│       │       ├── AttackChain.css
+│       │       ├── components.css
+│       │       ├── Dashboard.css
+│       │       ├── globals.css
+│       │       ├── layout.css
+│       │       ├── Mitre.css
+│       │       ├── Navbar.css
+│       │       ├── Reports.css
+│       │       ├── responsive.css
+│       │       ├── Scan.css
+│       │       ├── Sidebar.css
+│       │       ├── variables.css
+│       │       └── Vulnerabilities.css
+│       └── vite.config.js
+├── full_run_output.txt
+├── hydra.restore
+├── LICENSE
+├── logs
+├── models
+├── project_tree.txt
+├── README.md
+├── reports
+│   ├── attack_chain_20260707_124649.json
+│   ├── attack_chain_20260707_125314.json
+│   ├── attack_chain_20260707_125721.json
+│   ├── attack_chain_20260707_125812.json
+│   ├── attack_chain_20260707_132509.json
+│   ├── attack_chain_20260708_095409.json
+│   ├── attack_chain_20260708_102725.json
+│   ├── attack_chain_20260708_131909.json
+│   ├── attack_chain_20260708_134021.json
+│   ├── attack_chain_20260708_140330.json
+│   ├── attack_chain_20260709_133357.json
+│   ├── attack_chain_20260710_184138.json
+│   ├── attack_chain_20260710_191723.json
+│   ├── attack_chain_20260710_221019.json
+│   ├── attack_chain_20260711_220328.json
+│   ├── attack_chain_20260713_232747.json
+│   ├── attack_chain_20260714_165416.json
+│   ├── attack_chain_20260714_172528.json
+│   ├── attack_chain_20260714_175524.json
+│   ├── attack_chain_20260714_182211.json
+│   ├── attack_chain_20260714_184619.json
+│   ├── attack_chain_20260714_194049.json
+│   ├── attack_chain_20260714_195918.json
+│   ├── attack_chain_20260714_223425.json
+│   ├── attack_chain_20260715_173748.json
+│   ├── attack_chain_20260715_183011.json
+│   ├── attack_chain_20260716_034822.json
+│   ├── attack_chain_20260716_042701.json
+│   ├── attack_chain_20260716_042846.json
+│   ├── attack_chain_20260716_053747.json
+│   ├── attack_chain_20260720_155032.json
+│   ├── attack_chain_20260720_162041.json
+│   ├── attack_chain_20260720_164201.json
+│   ├── attack_chain_20260721_204909.json
+│   ├── attack_chain_20260727_095451.json
+│   ├── attack_chain_20260731_123906.json
+│   ├── attack_chain_20260731_131220.json
+│   ├── attack_chain_20260731_133834.json
+│   ├── attack_chain_20260801_222102.json
+│   ├── attack_chain_20260802_085004.json
+│   ├── attack_chain_20260802_093521.json
+│   ├── attack_chain_20260802_115923.json
+│   ├── attack_chain_20260802_155039.json
+│   ├── attack_chain_20260802_162302.json
+│   ├── attack_chain_20260802_180225.json
+│   ├── attack_chain_20260803_162921.json
+│   ├── attack_layer_20260707_124649.json
+│   ├── attack_layer_20260707_125314.json
+│   ├── attack_layer_20260707_125721.json
+│   ├── attack_layer_20260707_125812.json
+│   ├── attack_layer_20260707_132509.json
+│   ├── attack_layer_20260708_095409.json
+│   ├── attack_layer_20260708_102725.json
+│   ├── attack_layer_20260708_131909.json
+│   ├── attack_layer_20260708_134021.json
+│   ├── attack_layer_20260708_140330.json
+│   ├── attack_layer_20260709_133357.json
+│   ├── attack_layer_20260710_184138.json
+│   ├── attack_layer_20260710_191723.json
+│   ├── attack_layer_20260710_221019.json
+│   ├── attack_layer_20260711_220328.json
+│   ├── attack_layer_20260713_232747.json
+│   ├── attack_layer_20260714_165416.json
+│   ├── attack_layer_20260714_172528.json
+│   ├── attack_layer_20260714_175524.json
+│   ├── attack_layer_20260714_182211.json
+│   ├── attack_layer_20260714_184619.json
+│   ├── attack_layer_20260714_194049.json
+│   ├── attack_layer_20260714_195918.json
+│   ├── attack_layer_20260714_223425.json
+│   ├── attack_layer_20260715_173748.json
+│   ├── attack_layer_20260715_183011.json
+│   ├── attack_layer_20260716_034822.json
+│   ├── attack_layer_20260716_042701.json
+│   ├── attack_layer_20260716_042846.json
+│   ├── attack_layer_20260716_053747.json
+│   ├── attack_layer_20260720_155032.json
+│   ├── attack_layer_20260720_162041.json
+│   ├── attack_layer_20260720_164201.json
+│   ├── attack_layer_20260721_204909.json
+│   ├── attack_layer_20260727_095451.json
+│   ├── attack_layer_20260731_123906.json
+│   ├── attack_layer_20260731_131220.json
+│   ├── attack_layer_20260731_133834.json
+│   ├── attack_layer_20260801_222102.json
+│   ├── attack_layer_20260802_085004.json
+│   ├── attack_layer_20260802_093521.json
+│   ├── attack_layer_20260802_115923.json
+│   ├── attack_layer_20260802_155039.json
+│   ├── attack_layer_20260802_162302.json
+│   ├── attack_layer_20260802_180225.json
+│   ├── attack_layer_20260803_162921.json
+│   ├── SIM-09ED4173
+│   │   ├── attack_report_20260714_173516.json
+│   │   └── attack_report_20260714_173516.txt
+│   ├── SIM-09F197E3
+│   │   ├── attack_report_20260714_201144.json
+│   │   └── attack_report_20260714_201144.txt
+│   ├── SIM-0CEB2D52
+│   ├── SIM-1003796B
+│   │   ├── attack_report_20260708_135142.json
+│   │   └── attack_report_20260708_135142.txt
+│   ├── SIM-10A7C3E7
+│   │   ├── attack_report_20260727_100518.json
+│   │   └── attack_report_20260727_100518.txt
+│   ├── SIM-1BB1D9D0
+│   │   └── attack_report_20260731_132621.json
+│   ├── SIM-1CAE95E5
+│   │   └── attack_report_20260708_141336.json
+│   ├── SIM-220A2D93
+│   │   ├── attack_report_20260716_044500.json
+│   │   └── attack_report_20260716_044500.txt
+│   ├── SIM-2316A787
+│   │   ├── attack_report_20260711_220424.json
+│   │   └── attack_report_20260711_220424.pdf
+│   ├── SIM-2BE46EA4
+│   │   ├── attack_report_20260714_183346.json
+│   │   └── attack_report_20260714_183346.txt
+│   ├── SIM-2F7AE5B9
+│   │   ├── attack_report_20260714_180625.json
+│   │   └── attack_report_20260714_180625.txt
+│   ├── SIM-33A136C6
+│   │   ├── attack_report_20260713_234248.json
+│   │   └── attack_report_20260713_234248.pdf
+│   ├── SIM-33C10087
+│   │   ├── attack_report_20260802_180357.json
+│   │   └── attack_report_20260802_180357.pdf
+│   ├── SIM-37629FFE
+│   ├── SIM-43A47126
+│   ├── SIM-4529288B
+│   │   ├── attack_report_20260721_205240.json
+│   │   └── attack_report_20260721_205240.txt
+│   ├── SIM-45D23B9D
+│   │   ├── attack_report_20260714_185706.json
+│   │   └── attack_report_20260714_185706.txt
+│   ├── SIM-47128417
+│   │   └── attack_report_20260731_135152.json
+│   ├── SIM-47A3916C
+│   │   ├── attack_report_20260803_164259.json
+│   │   └── attack_report_20260803_164259.pdf
+│   ├── SIM-490C0EC8
+│   │   ├── attack_report_20260720_165225.json
+│   │   └── attack_report_20260720_165225.txt
+│   ├── SIM-4D314E5B
+│   │   ├── attack_report_20260714_170532.json
+│   │   └── attack_report_20260714_170532.txt
+│   ├── SIM-4FA25D61
+│   │   ├── attack_report_20260716_034940.json
+│   │   └── attack_report_20260716_034940.txt
+│   ├── SIM-5587A358
+│   │   └── attack_report_20260710_185403.json
+│   ├── SIM-72F7B3F9
+│   │   ├── attack_report_20260716_044508.json
+│   │   └── attack_report_20260716_044508.txt
+│   ├── SIM-73C0AC8F
+│   ├── SIM-75DE8517
+│   │   └── attack_report_20260708_133056.json
+│   ├── SIM-7EC5ACAA
+│   │   ├── attack_report_20260720_163038.json
+│   │   └── attack_report_20260720_163038.txt
+│   ├── SIM-834ED493
+│   │   └── attack_report_20260731_125203.json
+│   ├── SIM-9348BBCE
+│   │   └── attack_report_20260710_192956.json
+│   ├── SIM-94B090F7
+│   │   ├── attack_report_20260716_054947.json
+│   │   └── attack_report_20260716_054947.txt
+│   ├── SIM-A31EF883
+│   ├── SIM-AE6BE614
+│   │   ├── attack_report_20260714_195316.json
+│   │   └── attack_report_20260714_195316.txt
+│   ├── SIM-B1F4D6D8
+│   │   └── attack_report_20260709_134655.json
+│   ├── SIM-C1E3D44D
+│   │   ├── attack_report_20260714_224619.json
+│   │   └── attack_report_20260714_224619.txt
+│   ├── SIM-CF7571BB
+│   │   └── attack_report_20260710_222036.json
+│   ├── SIM-D694566B
+│   ├── SIM-E8B64EC2
+│   │   ├── attack_report_20260715_174818.json
+│   │   └── attack_report_20260715_174818.txt
+│   ├── SIM-F3D94678
+│   │   ├── attack_report_20260720_160029.json
+│   │   └── attack_report_20260720_160029.txt
+│   ├── SIM-F9EC38F2
+│   │   ├── attack_report_20260715_184249.json
+│   │   └── attack_report_20260715_184249.txt
+│   └── test
+│       ├── test_report.pdf
+│       └── test_report.txt
+├── requirements.txt
+├── test_pdf.py
+├── test_report_writer.py
+├── tests
+│   ├── conftest.py
+│   ├── test_api.py
+│   ├── test_mitre_engine.py
+│   └── test_threat_intel.py
+├── training_data.csv
+├── train_mitre_model.py
+├── train_model.py
+├── train_post_model.py
+└── train_vuln_model.py
+
+98 directories, 445 files

@@ -1,166 +1,114 @@
-import { Menu, Moon, Sun, ShieldCheck } from "lucide-react";
-import { useState } from "react";
-
-
-function Navbar({ toggleSidebar }) {
-
-
-const [dark, setDark] = useState(
-    localStorage.getItem("theme") === "dark"
-);
+import {
+  Bell,
+  Menu,
+  Moon,
+  ShieldAlert,
+  Sun
+} from "lucide-react";
 
 
 
-const toggleDark = ()=>{
+function Navbar({
+  toggleSidebar,
+  darkMode,
+  toggleDarkMode
+}) {
+  return (
+    <header className="top-navbar">
 
+      {/* LEFT SIDE */}
+      <div className="navbar-left">
 
-    const mode = !dark;
-
-
-    setDark(mode);
-
-
-
-    if(mode){
-
-
-        document.documentElement.classList.add("dark");
-
-
-        localStorage.setItem(
-            "theme",
-            "dark"
-        );
-
-
-    }else{
-
-
-        document.documentElement.classList.remove("dark");
-
-
-        localStorage.setItem(
-            "theme",
-            "light"
-        );
-
-
-    }
-
-
-};
-
-
-
-
-return (
-
-<header className="navbar">
-
-
-
-<button
-className="menu-btn"
-onClick={toggleSidebar}
+     <button
+  type="button"
+  className="navbar-icon-btn navbar-menu-btn"
+  onClick={toggleSidebar}
+  aria-label="Toggle navigation menu"
 >
-
-<Menu size={22}/>
-
+  <Menu size={22} />
 </button>
 
 
+        <div className="navbar-brand">
+
+          <div className="navbar-brand-icon">
+            <ShieldAlert size={27} />
+          </div>
 
 
+          <div className="navbar-brand-copy">
 
-<div className="navbar-brand">
+            <h2>
+              Hybrid
+              <span> AI Red Team</span>
+            </h2>
 
+            <p>
+              Offensive Security Operations Center
+            </p>
 
+          </div>
 
-<div className="navbar-logo">
+        </div>
 
-<ShieldCheck size={24}/>
-
-</div>
-
-
-
-
-
-<div>
-
-<h3>
-Hybrid AI Red Team
-</h3>
+      </div>
 
 
-<span>
-Security Operations Center
-</span>
+      {/* RIGHT SIDE */}
+      <div className="navbar-actions">
+
+        <div className="navbar-engine-status">
+
+          <span className="engine-status-dot" />
+
+          <div>
+            <strong>System Online</strong>
+            <small>Engine connected</small>
+          </div>
+
+        </div>
 
 
-</div>
+        <button
+          type="button"
+          className="navbar-icon-btn"
+          onClick={toggleDarkMode}
+          aria-label={
+            darkMode
+              ? "Switch to light mode"
+              : "Switch to dark mode"
+          }
+          title={
+            darkMode
+              ? "Light mode"
+              : "Dark mode"
+          }
+        >
+          {darkMode ? (
+            <Sun size={20} />
+          ) : (
+            <Moon size={20} />
+          )}
+        </button>
 
 
+        <button
+          type="button"
+          className="navbar-icon-btn notification-button"
+          aria-label="Notifications"
+        >
+          <Bell size={20} />
 
-</div>
+          <span className="notification-badge">
+            3
+          </span>
+        </button>
 
+      </div>
 
-
-
-
-
-
-<div className="navbar-actions">
-
-
-
-<div className="online">
-
-<span className="dot"></span>
-
-System Online
-
-</div>
-
-
-
-
-
-
-<button
-className="theme-btn"
-onClick={toggleDark}
-title="Toggle Dark Mode"
->
-
-{
-
-dark ?
-
-<Sun size={20}/>
-
-:
-
-<Moon size={20}/>
-
+    </header>
+  );
 }
-
-
-</button>
-
-
-
-
-</div>
-
-
-
-</header>
-
-)
-
-}
-
 
 
 export default Navbar;

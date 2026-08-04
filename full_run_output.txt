@@ -1,0 +1,1617 @@
+INFO:     Will watch for changes in these directories: ['/home/eman/Desktop/gradution_Pro_edit']
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [93235] using StatReload
+INFO     | Logging initialised — file: /home/eman/Desktop/gradution_Pro_edit/engine/logs/redteam.log
+  [KEV] 1612 known exploited CVEs loaded.
+INFO     | Logging initialised — file: /home/eman/Desktop/gradution_Pro_edit/engine/logs/redteam.log
+INFO:     Started server process [93246]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+[DB] All tables created / verified.
+[App] Database: ✓ connected
+[App] Hybrid AI Red Team Simulation Framework v2.0.0 started.
+[App] Docs: http://0.0.0.0:8000/docs
+INFO:     127.0.0.1:49644 - "OPTIONS /api/scan/run HTTP/1.1" 200 OK
+[DB] save_session → id=47  session=SIM-E4381F
+INFO:     127.0.0.1:49644 - "POST /api/scan/run HTTP/1.1" 200 OK
+INFO     | Session SIM-0CEB2D52 started — target=10.0.2.3 lhost=10.0.2.4
+
+──────────────────────────────────────────────────
+[Phase 1] Reconnaissance
+[R0/R1] Starting Reconnaissance on: 10.0.2.3
+[Recon] Ping-sweep → 10.0.2.3
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [+] Live: 10.0.2.3
+
+[Phase 2] Scanning & Service Enumeration
+
+[R3/R4/R5] Starting Scan on: 10.0.2.3
+[Scanner] nmap -sV -sC -O --open --host-timeout 120s 10.0.2.3
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+
+[+] Host: 10.0.2.3
+  OS: Linux 2.6.9 - 2.6.33
+  Port: 21 | ftp | vsftpd 2.3.4
+  Port: 22 | ssh | OpenSSH 4.7p1 Debian 8ubuntu1
+  Port: 23 | telnet | Linux telnetd 
+  Port: 25 | smtp | Postfix smtpd 
+  Port: 53 | domain | ISC BIND 9.4.2
+  Port: 80 | http | Apache httpd 2.2.8
+  Port: 111 | rpcbind |  2
+  Port: 139 | netbios-ssn | Samba smbd 3.X - 4.X
+  Port: 445 | netbios-ssn | Samba smbd 3.0.20-Debian
+  Port: 512 | exec | netkit-rsh rexecd 
+  Port: 513 | login | OpenBSD or Solaris rlogind 
+  Port: 514 | tcpwrapped |  
+  Port: 1099 | java-rmi | GNU Classpath grmiregistry 
+  Port: 1524 | bindshell | Metasploitable root shell 
+  Port: 2049 | nfs |  2-4
+  Port: 2121 | ftp | ProFTPD 1.3.1
+  Port: 3306 | mysql | MySQL 5.0.51a-3ubuntu5
+  Port: 5432 | postgresql | PostgreSQL DB 8.3.0 - 8.3.7
+  Port: 5900 | vnc | VNC 
+  Port: 6000 | X11 |  
+  Port: 6667 | irc | UnrealIRCd 
+  Port: 8009 | ajp13 | Apache Jserv 
+  Port: 8180 | http | Apache Tomcat/Coyote JSP engine 1.1
+
+[🔒 OWASP Web Security Scan]
+────────────────────────────────────────
+  [OWASP] Auto URL: http://10.0.2.3
+
+[OWASP] Target  : http://10.0.2.3
+[OWASP] Checkers: 7
+[OWASP] Standard: OWASP Top 10 2025
+
+[*] Testing A01:2025 - Injection on: http://10.0.2.3
+[*] Testing A02:2025 - Broken Access Control on: http://10.0.2.3
+[*] Testing A07:2025 - Authentication Failures on: http://10.0.2.3
+[*] Testing A05:2025 - Security Misconfiguration on: http://10.0.2.3
+[*] Testing A03:2025 - Cryptographic Failures on: http://10.0.2.3
+[*] Testing A06:2025 - Vulnerable Components on: http://10.0.2.3
+  [AuthFailureChecker] 1 finding(s)
+  [CryptographicFailureChecker] 1 finding(s)
+  [VulnerableComponentsChecker] 1 finding(s)
+  [BrokenAccessControlChecker] 1 finding(s)
+  [InjectionChecker] 1 finding(s)
+  [SecurityMisconfigurationChecker] 1 finding(s)
+[*] Testing A10:2025 - SSRF on: http://10.0.2.3
+  [SSRFChecker] 1 finding(s)
+
+[OWASP] ── Scan Complete ──────────────
+  Total   : 7
+  Critical: 1
+  High    : 4
+  Medium  : 2
+  Low     : 0
+  Categories: ['A01:2025', 'A02:2025', 'A03:2025', 'A05:2025', 'A06:2025', 'A07:2025', 'A10:2025']
+  Risk Score: 70/100
+  📊 Detected technologies: apache, php
+
+[Phase 3] Vulnerability Mapping (ExploitDB + Fallback + OWASP)
+  [VulnMapper] searchsploit: available
+
+[R6] Starting Vulnerability Mapping...
+
+  [?] Querying: 'vsftpd 2.3.4' (10.0.2.3:21)
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [!] [exploitdb] 10.0.2.3:21 | CRITICAL | CVSS:9.5 | vsftpd 2.3.4 - Backdoor Command Execution (Metasploit)
+
+  [?] Querying: 'OpenSSH 4.7p1 Debian 8ubuntu1' (10.0.2.3:22)
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [!] [fallback] 10.0.2.3:22 | MEDIUM | CVSS:5.0 | SSH service — fallback attack
+
+  [?] Querying: 'Linux telnetd' (10.0.2.3:23)
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [!] [exploitdb] 10.0.2.3:23 | CRITICAL | CVSS:9.5 | netkit-telnet-0.17 telnetd (Fedora 31) - 'BraveStarr' Remote Code Execution
+
+  [?] Querying: 'Postfix smtpd' (10.0.2.3:25)
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [~] No match for 10.0.2.3:25 (smtp)
+
+  [?] Querying: 'ISC BIND 9.4.2' (10.0.2.3:53)
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [~] No match for 10.0.2.3:53 (domain)
+
+  [?] Querying: 'Apache httpd 2.2.8' (10.0.2.3:80)
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [!] [fallback] 10.0.2.3:80 | LOW | CVSS:3.0 | HTTP service — fallback attack
+
+  [?] Querying: '2' (10.0.2.3:111)
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [!] [exploitdb] 10.0.2.3:111 | LOW | CVSS:3.0 | 'customhs_js_content' - 'customhs_js_content' Cross-Site Request Forgery
+
+  [?] Querying: 'Samba smbd 3.X - 4.X' (10.0.2.3:139)
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [~] No match for 10.0.2.3:139 (netbios-ssn)
+
+  [?] Querying: 'Samba smbd 3.0.20-Debian' (10.0.2.3:445)
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [~] No match for 10.0.2.3:445 (netbios-ssn)
+
+  [?] Querying: 'netkit-rsh rexecd' (10.0.2.3:512)
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [~] No match for 10.0.2.3:512 (exec)
+
+  [?] Querying: 'OpenBSD or Solaris rlogind' (10.0.2.3:513)
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [~] No match for 10.0.2.3:513 (login)
+
+  [?] Querying: 'tcpwrapped' (10.0.2.3:514)
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [~] No match for 10.0.2.3:514 (tcpwrapped)
+
+  [?] Querying: 'GNU Classpath grmiregistry' (10.0.2.3:1099)
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [~] No match for 10.0.2.3:1099 (java-rmi)
+
+  [?] Querying: 'Metasploitable root shell' (10.0.2.3:1524)
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [~] No match for 10.0.2.3:1524 (bindshell)
+
+  [?] Querying: '2-4' (10.0.2.3:2049)
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [!] [exploitdb] 10.0.2.3:2049 | LOW | CVSS:3.0 | Acuity CMS 2.6.2 - 'Username' Cross-Site Scripting
+
+  [?] Querying: 'ProFTPD 1.3.1' (10.0.2.3:2121)
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [!] [fallback] 10.0.2.3:2121 | MEDIUM | CVSS:5.0 | FTP service — fallback attack
+
+  [?] Querying: 'MySQL 5.0.51a-3ubuntu5' (10.0.2.3:3306)
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [!] [fallback] 10.0.2.3:3306 | MEDIUM | CVSS:5.0 | MYSQL service — fallback attack
+
+  [?] Querying: 'PostgreSQL DB 8.3.0 - 8.3.7' (10.0.2.3:5432)
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [~] No match for 10.0.2.3:5432 (postgresql)
+
+  [?] Querying: 'VNC' (10.0.2.3:5900)
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [!] [exploitdb] 10.0.2.3:5900 | HIGH | CVSS:7.5 | AMX Corp. VNC ActiveX Control - 'AmxVnc.dll 1.0.13.0' Remote Buffer Overflow
+
+  [?] Querying: 'X11' (10.0.2.3:6000)
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [!] [exploitdb] 10.0.2.3:6000 | LOW | CVSS:3.0 | ASUS DSL-X11 ADSL Router - DNS Change
+
+  [?] Querying: 'UnrealIRCd' (10.0.2.3:6667)
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [!] [exploitdb] 10.0.2.3:6667 | CRITICAL | CVSS:9.5 | UnrealIRCd 3.2.8.1 - Backdoor Command Execution (Metasploit)
+
+  [?] Querying: 'Apache Jserv' (10.0.2.3:8009)
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [~] No match for 10.0.2.3:8009 (ajp13)
+
+  [?] Querying: 'Apache Tomcat/Coyote JSP engine 1.1' (10.0.2.3:8180)
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [!] [fallback] 10.0.2.3:8180 | LOW | CVSS:3.0 | HTTP service — fallback attack
+
+  [+] Total: 12 — CRITICAL:3 HIGH:1 MEDIUM:3 LOW:5
+  [+] Added 7 OWASP findings
+
+[Phase 4] Threat Intelligence (CVSS · EPSS · KEV · Vendor)
+  [KEV] 1612 known exploited CVEs loaded.
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [TI] 10.0.2.3:21 | CVSS=9.5 EPSS=0.100 KEV=no TScore=55.5
+  [TI] 10.0.2.3:23 | CVSS=9.5 EPSS=0.100 KEV=no TScore=40.5
+  [TI] 10.0.2.3:6667 | CVSS=9.5 EPSS=0.100 KEV=no TScore=40.5
+  [TI] 10.0.2.3:5900 | CVSS=7.5 EPSS=0.100 KEV=no TScore=32.5
+  [TI] 10.0.2.3:22 | CVSS=5.0 EPSS=0.100 KEV=no TScore=22.5
+  [TI] 10.0.2.3:2121 | CVSS=5.0 EPSS=0.100 KEV=no TScore=22.5
+  [TI] 10.0.2.3:3306 | CVSS=5.0 EPSS=0.100 KEV=no TScore=22.5
+  [TI] 10.0.2.3:80 | CVSS=3.0 EPSS=0.100 KEV=no TScore=14.5
+  [TI] 10.0.2.3:111 | CVSS=3.0 EPSS=0.100 KEV=no TScore=14.5
+  [TI] 10.0.2.3:2049 | CVSS=3.0 EPSS=0.100 KEV=no TScore=14.5
+  [TI] 10.0.2.3:6000 | CVSS=3.0 EPSS=0.100 KEV=no TScore=14.5
+  [TI] 10.0.2.3:8180 | CVSS=3.0 EPSS=0.100 KEV=no TScore=14.5
+  [TI] 10.0.2.3:80 | CVSS=5.0 EPSS=0.100 KEV=no TScore=22.5
+  [TI] 10.0.2.3:80 | CVSS=5.0 EPSS=0.100 KEV=no TScore=22.5
+  [TI] 10.0.2.3:80 | CVSS=5.0 EPSS=0.100 KEV=no TScore=22.5
+  [TI] 10.0.2.3:80 | CVSS=5.0 EPSS=0.100 KEV=no TScore=22.5
+  [TI] 10.0.2.3:80 | CVSS=5.0 EPSS=0.100 KEV=no TScore=22.5
+  [TI] 10.0.2.3:80 | CVSS=5.0 EPSS=0.100 KEV=no TScore=22.5
+  [TI] 10.0.2.3:80 | CVSS=5.0 EPSS=0.100 KEV=no TScore=22.5
+
+[Phase 5] Risk Scoring (CVSS+EPSS+KEV → composite score)
+
+[Risk Engine] Scoring 19 findings (threshold=30)...
+  [+] High-risk: 16  |  Deferred: 3
+  #1 10.0.2.3:21 | Score=100 CVSS=9.5 EPSS=0.100
+  #2 10.0.2.3:23 | Score=100 CVSS=9.5 EPSS=0.100
+  #3 10.0.2.3:6667 | Score=100 CVSS=9.5 EPSS=0.100
+  #4 10.0.2.3:22 | Score=75 CVSS=5.0 EPSS=0.100
+  #5 10.0.2.3:3306 | Score=75 CVSS=5.0 EPSS=0.100
+  #6 10.0.2.3:5900 | Score=73 CVSS=7.5 EPSS=0.100
+  #7 10.0.2.3:2121 | Score=59 CVSS=5.0 EPSS=0.100
+  #8 10.0.2.3:80 | Score=53 CVSS=4.0 EPSS=0.100
+  #9 10.0.2.3:8180 | Score=53 CVSS=4.0 EPSS=0.100
+  #10 10.0.2.3:80 | Score=44 CVSS=5.0 EPSS=0.100
+  #11 10.0.2.3:80 | Score=44 CVSS=5.0 EPSS=0.100
+  #12 10.0.2.3:80 | Score=44 CVSS=5.0 EPSS=0.100
+  #13 10.0.2.3:80 | Score=44 CVSS=5.0 EPSS=0.100
+  #14 10.0.2.3:80 | Score=44 CVSS=5.0 EPSS=0.100
+  #15 10.0.2.3:80 | Score=44 CVSS=5.0 EPSS=0.100
+  #16 10.0.2.3:80 | Score=44 CVSS=5.0 EPSS=0.100
+  [Correlator] Loaded index: 769 entries
+
+[Phase 6] Exploitation
+  [Ranker] ML priority model unavailable — neutral fallback ([Errno 2] No such file or directory: '/home/eman/Desktop/gradution_Pro_edit/engine/exploit_model.pkl')
+  [Ranker] 16 candidates ranked by evidence-based score:
+    [0.497] 10.0.2.3:21 N/A — metasploit
+    [0.497] 10.0.2.3:23 N/A — metasploit
+    [0.497] 10.0.2.3:6667 N/A — metasploit
+    [0.468] 10.0.2.3:5900 N/A — metasploit
+    [0.410] 10.0.2.3:22 BRUTE-FORCE — hydra
+    [0.410] 10.0.2.3:3306 BRUTE-FORCE — hydra
+    [0.410] 10.0.2.3:2121 BRUTE-FORCE — hydra
+    [0.380] 10.0.2.3:80 WEB-SCAN — web
+    [0.380] 10.0.2.3:8180 WEB-SCAN — web
+    [0.375] 10.0.2.3:80 CWE-614 — ?
+    [0.375] 10.0.2.3:80 CWE-319 — ?
+    [0.375] 10.0.2.3:80 CWE-1104 — ?
+    [0.375] 10.0.2.3:80 CWE-639 — ?
+    [0.375] 10.0.2.3:80 CWE-89 — ?
+    [0.375] 10.0.2.3:80 CWE-693 — ?
+    [0.375] 10.0.2.3:80 CWE-918 — ?
+  [Correlator] EDB-17491 -> exploit/unix/ftp/vsftpd_234_backdoor  (local index)
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [Correlator] No MSF module found for EDB-48170
+  [Correlator] EDB-16922 -> exploit/unix/irc/unreal_ircd_3281_backdoor  (local index)
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [Correlator] No MSF module found for EDB-4123
+  [Correlator] No MSF module found for EDB-ssh
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [Correlator] No MSF module found for EDB-mysql
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [Correlator] No MSF module found for EDB-ftp
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [Correlator] No MSF module found for EDB-web
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [Correlator] No MSF module found for EDB-web
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [Correlator] No MSF module found for EDB-
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [Correlator] No MSF module found for EDB-
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [Correlator] No MSF module found for EDB-
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [Correlator] No MSF module found for EDB-
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [Correlator] No MSF module found for EDB-
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [Correlator] Vulners API error: HTTPSConnectionPool(host='vulners.com', port=443): Max retries exceeded with url: /api/v3/search/lucene/?query=CWE-693+web+type%3Aexploitdb&size=5 (Caused by NameResolutionError("HTTPSConnection(host='vulners.com', port=443): Failed to resolve 'vulners.com' ([Errno -3] Temporary failure in name resolution)"))
+  [Correlator] No MSF module found for EDB-
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [Correlator] No MSF module found for EDB-
+  [Path] 16 steps planned:
+    Step 1: 10.0.2.3:21 metasploit p=90% score=0.000
+    Step 2: 10.0.2.3:23 metasploit p=90% score=0.000
+    Step 3: 10.0.2.3:6667 metasploit p=90% score=0.000
+    Step 4: 10.0.2.3:5900 metasploit p=87% score=0.000
+    Step 5: 10.0.2.3:22 hydra p=64% score=0.000
+    Step 6: 10.0.2.3:3306 hydra p=64% score=0.000
+    Step 7: 10.0.2.3:2121 hydra p=64% score=0.000
+    Step 8: 10.0.2.3:80 web p=47% score=0.000
+    Step 9: 10.0.2.3:8180 web p=47% score=0.000
+    Step 10: 10.0.2.3:80 None p=28% score=0.000
+    Step 11: 10.0.2.3:80 None p=28% score=0.000
+    Step 12: 10.0.2.3:80 None p=28% score=0.000
+    Step 13: 10.0.2.3:80 None p=28% score=0.000
+    Step 14: 10.0.2.3:80 None p=28% score=0.000
+    Step 15: 10.0.2.3:80 None p=28% score=0.000
+    Step 16: 10.0.2.3:80 None p=28% score=0.000
+
+  [Exec] 10.0.2.3:21 (metasploit)  score=0.497  reason: score=0.497 | CVE=N/A (conf=0.60) | EPSS=0.100 | CVSS=9.5 | type=metasploit reliab=0.85 | ML_priority=0.50
+  [MSF] Built-in backdoor: exploit/unix/ftp/vsftpd_234_backdoor
+  [MSF] Target : 10.0.2.3:21
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [MSF] Timeout after 120s
+  [-] FAIL — 10.0.2.3:21
+
+  [Exec] 10.0.2.3:23 (metasploit)  score=0.497  reason: score=0.497 | CVE=N/A (conf=0.60) | EPSS=0.100 | CVSS=9.5 | type=metasploit reliab=0.85 | ML_priority=0.50
+  [MSF] No real Metasploit module for this finding (EDB script only: /usr/share/exploitdb/exploits/linux/remote/48170.py) -- skipping, not msfconsole-exploitable
+  [-] FAIL — 10.0.2.3:23
+
+  [Exec] 10.0.2.3:6667 (metasploit)  score=0.497  reason: score=0.497 | CVE=N/A (conf=0.60) | EPSS=0.100 | CVSS=9.5 | type=metasploit reliab=0.85 | ML_priority=0.50
+  [MSF] Module : exploit/unix/irc/unreal_ircd_3281_backdoor
+  [MSF] Payload: cmd/unix/reverse
+  [MSF] Target : 10.0.2.3:6667
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [MSF] Timeout after 120s
+  [-] FAIL — 10.0.2.3:6667
+
+  [Exec] 10.0.2.3:5900 (metasploit)  score=0.468  reason: score=0.468 | CVE=N/A (conf=0.60) | EPSS=0.100 | CVSS=7.5 | type=metasploit reliab=0.85 | ML_priority=0.50
+  [MSF] No real Metasploit module for this finding (EDB script only: /usr/share/exploitdb/exploits/windows/remote/4123.html) -- skipping, not msfconsole-exploitable
+  [-] FAIL — 10.0.2.3:5900
+
+  [Exec] 10.0.2.3:22 (hydra)  score=0.410  reason: score=0.410 | CVE=BRUTE-FORCE (conf=0.60) | EPSS=0.100 | CVSS=5.0 | type=hydra reliab=0.65 | ML_priority=0.50
+  [Hydra] ssh://10.0.2.3:22
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [Hydra] ✗ No credentials
+  [-] FAIL — 10.0.2.3:22
+
+  [Exec] 10.0.2.3:3306 (hydra)  score=0.410  reason: score=0.410 | CVE=BRUTE-FORCE (conf=0.60) | EPSS=0.100 | CVSS=5.0 | type=hydra reliab=0.65 | ML_priority=0.50
+  [Hydra] mysql://10.0.2.3:3306
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [Hydra] Timeout
+  [-] FAIL — 10.0.2.3:3306
+
+  [Exec] 10.0.2.3:2121 (hydra)  score=0.410  reason: score=0.410 | CVE=BRUTE-FORCE (conf=0.60) | EPSS=0.100 | CVSS=5.0 | type=hydra reliab=0.65 | ML_priority=0.50
+  [Hydra] ftp://10.0.2.3:2121
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [Hydra] Timeout
+  [-] FAIL — 10.0.2.3:2121
+
+  [Exec] 10.0.2.3:80 (web)  score=0.380  reason: score=0.380 | CVE=WEB-SCAN (conf=0.60) | EPSS=0.100 | CVSS=4.0 | type=web reliab=0.50 | ML_priority=0.50
+  [Web] nikto http://10.0.2.3:80/
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [Web] ✗ No critical issues
+  [-] FAIL — 10.0.2.3:80
+
+  [Exec] 10.0.2.3:8180 (web)  score=0.380  reason: score=0.380 | CVE=WEB-SCAN (conf=0.60) | EPSS=0.100 | CVSS=4.0 | type=web reliab=0.50 | ML_priority=0.50
+  [Web] nikto http://10.0.2.3:8180/
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [Web] ✗ No critical issues
+  [-] FAIL — 10.0.2.3:8180
+
+  [Exec] 10.0.2.3:80 ()  score=0.375  reason: score=0.375 | CVE=CWE-614 (conf=0.60) | EPSS=0.100 | CVSS=5.0 | type=? reliab=0.30 | ML_priority=0.50
+  [Web] nikto http://10.0.2.3:80/
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [Web] ✗ No critical issues
+  [-] FAIL — 10.0.2.3:80
+
+  [Exec] 10.0.2.3:80 ()  score=0.375  reason: score=0.375 | CVE=CWE-319 (conf=0.60) | EPSS=0.100 | CVSS=5.0 | type=? reliab=0.30 | ML_priority=0.50
+  [Web] nikto http://10.0.2.3:80/
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [-] FAIL — 10.0.2.3:80
+
+  [Exec] 10.0.2.3:80 ()  score=0.375  reason: score=0.375 | CVE=CWE-1104 (conf=0.60) | EPSS=0.100 | CVSS=5.0 | type=? reliab=0.30 | ML_priority=0.50
+  [Web] nikto http://10.0.2.3:80/
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [Web] ✗ No critical issues
+  [-] FAIL — 10.0.2.3:80
+
+  [Exec] 10.0.2.3:80 ()  score=0.375  reason: score=0.375 | CVE=CWE-639 (conf=0.60) | EPSS=0.100 | CVSS=5.0 | type=? reliab=0.30 | ML_priority=0.50
+  [Web] nikto http://10.0.2.3:80/
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [Web] ✗ No critical issues
+  [-] FAIL — 10.0.2.3:80
+
+  [Exec] 10.0.2.3:80 ()  score=0.375  reason: score=0.375 | CVE=CWE-89 (conf=0.60) | EPSS=0.100 | CVSS=5.0 | type=? reliab=0.30 | ML_priority=0.50
+  [Web] nikto http://10.0.2.3:80/
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [Web] ✗ No critical issues
+  [-] FAIL — 10.0.2.3:80
+
+  [Exec] 10.0.2.3:80 ()  score=0.375  reason: score=0.375 | CVE=CWE-693 (conf=0.60) | EPSS=0.100 | CVSS=5.0 | type=? reliab=0.30 | ML_priority=0.50
+  [Web] nikto http://10.0.2.3:80/
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [Web] ✗ No critical issues
+  [-] FAIL — 10.0.2.3:80
+
+  [Exec] 10.0.2.3:80 ()  score=0.375  reason: score=0.375 | CVE=CWE-918 (conf=0.60) | EPSS=0.100 | CVSS=5.0 | type=? reliab=0.30 | ML_priority=0.50
+  [Web] nikto http://10.0.2.3:80/
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [Web] ✗ No critical issues
+  [-] FAIL — 10.0.2.3:80
+
+  [Summary] 0/16 exploits succeeded
+INFO     | Exploitation complete — 16 attempts
+
+[Phase 7] Post-Exploitation
+
+[Phase 8] MITRE ATT&CK (Rule · STIX · ML · ConfidenceFusion)
+
+[MITRE Engine] Initialising 3-layer hybrid classifier...
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+  [STIX] Loaded 697 techniques → index built.
+  [ML] No model at models/mitre_classifier.pkl — fallback keyword mode active.
+       Run:  python train_mitre_model.py   to train the classifier.
+[MITRE Engine] Ready.
+
+[MITRE Engine] Classifying 16 result(s)...
+  [+] 10.0.2.3:21  →  [rule_exact]  initial-access  |  T1190 Exploit Public-Facing Application  (conf=95%)
+       └ alt [stix] T1554 Compromise Host Software Binary (75%)
+       └ alt [ml_fallback] T-KW Keyword inferred: initial-access (70%)
+  [+] 10.0.2.3:23  →  [rule_service]  credential-access  |  T1110 Brute Force  (conf=90%)
+       └ alt [stix] T1053.006 Systemd Timers (75%)
+       └ alt [ml_fallback] T-KW Keyword inferred: execution (66%)
+  [+] 10.0.2.3:6667  →  [rule_exact]  initial-access  |  T1190 Exploit Public-Facing Application  (conf=93%)
+       └ alt [stix] T1037.004 RC Scripts (75%)
+       └ alt [ml_fallback] T-KW Keyword inferred: initial-access (70%)
+  [+] 10.0.2.3:5900  →  [rule_service]  lateral-movement  |  T1021 Remote Services  (conf=87%)
+       └ alt [stix] T1021.005 VNC (75%)
+  [+] 10.0.2.3:22  →  [rule_service]  credential-access  |  T1110 Brute Force  (conf=87%)
+       └ alt [stix] T1110.001 Password Guessing (75%)
+       └ alt [ml_fallback] T-KW Keyword inferred: credential-access (69%)
+  [+] 10.0.2.3:3306  →  [rule_service]  credential-access  |  T1110 Brute Force  (conf=86%)
+       └ alt [stix] T1110.001 Password Guessing (75%)
+       └ alt [ml_fallback] T-KW Keyword inferred: credential-access (69%)
+  [+] 10.0.2.3:2121  →  [rule_service]  credential-access  |  T1110 Brute Force  (conf=87%)
+       └ alt [stix] T1110.001 Password Guessing (75%)
+       └ alt [ml_fallback] T-KW Keyword inferred: credential-access (69%)
+  [+] 10.0.2.3:80  →  [rule_service]  initial-access  |  T1190 Exploit Public-Facing Application  (conf=85%)
+       └ alt [stix] T1499.002 Service Exhaustion Flood (75%)
+  [+] 10.0.2.3:8180  →  [rule_service]  initial-access  |  T1190 Exploit Public-Facing Application  (conf=85%)
+       └ alt [stix] T1608.006 SEO Poisoning (75%)
+  [+] 10.0.2.3:80  →  [stix]  initial-access  |  T1190 Exploit Public-Facing Application  (conf=75%)
+  [+] 10.0.2.3:80  →  [stix]  initial-access  |  T1190 Exploit Public-Facing Application  (conf=75%)
+  [+] 10.0.2.3:80  →  [stix]  initial-access  |  T1190 Exploit Public-Facing Application  (conf=75%)
+  [+] 10.0.2.3:80  →  [stix]  initial-access  |  T1190 Exploit Public-Facing Application  (conf=75%)
+  [+] 10.0.2.3:80  →  [stix]  initial-access  |  T1190 Exploit Public-Facing Application  (conf=75%)
+  [+] 10.0.2.3:80  →  [stix]  initial-access  |  T1190 Exploit Public-Facing Application  (conf=75%)
+  [+] 10.0.2.3:80  →  [stix]  initial-access  |  T1190 Exploit Public-Facing Application  (conf=75%)
+INFO     | Merged unique techniques: 10
+  [Chain] 7 phases reconstructed.
+  [Heatmap] 10 technique(s) mapped to Navigator layer.
+  [Heatmap] Layer saved → reports/attack_layer_20260802_162302.json
+  [Chain] Saved → reports/attack_chain_20260802_162302.json
+  [Coverage] Tactics=7 Techniques=10 Coverage=50.0%
+INFO     | [Detection] Sigma rules mapped: 15
+  [Sigma] 15 detection rules generated
+
+[Phase 9] AI Enrichment (MitrePredictor · XAI · Adversary · Recommendations)
+  [AI] Closest adversary: APT28 similarity=15% matched=['T1110', 'T1190']
+  [AI] 5 remediation recommendations
+
+[Phase 10] Attack Graph (nodes · edges · centrality)
+  [Graph] Nodes=11 Edges=7 Top=['10.0.2.3', 'ATTACKER', '10.0.2.3:21']
+  [Graph] Neo4j disabled — using in-memory graph
+
+[Phase 11] Social Engineering
+
+[Social Engineering] Starting Campaign against: 10.0.2.3
+[Social Engineering] Credential Harvester: http://10.0.2.4/harvest
+
+  [SE] Running OSINT Profiling on: 10.0.2.3
+       Guessed Emails       : admin@10.0.2.3, it@10.0.2.3, hr@10.0.2.3 ...
+       Attack Surface Score : 10/10
+       Recommended Pretexts : it_support, hr_notification, ceo_fraud, vendor_invoice
+
+  [SE] Generated Phishing Email — Pretext: it_support
+       From    : it-support@10.0.2.3
+       Subject : ACTION REQUIRED: Password Expiry Notification
+       MITRE   : T1566.002 — Phishing: Spearphishing Link
+       Risk    : HIGH
+
+  [SE] Generated Phishing Email — Pretext: hr_notification
+       From    : hr@10.0.2.3
+       Subject : Important: Review Your Benefits Package for 2026
+       MITRE   : T1566.001 — Phishing: Spearphishing Attachment
+       Risk    : HIGH
+
+  [SE] Generated Phishing Email — Pretext: ceo_fraud
+       From    : ceo@10.0.2.3-corp.com
+       Subject : Urgent Wire Transfer Request
+       MITRE   : T1534 — Internal Spearphishing / BEC
+       Risk    : CRITICAL
+
+  [SE] Generated Phishing Email — Pretext: vendor_invoice
+       From    : billing@vendor-10.0.2.3.net
+       Subject : Invoice #INV-20260518 — Payment Overdue
+       MITRE   : T1566.001 — Phishing: Spearphishing Attachment
+       Risk    : MEDIUM
+
+  [SE] Vishing Script — bank_fraud
+       Script: Pretend to be bank security team.
+  'This is the fraud department at [Bank]. We've flagged a suspicious transact...
+
+  [+] Campaign Complete.
+  [+] Emails Generated : 4
+  [+] MITRE Tactics    : T1598, T1566, T1534
+
+[Phase 12] Generating Reports & Saving to Database
+  [LLM] Generating executive summary...
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+WARNING  | [LLM] Ollama request timed out after 300s.
+  [LLM] Executive summary done.
+  [LLM] Generating technical analysis for 5 technique(s)...
+    [LLM] Technique 1/5: T1190...
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49644 - "GET /api/progress HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'engine/modules/llm/llm_engine.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [93246]
+INFO     | Logging initialised — file: /home/eman/Desktop/gradution_Pro_edit/engine/logs/redteam.log
+  [KEV] 1612 known exploited CVEs loaded.
+INFO     | Logging initialised — file: /home/eman/Desktop/gradution_Pro_edit/engine/logs/redteam.log
+INFO:     Started server process [113470]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+[DB] All tables created / verified.
+[App] Database: ✓ connected
+[App] Hybrid AI Red Team Simulation Framework v2.0.0 started.
+[App] Docs: http://0.0.0.0:8000/docs
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58630 - "GET /api/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /api/progress HTTP/1.1" 200 OK
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                

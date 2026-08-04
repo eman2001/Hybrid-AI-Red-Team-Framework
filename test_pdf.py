@@ -1,24 +1,72 @@
-import json
-
 from engine.modules.reporting.pdf_reporter import PdfReporter
 
 
-json_file = "reports/SIM-CF7571BB/attack_report_20260710_222036.json"
+sample_report = {
+
+    "report_id": "TEST_001",
+
+    "generated_at": "2026-07-31",
+
+    "executive_summary": {
+
+        "risk": "CRITICAL",
+
+        "score": 100,
+
+        "findings": 7
+
+    },
 
 
-with open(json_file, "r", encoding="utf-8") as f:
-    report = json.load(f)
+    "ai_analysis": {
+
+        "summary": "Critical vulnerabilities detected",
+
+        "recommendations": [
+
+            "Patch vulnerable services",
+
+            "Review access controls"
+
+        ]
+
+    },
+
+
+    "mitre_analysis": {
+
+        "techniques": [
+
+            {
+
+                "techniqueID": "T1190",
+
+                "score": 100,
+
+                "comment": "Source: rule_exact | Confidence: 95%"
+
+            }
+
+        ]
+
+    }
+
+}
+
 
 
 pdf = PdfReporter()
 
 
-output = pdf.save(
-    report,
+path = pdf.save(
+
+    sample_report,
+
     "test_report.pdf",
+
     "reports/test"
+
 )
 
 
-print("Generated:")
-print(output)
+print(path)

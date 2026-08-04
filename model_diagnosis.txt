@@ -1,0 +1,478 @@
+===== train_model.py =====
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split, cross_val_score, StratifiedKFold
+from sklearn.metrics import accuracy_score, classification_report
+import pickle
+
+data = pd.read_csv("training_data.csv")
+data["exploit_type"] = data["exploit_type"].map({
+    "metasploit": 3,
+    "hydra": 2,
+    "web": 1,
+    "manual": 0
+})
+data["priority_label"] = data["priority_label"].map({
+    "high": 2,
+    "medium": 1,
+    "low": 0
+})
+
+X = data[["cvss_score", "exploit_type", "port"]]
+y = data["priority_label"]
+
+# Honest hold-out split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+# Shallow tree -- guards against overfitting on a 50-row dataset
+model = DecisionTreeClassifier(max_depth=4, min_samples_leaf=2, random_state=42)
+
+# 5-fold cross-validation on the training portion
+cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+cv_scores = cross_val_score(model, X_train, y_train, cv=cv)
+print(f"Cross-validation accuracy: {cv_scores.mean():.3f} (+/- {cv_scores.std():.3f})")
+print(f"Per-fold scores: {[round(s, 3) for s in cv_scores]}")
+
+# Fit on train split, evaluate on held-out test set
+model.fit(X_train, y_train)
+test_preds = model.predict(X_test)
+test_acc = accuracy_score(y_test, test_preds)
+print(f"\nHeld-out test accuracy: {test_acc:.3f}")
+print("\nClassification report (test set):")
+print(classification_report(y_test, test_preds, target_names=["low", "medium", "high"], zero_division=0))
+
+# Final model trained on the full dataset for deployment
+final_model = DecisionTreeClassifier(max_depth=4, min_samples_leaf=2, random_state=42)
+final_model.fit(X, y)
+
+with open("exploit_model.pkl", "wb") as f:
+    pickle.dump(final_model, f)
+
+print("\nFinal model (trained on full data, max_depth=4) saved to exploit_model.pkl")
+===== train_vuln_model.py =====
+"""
+train_vuln_model.py
+-------------------
+Trains the Exploit Prioritizer ML model (Random Forest classifier).
+Run this once before starting the main pipeline:
+
+    python train_vuln_model.py
+
+Outputs: models/vuln_model.pkl
+"""
+
+import pandas as pd
+import pickle
+import os
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import classification_report
+
+
+def train():
+    print("[*] Loading training data...")
+    df = pd.read_csv("data/training_data.csv")
+
+    # Encode categorical columns
+    le_exploit  = LabelEncoder()
+    le_service  = LabelEncoder()
+    le_severity = LabelEncoder()
+
+    df["exploit_enc"]  = le_exploit.fit_transform(df["exploit_name"])
+    df["service_enc"]  = le_service.fit_transform(df["service"])
+    df["severity_enc"] = le_severity.fit_transform(df["severity"])
+
+    features = [
+        "exploit_enc",
+        "service_enc",
+        "port",
+        "auth_required",
+        "remote",
+        "severity_enc",
+        "exploitability"
+    ]
+
+    X = df[features]
+    y = df["label"]   # 1=high priority, 2=medium, 3=low
+
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
+
+    print("[*] Training Random Forest classifier...")
+    model = RandomForestClassifier(
+        n_estimators=100,
+        max_depth=6,
+        random_state=42
+    )
+    model.fit(X_train, y_train)
+
+    y_pred = model.predict(X_test)
+    print("\n[+] Classification Report:")
+    print(classification_report(y_test, y_pred, zero_division=0))
+
+    os.makedirs("models", exist_ok=True)
+    model_data = {
+        "model":           model,
+        "le_exploit":      le_exploit,
+        "le_service":      le_service,
+        "le_severity":     le_severity,
+        "feature_columns": features
+    }
+    with open("models/vuln_model.pkl", "wb") as f:
+        pickle.dump(model_data, f)
+
+    print("[+] Model saved to models/vuln_model.pkl")
+
+
+if __name__ == "__main__":
+    train()
+===== exploiter __init__.py =====
+"""
+modules/exploiter/__init__.py
+------------------------------
+ExploiterModule — orchestrates the full exploitation pipeline.
+"""
+
+from __future__ import annotations
+
+from engine.modules.exploiter.exploit_ranker      import ExploitRanker
+from engine.modules.exploiter.exploit_simulation  import ExploitSimulation
+from engine.modules.exploiter.exploit_correlator  import ExploitCorrelator
+from engine.modules.exploiter.exploit_probability import ExploitProbability
+from engine.modules.exploiter.exploit_path_builder import ExploitPathBuilder
+from engine.modules.exploiter.mitre_exploit_mapper import MitreExploitMapper
+
+
+class ExploiterModule:
+    def __init__(self, lhost: str):
+        self.lhost = lhost
+        self._ranker = ExploitRanker()
+        self._corr   = ExploitCorrelator()
+        self._sim    = ExploitSimulation()
+        self._prob   = ExploitProbability()
+        self._path   = ExploitPathBuilder()
+        self._mmap   = MitreExploitMapper()
+
+    def run_exploits(self, findings: list[dict]) -> list[dict]:
+        print(f"\n[Phase 6] Exploitation")
+        if not findings:
+            print("  [!] No findings to exploit.")
+            return []
+
+        # 1. Evidence-based ranking
+        ranked = self._ranker.rank(findings)
+
+        # 2. Enrich each finding — resolve EDB path → MSF module HERE
+        for f in ranked:
+            f["probability"]  = self._prob.estimate(f)
+            f["prob_label"]   = self._prob.label(f["probability"])
+            f["quick_mitre"]  = self._mmap.quick_map(f.get("type", ""))
+            # ── KEY FIX: resolve EDB path → real MSF module ──
+            raw_exploit = f.get("exploit", "")
+            edb_title   = f.get("cve", "") + " " + f.get("service", "")
+            msf_module  = self._corr.resolve_msf_module(raw_exploit, edb_title)
+            if msf_module:
+                f["exploit"]      = msf_module
+                f["msf_module"]   = msf_module
+                f["msf_resolved"] = True
+            else:
+                # No real MSF module exists -- raw_exploit is just a filesystem path
+                # to an exploitdb script (.py/.html), not something msfconsole can `use`.
+                f["msf_module"]   = raw_exploit
+                f["msf_resolved"] = False
+
+        # 3. Build ordered path
+        exploit_path = self._path.build(ranked)
+        self.exploit_path = exploit_path
+        print(f"  [Path] {len(exploit_path)} steps planned:")
+        for step in exploit_path:
+            print(f"    Step {step['step']}: {step['host']}:{step['port']} "
+                  f"{step['type']} p={step['probability']:.0%} "
+                  f"score={step.get('selection_score', 0):.3f}")
+
+        # 4. Execute in ranked order
+        results: list[dict] = []
+        for f in ranked:
+            host   = f["host"]
+            port   = f["port"]
+            etype  = f.get("type", "")
+            exploit = f.get("exploit", "")
+
+            print(f"\n  [Exec] {host}:{port} ({etype})  "
+                  f"score={f['selection_score']:.3f}  "
+                  f"reason: {f['selection_reason']}")
+
+            if etype == "metasploit" and not f.get("msf_resolved", True):
+                print(f"  [MSF] No real Metasploit module for this finding "
+                      f"(EDB script only: {exploit}) -- skipping, not msfconsole-exploitable")
+                success = False
+            elif etype == "metasploit":
+                success = self._sim.run_msf(host, port, exploit, self.lhost)
+            elif etype == "hydra":
+                success = self._sim.run_hydra(host, port, f.get("service", "ssh"))
+            elif etype == "web":
+                success = self._sim.run_web(host, port)
+            elif str(f.get("cve", "")).startswith("CWE-"):
+                success = self._sim.run_web(host, port)
+            else:
+                print(f"  [*] Skipping unsupported type: {etype}")
+                success = False
+
+            result = {
+                **f,
+                "success": success,
+                "exploit_step": next(
+                    (s for s in exploit_path
+                     if s["host"] == host and s["port"] == port), {}
+                ),
+            }
+            results.append(result)
+
+            if success:
+                print(f"  [+] SUCCESS — {host}:{port} via {etype} "
+                      f"(score={f['selection_score']:.3f})")
+                pass  # continue to next exploit
+            else:
+                print(f"  [-] FAIL — {host}:{port}")
+
+        successful = [r for r in results if r.get("success")]
+        print(f"\n  [Summary] {len(successful)}/{len(results)} exploits succeeded")
+        return results
+
+
+__all__ = [
+    "ExploiterModule", "ExploitRanker", "ExploitCorrelator",
+    "ExploitSimulation", "ExploitProbability",
+    "ExploitPathBuilder", "MitreExploitMapper",
+]
+===== exploit_ranker.py =====
+"""
+exploiter/exploit_ranker.py
+-----------------------------
+Hybrid evidence-based + ML exploit prioritisation.
+
+Selection formula (weights sum to 1.0):
+    score = (
+        cve_confidence   * 0.25  +
+        epss             * 0.20  +
+        cvss_normalised  * 0.15  +
+        exploit_reliab   * 0.10  +
+        kev_bonus        * 0.10  +
+        ml_priority      * 0.20
+    )
+
+ml_priority is the probability a trained DecisionTreeClassifier
+(exploit_model.pkl — features: cvss_score, exploit_type, port) assigns
+to the "high priority" class. Falls back to a neutral 0.50 if the
+model file is missing or fails to load.
+
+Every finding in the returned list carries:
+    selection_score   – composite float 0-1
+    selection_reason  – human-readable explanation
+    rejected_reason   – set on skipped candidates (not in returned list)
+"""
+
+from __future__ import annotations
+
+
+# ── Exploit-type reliability (empirical Metasploit rank approximations) ──
+EXPLOIT_RELIABILITY: dict[str, float] = {
+    "metasploit": 0.85,   # ranked/excellent modules
+    "hydra":      0.65,   # credential brute-force success varies
+    "web":        0.50,   # manual web exploits less predictable
+    "manual":     0.30,
+}
+
+# ── CVE-year baseline confidence (absence of live CVSS → use year heuristic) ──
+CVE_YEAR_CONF: dict[str, float] = {
+    "CVE-2007": 0.90, "CVE-2008": 0.88, "CVE-2010": 0.87,
+    "CVE-2011": 0.90, "CVE-2014": 0.88, "CVE-2017": 0.92,
+    "CVE-2019": 0.85, "CVE-2021": 0.80, "CVE-2023": 0.75,
+}
+
+
+def _cve_confidence(cve: str) -> float:
+    """Derive CVE match confidence from CVE year prefix."""
+    if not cve:
+        return 0.50
+    for prefix, conf in CVE_YEAR_CONF.items():
+        if cve.startswith(prefix):
+            return conf
+    return 0.60
+
+
+# ── ML-based priority signal (DecisionTreeClassifier: cvss/type/port -> priority) ──
+import pickle
+import warnings
+from pathlib import Path
+
+_ML_MODEL_PATH = Path(__file__).resolve().parents[2] / "exploit_model.pkl"
+_ML_TYPE_ENCODING: dict[str, int] = {"metasploit": 3, "hydra": 2, "web": 1, "manual": 0}
+_ml_model = None
+_ml_model_loaded = False
+
+
+def _load_ml_model():
+    global _ml_model, _ml_model_loaded
+    if _ml_model_loaded:
+        return _ml_model
+    _ml_model_loaded = True
+    try:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            with open(_ML_MODEL_PATH, "rb") as f:
+                _ml_model = pickle.load(f)
+        print(f"  [Ranker] ML priority model loaded ({_ML_MODEL_PATH.name})")
+    except Exception as e:
+        print(f"  [Ranker] ML priority model unavailable — neutral fallback ({e})")
+        _ml_model = None
+    return _ml_model
+
+
+def _ml_priority(f: dict) -> float:
+    """Probability the ML model assigns to the 'high priority' class (0-1)."""
+    model = _load_ml_model()
+    if model is None:
+        return 0.50
+    try:
+        import pandas as pd
+        cvss  = min(float(f.get("cvss", 3.0)), 10.0)
+        etype = _ML_TYPE_ENCODING.get(f.get("type", ""), 0)
+        port  = int(f.get("port", 0) or 0)
+        X = pd.DataFrame([[cvss, etype, port]], columns=["cvss_score", "exploit_type", "port"])
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            proba = model.predict_proba(X)[0]
+        classes = list(model.classes_)
+        high_idx = classes.index(2) if 2 in classes else len(classes) - 1
+        return round(float(proba[high_idx]), 4)
+    except Exception as e:
+        print(f"  [Ranker] ML priority inference error: {e}")
+        return 0.50
+
+
+def _selection_score(f: dict) -> float:
+    cve_conf     = _cve_confidence(f.get("cve", ""))
+    epss         = min(float(f.get("epss", 0.10)), 1.0)
+    cvss_norm    = min(float(f.get("cvss", 3.0)), 10.0) / 10.0
+    reliability  = EXPLOIT_RELIABILITY.get(f.get("type", ""), 0.30)
+    kev_bonus    = 1.0 if f.get("in_kev") else 0.0
+    ml_priority  = _ml_priority(f)
+
+    score = (
+        cve_conf   * 0.25 +
+        epss       * 0.20 +
+        cvss_norm  * 0.15 +
+        reliability* 0.10 +
+        kev_bonus  * 0.10 +
+        ml_priority* 0.20
+    )
+    return round(min(score, 1.0), 4)
+
+
+def _build_reason(f: dict, score: float) -> str:
+    parts = [f"score={score:.3f}"]
+    parts.append(f"CVE={f.get('cve','N/A')} (conf={_cve_confidence(f.get('cve','')):.2f})")
+    parts.append(f"EPSS={f.get('epss', 0.10):.3f}")
+    parts.append(f"CVSS={f.get('cvss', 'N/A')}")
+    if f.get("in_kev"):
+        parts.append("KEV=YES(+0.10)")
+    parts.append(f"type={f.get('type','?')} reliab={EXPLOIT_RELIABILITY.get(f.get('type',''), 0.30):.2f}")
+    parts.append(f"ML_priority={_ml_priority(f):.2f}")
+    return " | ".join(parts)
+
+
+class ExploitRanker:
+    """
+    Ranks vulnerability findings by composite exploit-selection score.
+    Returns all findings sorted descending; each carries selection_score
+    and selection_reason so the caller can explain the decision.
+    """
+
+    MINIMUM_SCORE = 0.25   # findings below this are deprioritised but kept
+
+    def rank(self, findings: list[dict]) -> list[dict]:
+        for f in findings:
+            score = _selection_score(f)
+            f["selection_score"]  = score
+            f["selection_reason"] = _build_reason(f, score)
+            if score < self.MINIMUM_SCORE:
+                f["deprioritised"] = True
+
+        ranked = sorted(findings, key=lambda x: x["selection_score"], reverse=True)
+
+        print(f"  [Ranker] {len(ranked)} candidates ranked by evidence-based score:")
+        for f in ranked:
+            flag = " ⚠ deprioritised" if f.get("deprioritised") else ""
+            print(f"    [{f['selection_score']:.3f}] {f.get('host')}:{f.get('port')} "
+                  f"{f.get('cve','N/A')} — {f.get('type','?')}{flag}")
+
+        return ranked
+===== MODEL FILES =====
+./engine/models/mitre_classifier.pkl | 17146292 bytes
+./engine/models/post_exploit_model.pkl | 109111 bytes
+./engine/models/vuln_model.pkl | 99899 bytes
+./venv/lib/python3.13/site-packages/numpy/_core/tests/data/astype_copy.pkl | 716 bytes
+./venv/lib/python3.13/site-packages/joblib/test/data/joblib_0.9.2_pickle_py33_np18.pkl | 691 bytes
+./venv/lib/python3.13/site-packages/joblib/test/data/joblib_0.9.2_pickle_py34_np19.pkl | 691 bytes
+./venv/lib/python3.13/site-packages/joblib/test/data/joblib_0.11.0_pickle_py36_np111.pkl | 1068 bytes
+./venv/lib/python3.13/site-packages/joblib/test/data/joblib_0.10.0_pickle_py34_np19.pkl | 1068 bytes
+./venv/lib/python3.13/site-packages/joblib/test/data/joblib_0.10.0_pickle_py35_np19.pkl | 1068 bytes
+./venv/lib/python3.13/site-packages/joblib/test/data/joblib_0.9.2_pickle_py35_np19.pkl | 691 bytes
+./venv/lib/python3.13/site-packages/joblib/test/data/joblib_0.9.2_pickle_py27_np16.pkl | 670 bytes
+./venv/lib/python3.13/site-packages/joblib/test/data/joblib_0.10.0_pickle_py27_np17.pkl | 986 bytes
+./venv/lib/python3.13/site-packages/joblib/test/data/joblib_0.9.2_pickle_py27_np17.pkl | 670 bytes
+./venv/lib/python3.13/site-packages/joblib/test/data/joblib_0.10.0_pickle_py33_np18.pkl | 1068 bytes
+===== MODEL REFERENCES =====
+./train_vuln_model.py:2:train_vuln_model.py
+./train_vuln_model.py:7:    python train_vuln_model.py
+./train_vuln_model.py:9:Outputs: models/vuln_model.pkl
+./train_vuln_model.py:15:from sklearn.ensemble import RandomForestClassifier
+./train_vuln_model.py:52:    model = RandomForestClassifier(
+./train_vuln_model.py:71:    with open("models/vuln_model.pkl", "wb") as f:
+./train_vuln_model.py:74:    print("[+] Model saved to models/vuln_model.pkl")
+./train_post_model.py:9:Outputs: models/post_exploit_model.pkl
+./train_post_model.py:15:from sklearn.ensemble import RandomForestClassifier
+./train_post_model.py:51:    model = RandomForestClassifier(
+./train_post_model.py:72:    with open("models/post_exploit_model.pkl", "wb") as f:
+./train_post_model.py:75:    print("[+] Model saved to models/post_exploit_model.pkl")
+./engine/modules/mitre/mitre_engine.py:5:Layer 3  ml_classifier   — TF-IDF + RandomForest,  confidence 0.50–0.70
+./engine/modules/mitre/ml_classifier.py:2:ml_classifier.py  —  Layer 3: TF-IDF + RandomForest MITRE Classifier
+./engine/modules/ai/model_trainer.py:4:TF-IDF + RandomForest trainer for MITRE tactic classification.
+./engine/modules/ai/model_trainer.py:12:        from sklearn.ensemble import RandomForestClassifier
+./engine/modules/ai/model_trainer.py:25:        clf = RandomForestClassifier(n_estimators=100, random_state=42)
+./engine/modules/exploiter/__init__.py:9:from engine.modules.exploiter.exploit_ranker      import ExploitRanker
+./engine/modules/exploiter/__init__.py:12:from engine.modules.exploiter.exploit_probability import ExploitProbability
+./engine/modules/exploiter/__init__.py:20:        self._ranker = ExploitRanker()
+./engine/modules/exploiter/__init__.py:23:        self._prob   = ExploitProbability()
+./engine/modules/exploiter/__init__.py:115:    "ExploiterModule", "ExploitRanker", "ExploitCorrelator",
+./engine/modules/exploiter/__init__.py:116:    "ExploitSimulation", "ExploitProbability",
+./engine/modules/exploiter/exploit_path_builder.py:14:        from engine.modules.exploiter.exploit_probability import ExploitProbability
+./engine/modules/exploiter/exploit_path_builder.py:15:        ep = ExploitProbability()
+./engine/modules/exploiter/exploit_ranker.py:16:ml_priority is the probability a trained DecisionTreeClassifier
+./engine/modules/exploiter/exploit_ranker.py:17:(exploit_model.pkl — features: cvss_score, exploit_type, port) assigns
+./engine/modules/exploiter/exploit_ranker.py:56:# ── ML-based priority signal (DecisionTreeClassifier: cvss/type/port -> priority) ──
+./engine/modules/exploiter/exploit_ranker.py:61:_ML_MODEL_PATH = Path(__file__).resolve().parents[2] / "exploit_model.pkl"
+./engine/modules/exploiter/exploit_ranker.py:137:class ExploitRanker:
+./engine/modules/exploiter/exploit_probability.py:8:class ExploitProbability:
+./engine/modules/web_security/mitre_engine.py:7:Layer 3  ml_classifier   — TF-IDF + RandomForest,  confidence 0.50–0.70
+./engine/modules/api/routes/analytics.py:190:        "model_type":      "RandomForest",
+./.gitignore:225:exploit_model.pkl
+grep: ./full_run_output.txt: binary file matches
+./train_mitre_model.py:23:from sklearn.ensemble import RandomForestClassifier
+./train_mitre_model.py:185:    model = RandomForestClassifier(
+./project_tree.txt:70:│   │   ├── post_exploit_model.pkl
+./project_tree.txt:71:│   │   └── vuln_model.pkl
+./project_tree.txt:543:└── train_vuln_model.py
+grep: ./.git/index: binary file matches
+grep: ./model_diagnosis.txt: input file is also the output
+./train_model.py:2:from sklearn.tree import DecisionTreeClassifier
+./train_model.py:29:model = DecisionTreeClassifier(max_depth=4, min_samples_leaf=2, random_state=42)
+./train_model.py:46:final_model = DecisionTreeClassifier(max_depth=4, min_samples_leaf=2, random_state=42)
+./train_model.py:49:with open("exploit_model.pkl", "wb") as f:
+./train_model.py:52:print("\nFinal model (trained on full data, max_depth=4) saved to exploit_model.pkl")
+./README.md:20:- RandomForest ML Classifier for tactic prediction

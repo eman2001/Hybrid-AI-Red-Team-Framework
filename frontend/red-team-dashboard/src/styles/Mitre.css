@@ -1,0 +1,1447 @@
+/* =====================================================
+   HYBRID AI RED TEAM — MITRE PAGE
+===================================================== */
+
+.mitre-page {
+  width: 100%;
+  max-width: var(--content-max-width);
+
+  margin: 0 auto;
+}
+
+
+/* =====================================================
+   HERO
+===================================================== */
+
+.mitre-hero {
+  position: relative;
+
+  min-height: 180px;
+
+  display: grid;
+  grid-template-columns:
+    auto 1fr auto;
+
+  align-items: center;
+
+  gap: 27px;
+
+  overflow: hidden;
+
+  margin-bottom: 22px;
+
+  padding: 29px 32px;
+
+  background:
+    linear-gradient(
+      115deg,
+      rgba(239, 35, 60, 0.09),
+      transparent 42%
+    ),
+    radial-gradient(
+      circle at 91% 12%,
+      rgba(239, 35, 60, 0.1),
+      transparent 26%
+    ),
+    linear-gradient(
+      145deg,
+      var(--card-elevated),
+      var(--card)
+    );
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow-md);
+}
+
+
+.mitre-hero::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+
+  opacity: 0.17;
+
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 8px,
+      rgba(239, 35, 60, 0.04) 8px,
+      rgba(239, 35, 60, 0.04) 9px
+    );
+}
+
+
+.mitre-hero-icon {
+  position: relative;
+  z-index: 1;
+
+  width: 96px;
+  height: 112px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: var(--primary);
+
+  background:
+    linear-gradient(
+      145deg,
+      var(--primary-soft),
+      rgba(255, 255, 255, 0.012)
+    );
+
+  border: 1px solid var(--primary-border);
+
+  border-radius:
+    26px 26px 33px 33px;
+
+  box-shadow:
+    inset 0 0 28px
+    rgba(239, 35, 60, 0.03),
+    0 0 36px
+    rgba(239, 35, 60, 0.13);
+}
+
+
+.mitre-hero-copy {
+  position: relative;
+  z-index: 1;
+}
+
+
+.mitre-eyebrow {
+  display: inline-block;
+
+  margin-bottom: 8px;
+
+  color: var(--primary);
+
+  font-family: var(--font-mono);
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+
+.mitre-hero-copy h1 {
+  margin: 0;
+
+  color: var(--text);
+
+  font-size: clamp(30px, 4vw, 47px);
+  font-weight: 800;
+
+  letter-spacing: -0.035em;
+}
+
+
+.mitre-hero-copy h1 span {
+  color: var(--primary);
+}
+
+
+.mitre-hero-copy > p {
+  max-width: 760px;
+
+  margin: 11px 0 0;
+
+  color: var(--muted);
+
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+
+.mitre-engine-state {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  margin-top: 17px;
+
+  color: var(--text-soft);
+
+  font-size: 12px;
+}
+
+
+.mitre-engine-dot {
+  width: 10px;
+  height: 10px;
+
+  flex: 0 0 auto;
+
+  border-radius: 50%;
+}
+
+
+.mitre-engine-dot.connected {
+  background: var(--success);
+
+  box-shadow:
+    0 0 0 5px var(--success-soft),
+    0 0 15px rgba(34, 197, 94, 0.55);
+}
+
+
+.mitre-engine-dot.loading {
+  background: var(--warning);
+
+  box-shadow:
+    0 0 0 5px var(--warning-soft),
+    0 0 15px rgba(245, 158, 11, 0.55);
+
+  animation:
+    mitre-pulse 1.4s infinite;
+}
+
+
+.mitre-engine-dot.error {
+  background: var(--danger);
+
+  box-shadow:
+    0 0 0 5px var(--danger-soft),
+    0 0 15px rgba(239, 35, 60, 0.6);
+}
+
+
+.mitre-hero-meta {
+  position: relative;
+  z-index: 1;
+
+  min-width: 200px;
+
+  display: grid;
+
+  gap: 10px;
+}
+
+
+.mitre-hero-meta > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 12px 14px;
+
+  background:
+    rgba(255, 255, 255, 0.018);
+
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+}
+
+
+.mitre-hero-meta span {
+  color: var(--muted);
+
+  font-size: 9px;
+  text-transform: uppercase;
+}
+
+
+.mitre-hero-meta strong {
+  color: var(--text);
+
+  font-family: var(--font-mono);
+
+  font-size: 11px;
+}
+
+
+/* =====================================================
+   SUMMARY
+===================================================== */
+
+.mitre-summary-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(5, minmax(0, 1fr));
+
+  gap: 16px;
+
+  margin-bottom: 22px;
+}
+
+
+.mitre-metric-card {
+  position: relative;
+
+  min-height: 145px;
+
+  overflow: hidden;
+
+  padding: 18px;
+
+  background:
+    linear-gradient(
+      145deg,
+      var(--card-elevated),
+      var(--card)
+    );
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow-md);
+
+  transition:
+    transform var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+
+.mitre-metric-card:hover {
+  transform: translateY(-3px);
+
+  border-color:
+    rgba(239, 35, 60, 0.28);
+}
+
+
+.mitre-metric-card::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+  right: 0;
+
+  height: 2px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      var(--primary),
+      transparent
+    );
+}
+
+
+.mitre-metric-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+
+.mitre-metric-top > svg {
+  color: var(--muted-dark);
+}
+
+
+.mitre-metric-icon {
+  width: 45px;
+  height: 45px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: var(--primary);
+
+  background: var(--primary-soft);
+
+  border: 1px solid
+    rgba(239, 35, 60, 0.23);
+
+  border-radius: 11px;
+}
+
+
+.mitre-metric-card > span {
+  display: block;
+
+  margin-top: 14px;
+
+  color: var(--muted);
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+
+.mitre-metric-card > strong {
+  display: block;
+
+  margin-top: 4px;
+
+  color: var(--text);
+
+  font-size: 31px;
+  line-height: 1;
+}
+
+
+.mitre-metric-card > p {
+  margin: 8px 0 0;
+
+  color: var(--muted);
+
+  font-size: 9px;
+}
+
+
+.mitre-metric-card.ai
+.mitre-metric-icon {
+  color: var(--ai);
+
+  background: var(--ai-soft);
+
+  border-color: var(--ai-border);
+}
+
+
+.mitre-metric-card.confidence
+.mitre-metric-icon {
+  color: var(--success);
+
+  background: var(--success-soft);
+
+  border-color:
+    rgba(34, 197, 94, 0.25);
+}
+
+
+/* =====================================================
+   PANELS
+===================================================== */
+
+.mitre-panel {
+  margin-bottom: 22px;
+
+  padding: 24px;
+
+  background:
+    linear-gradient(
+      145deg,
+      var(--card-elevated),
+      var(--card)
+    );
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow-md);
+}
+
+
+.mitre-panel-header {
+  min-height: 59px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 18px;
+
+  padding-bottom: 17px;
+
+  border-bottom: 1px solid var(--border-soft);
+}
+
+
+.mitre-panel-heading {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+}
+
+
+.mitre-panel-icon {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: var(--primary);
+
+  background: var(--primary-soft);
+
+  border: 1px solid
+    rgba(239, 35, 60, 0.23);
+
+  border-radius: 11px;
+}
+
+
+.mitre-panel-heading h2 {
+  margin: 0;
+
+  color: var(--text);
+
+  font-size: 18px;
+}
+
+
+.mitre-panel-heading p {
+  margin: 4px 0 0;
+
+  color: var(--muted);
+
+  font-size: 11px;
+}
+
+
+.mitre-panel-badge,
+.mitre-result-count {
+  padding: 7px 11px;
+
+  color: var(--primary);
+
+  background: var(--primary-soft);
+
+  border: 1px solid var(--primary-border);
+  border-radius: var(--radius-pill);
+
+  font-family: var(--font-mono);
+
+  font-size: 9px;
+  font-weight: 800;
+}
+
+
+/* =====================================================
+   FILTERS
+===================================================== */
+
+.mitre-filter-controls {
+  display: grid;
+  grid-template-columns:
+    minmax(280px, 1fr)
+    220px;
+
+  gap: 14px;
+
+  padding-top: 20px;
+}
+
+
+.mitre-search-box,
+.mitre-select-shell {
+  min-height: 47px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 0 13px;
+
+  color: var(--muted);
+
+  background:
+    linear-gradient(
+      145deg,
+      var(--card),
+      var(--bg-elevated)
+    );
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+
+.mitre-search-box:focus-within,
+.mitre-select-shell:focus-within {
+  border-color: var(--primary-border);
+
+  box-shadow:
+    0 0 0 4px
+    rgba(239, 35, 60, 0.07);
+}
+
+
+.mitre-search-box svg,
+.mitre-select-shell svg {
+  flex: 0 0 auto;
+
+  color: var(--primary);
+}
+
+
+.mitre-search-box input,
+.mitre-select-shell select {
+  width: 100%;
+  min-width: 0;
+  min-height: 45px;
+
+  color: var(--text);
+
+  background: transparent;
+
+  border: 0;
+  outline: 0;
+
+  font-size: 11px;
+}
+
+
+.mitre-select-shell select {
+  appearance: none;
+  cursor: pointer;
+}
+
+
+.mitre-select-shell option {
+  color: var(--text);
+  background: var(--card);
+}
+
+
+/* =====================================================
+   MAIN GRID
+===================================================== */
+
+.mitre-main-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1.15fr)
+    minmax(330px, 0.85fr);
+
+  gap: 20px;
+}
+
+
+/* =====================================================
+   HEATMAP
+===================================================== */
+
+.mitre-heatmap-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 9px;
+
+  padding-top: 19px;
+}
+
+
+.mitre-heatmap-row {
+  min-height: 61px;
+
+  display: grid;
+  grid-template-columns:
+    36px 1fr 52px;
+
+  align-items: center;
+
+  gap: 13px;
+
+  padding: 10px 12px;
+
+  background:
+    rgba(255, 255, 255, 0.012);
+
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+
+.mitre-heatmap-row:hover {
+  transform: translateX(3px);
+
+  background:
+    rgba(239, 35, 60, 0.035);
+
+  border-color:
+    rgba(239, 35, 60, 0.2);
+}
+
+
+.mitre-heatmap-rank {
+  color: var(--muted-dark);
+
+  font-family: var(--font-mono);
+
+  font-size: 9px;
+}
+
+
+.mitre-heatmap-info > div:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 14px;
+}
+
+
+.mitre-heatmap-info strong {
+  color: var(--primary);
+
+  font-family: var(--font-mono);
+
+  font-size: 11px;
+}
+
+
+.mitre-heatmap-info span {
+  color: var(--muted);
+
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+
+.mitre-heatmap-track {
+  height: 7px;
+
+  overflow: hidden;
+
+  margin-top: 8px;
+
+  background:
+    rgba(255, 255, 255, 0.05);
+
+  border-radius: var(--radius-pill);
+}
+
+
+.mitre-heatmap-track i {
+  display: block;
+
+  height: 100%;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--primary-dark),
+      var(--primary),
+      var(--primary-hover)
+    );
+
+  border-radius: inherit;
+
+  box-shadow:
+    0 0 12px var(--primary-glow);
+}
+
+
+.mitre-heatmap-score {
+  text-align: right;
+}
+
+
+.mitre-heatmap-score strong,
+.mitre-heatmap-score span {
+  display: block;
+}
+
+
+.mitre-heatmap-score strong {
+  color: var(--text);
+
+  font-family: var(--font-mono);
+
+  font-size: 16px;
+}
+
+
+.mitre-heatmap-score span {
+  margin-top: 2px;
+
+  color: var(--muted);
+
+  font-size: 7px;
+  text-transform: uppercase;
+}
+
+
+/* =====================================================
+   SOURCE DISTRIBUTION
+===================================================== */
+
+.mitre-source-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 18px;
+
+  padding-top: 22px;
+}
+
+
+.mitre-source-row {
+  display: grid;
+  grid-template-columns:
+    125px 1fr 45px;
+
+  align-items: center;
+
+  gap: 12px;
+}
+
+
+.mitre-source-row-label {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+}
+
+
+.mitre-source-row-label span {
+  width: 9px;
+  height: 9px;
+
+  flex: 0 0 auto;
+
+  background: currentColor;
+
+  border-radius: 50%;
+
+  box-shadow:
+    0 0 10px currentColor;
+}
+
+
+.mitre-source-row-label strong {
+  color: var(--text-soft);
+
+  font-size: 10px;
+}
+
+
+.mitre-source-track {
+  height: 7px;
+
+  overflow: hidden;
+
+  background:
+    rgba(255, 255, 255, 0.05);
+
+  border-radius: var(--radius-pill);
+}
+
+
+.mitre-source-track i {
+  display: block;
+
+  height: 100%;
+
+  background: currentColor;
+
+  border-radius: inherit;
+}
+
+
+.mitre-source-value {
+  text-align: right;
+}
+
+
+.mitre-source-value strong,
+.mitre-source-value span {
+  display: block;
+}
+
+
+.mitre-source-value strong {
+  color: var(--text);
+
+  font-family: var(--font-mono);
+
+  font-size: 11px;
+}
+
+
+.mitre-source-value span {
+  color: var(--muted);
+
+  font-size: 7px;
+}
+
+
+.mitre-source-row.rule {
+  color: var(--primary);
+}
+
+
+.mitre-source-row.stix {
+  color: var(--warning);
+}
+
+
+.mitre-source-row.ml {
+  color: var(--ai);
+}
+
+
+.mitre-source-row.post {
+  color: var(--success);
+}
+
+
+.mitre-source-note {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 11px;
+
+  margin-top: 26px;
+
+  padding: 14px;
+
+  color: var(--ai);
+
+  background: var(--ai-soft);
+
+  border: 1px solid var(--ai-border);
+  border-radius: var(--radius-md);
+}
+
+
+.mitre-source-note svg {
+  flex: 0 0 auto;
+}
+
+
+.mitre-source-note strong {
+  display: block;
+
+  color: var(--text);
+
+  font-size: 11px;
+}
+
+
+.mitre-source-note p {
+  margin: 5px 0 0;
+
+  color: var(--muted);
+
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+
+/* =====================================================
+   TABLE
+===================================================== */
+
+.mitre-table-wrap {
+  width: 100%;
+
+  overflow-x: auto;
+
+  margin-top: 18px;
+
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+}
+
+
+.mitre-security-table {
+  width: 100%;
+  min-width: 1000px;
+
+  border-collapse: collapse;
+}
+
+
+.mitre-security-table thead {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(239, 35, 60, 0.065),
+      rgba(255, 255, 255, 0.014)
+    );
+}
+
+
+.mitre-security-table th {
+  padding: 14px 15px;
+
+  color: var(--muted);
+
+  font-family: var(--font-mono);
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: 0.09em;
+  text-align: left;
+  text-transform: uppercase;
+
+  border-bottom: 1px solid var(--border);
+}
+
+
+.mitre-security-table td {
+  padding: 14px 15px;
+
+  color: var(--text-soft);
+
+  font-size: 11px;
+
+  border-bottom: 1px solid var(--border-soft);
+}
+
+
+.mitre-security-table tbody tr {
+  background:
+    rgba(255, 255, 255, 0.006);
+
+  transition:
+    background var(--transition-fast);
+}
+
+
+.mitre-security-table tbody tr:hover {
+  background:
+    rgba(239, 35, 60, 0.035);
+}
+
+
+.mitre-security-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+
+.mitre-id {
+  color: var(--primary);
+
+  font-family: var(--font-mono);
+
+  font-size: 11px;
+  font-weight: 800;
+}
+
+
+.mitre-technique-cell strong,
+.mitre-technique-cell span {
+  display: block;
+}
+
+
+.mitre-technique-cell strong {
+  color: var(--text);
+
+  font-size: 11px;
+}
+
+
+.mitre-technique-cell span {
+  margin-top: 4px;
+
+  color: var(--muted);
+
+  font-size: 8px;
+}
+
+
+.mitre-tactic-badge,
+.mitre-source-badge,
+.mitre-score-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 6px 9px;
+
+  border-radius: var(--radius-pill);
+
+  font-family: var(--font-mono);
+
+  font-size: 8px;
+  font-weight: 800;
+
+  text-transform: capitalize;
+}
+
+
+.mitre-tactic-badge {
+  color: var(--text-soft);
+
+  background:
+    rgba(255, 255, 255, 0.035);
+
+  border: 1px solid var(--border);
+}
+
+
+.mitre-source-badge.rule {
+  color: var(--primary);
+
+  background: var(--primary-soft);
+
+  border: 1px solid var(--primary-border);
+}
+
+
+.mitre-source-badge.stix {
+  color: var(--warning);
+
+  background: var(--warning-soft);
+
+  border: 1px solid
+    rgba(245, 158, 11, 0.25);
+}
+
+
+.mitre-source-badge.ml {
+  color: var(--ai);
+
+  background: var(--ai-soft);
+
+  border: 1px solid var(--ai-border);
+}
+
+
+.mitre-source-badge.post {
+  color: var(--success);
+
+  background: var(--success-soft);
+
+  border: 1px solid
+    rgba(34, 197, 94, 0.25);
+}
+
+
+.mitre-source-badge.unknown {
+  color: var(--muted);
+
+  background: var(--info-soft);
+
+  border: 1px solid var(--border);
+}
+
+
+.mitre-score-badge.critical {
+  color: var(--critical);
+
+  background: var(--danger-soft);
+
+  border: 1px solid
+    rgba(239, 35, 60, 0.27);
+}
+
+
+.mitre-score-badge.high {
+  color: var(--high);
+
+  background:
+    rgba(255, 101, 60, 0.11);
+
+  border: 1px solid
+    rgba(255, 101, 60, 0.25);
+}
+
+
+.mitre-score-badge.medium {
+  color: var(--medium);
+
+  background: var(--warning-soft);
+
+  border: 1px solid
+    rgba(245, 158, 11, 0.25);
+}
+
+
+.mitre-score-badge.low {
+  color: var(--low);
+
+  background: var(--success-soft);
+
+  border: 1px solid
+    rgba(34, 197, 94, 0.25);
+}
+
+
+.mitre-confidence-cell {
+  min-width: 125px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+}
+
+
+.mitre-confidence-cell > span {
+  min-width: 35px;
+
+  color: var(--text);
+
+  font-family: var(--font-mono);
+
+  font-size: 9px;
+}
+
+
+.mitre-confidence-cell > div {
+  flex: 1;
+
+  height: 6px;
+
+  overflow: hidden;
+
+  background:
+    rgba(255, 255, 255, 0.055);
+
+  border-radius: var(--radius-pill);
+}
+
+
+.mitre-confidence-cell i {
+  display: block;
+
+  height: 100%;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--primary-dark),
+      var(--primary)
+    );
+
+  border-radius: inherit;
+
+  box-shadow:
+    0 0 10px var(--primary-glow);
+}
+
+
+/* =====================================================
+   STATES
+===================================================== */
+
+.mitre-loading-state,
+.mitre-empty-state,
+.mitre-error-state {
+  min-height: 260px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 30px;
+
+  text-align: center;
+}
+
+
+.mitre-loading-state h3,
+.mitre-empty-state h3,
+.mitre-error-state h3 {
+  margin: 15px 0 0;
+
+  color: var(--text);
+}
+
+
+.mitre-loading-state p,
+.mitre-empty-state p,
+.mitre-error-state p {
+  max-width: 400px;
+
+  margin: 7px 0 0;
+
+  color: var(--muted);
+
+  font-size: 10px;
+}
+
+
+.mitre-empty-state svg {
+  color: var(--success);
+}
+
+
+.mitre-error-state svg {
+  color: var(--danger);
+}
+
+
+.mitre-error-state button {
+  margin-top: 16px;
+
+  padding: 10px 16px;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--primary-dark),
+      var(--primary)
+    );
+
+  border: 0;
+  border-radius: var(--radius-md);
+
+  cursor: pointer;
+
+  font-size: 10px;
+  font-weight: 800;
+}
+
+
+.mitre-loading-spinner {
+  width: 42px;
+  height: 42px;
+
+  border: 3px solid
+    rgba(239, 35, 60, 0.13);
+
+  border-top-color: var(--primary);
+  border-radius: 50%;
+
+  animation:
+    mitre-spin 0.9s linear infinite;
+}
+
+
+/* =====================================================
+   ANIMATIONS
+===================================================== */
+
+@keyframes mitre-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+@keyframes mitre-pulse {
+  0%,
+  100% {
+    transform: scale(0.9);
+    opacity: 0.65;
+  }
+
+  50% {
+    transform: scale(1.12);
+    opacity: 1;
+  }
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 1250px) {
+  .mitre-summary-grid {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+}
+
+
+@media (max-width: 1050px) {
+  .mitre-main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+@media (max-width: 900px) {
+  .mitre-hero {
+    grid-template-columns:
+      auto 1fr;
+  }
+
+
+  .mitre-hero-meta {
+    grid-column: 1 / -1;
+
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
+    width: 100%;
+  }
+}
+
+
+@media (max-width: 700px) {
+  .mitre-summary-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+
+  .mitre-filter-controls {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+@media (max-width: 560px) {
+  .mitre-hero {
+    grid-template-columns: 1fr;
+
+    gap: 18px;
+
+    padding: 21px;
+  }
+
+
+  .mitre-hero-icon {
+    width: 72px;
+    height: 82px;
+
+    border-radius:
+      20px 20px 25px 25px;
+  }
+
+
+  .mitre-hero-copy h1 {
+    font-size: 29px;
+  }
+
+
+  .mitre-hero-meta,
+  .mitre-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+
+  .mitre-panel {
+    padding: 18px;
+  }
+
+
+  .mitre-panel-header {
+    align-items: flex-start;
+  }
+
+
+  .mitre-source-row {
+    grid-template-columns:
+      105px 1fr 40px;
+  }
+}

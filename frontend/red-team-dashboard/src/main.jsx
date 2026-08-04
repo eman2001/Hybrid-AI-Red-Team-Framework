@@ -1,20 +1,38 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-
-import App from "./App";
-
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+/* Temporary legacy CSS — سنحذفه بعد نقل جميع الأقسام */
 import "./index.css";
-import { useEffect } from "react";
+import App from "./App.jsx";
 
-ReactDOM.createRoot(
-document.getElementById("root")
-)
-.render(
 
-<React.StrictMode>
 
-<App/>
+/* Design system */
+import "./styles/variables.css";
+import "./styles/globals.css";
+import "./styles/layout.css";
 
-</React.StrictMode>
+/* Layout components */
+import "./styles/Navbar.css";
+import "./styles/Sidebar.css";
 
+/* Pages */
+import "./styles/Dashboard.css";
+import "./styles/Scan.css";
+import "./styles/Vulnerabilities.css";
+import "./styles/Mitre.css";
+import "./styles/AttackChain.css";
+import "./styles/Reports.css";
+
+/* Shared components */
+import "./styles/components.css";
+import "./styles/responsive.css";
+
+
+
+createRoot(
+  document.getElementById("root")
+).render(
+  <StrictMode>
+    <App />
+  </StrictMode>
 );

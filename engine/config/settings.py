@@ -21,9 +21,25 @@ LOG_DIR     = BASE_DIR / "logs"
 # ─────────────────────────────────────────────
 # Framework Identity
 # ─────────────────────────────────────────────
-FRAMEWORK_NAME    = "Hybrid AI Red Team Simulation Framework"
-FRAMEWORK_VERSION = "2.0.0"
-UNIVERSITY        = "UCAS Cyber Security Engineering 2026"
+FRAMEWORK_NAME = "Hybrid AI Red Team Framework"
+
+FRAMEWORK_SUBTITLE = (
+    "Offensive Security Assessment Platform"
+)
+
+FRAMEWORK_VERSION = "2.1.0"
+
+UNIVERSITY = (
+    "University College of Applied Sciences - UCAS"
+)
+
+DEPARTMENT = "Cyber Security Engineering"
+
+ACADEMIC_YEAR = "2026"
+
+REPORT_CLASSIFICATION = (
+    "Academic Security Assessment - Authorized Use Only"
+)
 
 # ─────────────────────────────────────────────
 # Reconnaissance Settings

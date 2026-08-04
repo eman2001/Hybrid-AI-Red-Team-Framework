@@ -1,9 +1,8 @@
 import {
-    BrowserRouter,
-    Routes,
-    Route
+  BrowserRouter,
+  Routes,
+  Route
 } from "react-router-dom";
-
 
 import MainLayout from "../layouts/MainLayout";
 
@@ -14,96 +13,55 @@ import AttackChain from "../pages/AttackChain";
 import Mitre from "../pages/Mitre";
 import Reports from "../pages/Reports";
 
+function AppRoutes({ dark, setDark }) {
+  return (
+    <BrowserRouter>
+      <Routes>
 
+        <Route
+          element={
+            <MainLayout
+              dark={dark}
+              setDark={setDark}
+            />
+          }
+        >
 
-function AppRoutes(){
+          <Route
+            path="/"
+            element={<Dashboard />}
+          />
 
+          <Route
+            path="/scan"
+            element={<Scan />}
+          />
 
-return (
+          <Route
+            path="/vulnerabilities"
+            element={<Vulnerabilities />}
+          />
 
+          <Route
+            path="/attack-chain"
+            element={<AttackChain />}
+          />
 
-<BrowserRouter>
+          <Route
+            path="/mitre"
+            element={<Mitre />}
+          />
 
+          <Route
+            path="/reports"
+            element={<Reports />}
+          />
 
-<Routes>
+        </Route>
 
-
-<Route element={<MainLayout/>}>
-
-
-<Route
-
-path="/"
-
-element={<Dashboard/>}
-
-/>
-
-
-
-<Route
-
-path="/scan"
-
-element={<Scan/>}
-
-/>
-
-
-
-<Route
-
-path="/vulnerabilities"
-
-element={<Vulnerabilities/>}
-
-/>
-
-
-
-<Route
-
-path="/attack-chain"
-
-element={<AttackChain/>}
-
-/>
-
-
-
-<Route
-
-path="/mitre"
-
-element={<Mitre/>}
-
-/>
-
-
-
-<Route
-
-path="/reports"
-
-element={<Reports/>}
-
-/>
-
-
-
-</Route>
-
-
-</Routes>
-
-
-</BrowserRouter>
-
-
-)
-
-
+      </Routes>
+    </BrowserRouter>
+  );
 }
-
 
 export default AppRoutes;

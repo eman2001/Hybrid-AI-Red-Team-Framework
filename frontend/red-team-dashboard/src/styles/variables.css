@@ -1,0 +1,123 @@
+/* =====================================================
+   HYBRID AI RED TEAM — DESIGN TOKENS
+===================================================== */
+
+:root {
+  /* Main surfaces */
+  --bg: #07090d;
+  --bg-elevated: #0a0d12;
+  --card: #0e1319;
+  --card-elevated: #11171e;
+  --surface: #151b23;
+  --surface-hover: #1a212a;
+
+  /* Text */
+  --text: #f8fafc;
+  --text-soft: #d1d5db;
+  --muted: #9299a3;
+  --muted-dark: #6b7280;
+
+  /* Borders */
+  --border: #29313b;
+  --border-soft: rgba(255, 255, 255, 0.07);
+  --border-strong: #3a4450;
+
+  /* Red Team identity */
+  --primary: #ef233c;
+  --primary-hover: #ff4055;
+  --primary-dark: #991b1b;
+  --primary-deep: #6f1018;
+  --primary-soft: rgba(239, 35, 60, 0.12);
+  --primary-subtle: rgba(239, 35, 60, 0.055);
+  --primary-border: rgba(239, 35, 60, 0.48);
+  --primary-glow: rgba(239, 35, 60, 0.28);
+
+  /* AI identity — only for AI sections */
+  --ai: #a78bfa;
+  --ai-hover: #c4b5fd;
+  --ai-dark: #7c3aed;
+  --ai-soft: rgba(167, 139, 250, 0.12);
+  --ai-border: rgba(167, 139, 250, 0.35);
+
+  /* Status */
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef233c;
+  --info: #d1d5db;
+
+  /* Severity */
+  --critical: #ef233c;
+  --high: #ff653c;
+  --medium: #f59e0b;
+  --low: #22c55e;
+
+  /* Soft status backgrounds */
+  --success-soft: rgba(34, 197, 94, 0.13);
+  --warning-soft: rgba(245, 158, 11, 0.13);
+  --danger-soft: rgba(239, 35, 60, 0.13);
+  --info-soft: rgba(209, 213, 219, 0.08);
+
+  /* Typography */
+  --font-display: "Syne", "Space Grotesk", "Segoe UI", sans-serif;
+  --font-body: "Inter", "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 22px;
+  --radius-pill: 999px;
+
+  /* Shadows */
+  --shadow-sm: 0 5px 16px rgba(0, 0, 0, 0.22);
+
+  --shadow-md:
+    0 18px 45px rgba(0, 0, 0, 0.34);
+
+  --shadow-lg:
+    0 28px 70px rgba(0, 0, 0, 0.42);
+
+  --shadow-primary:
+    0 0 0 1px rgba(239, 35, 60, 0.09),
+    0 16px 38px rgba(127, 29, 29, 0.24);
+
+  --shadow-ai:
+    0 0 0 1px rgba(167, 139, 250, 0.1),
+    0 16px 38px rgba(76, 29, 149, 0.2);
+
+  /* Layout */
+  --navbar-height: 86px;
+  --sidebar-width: 280px;
+  --content-max-width: 1500px;
+
+  /* Motion */
+  --transition-fast: 0.18s ease;
+  --transition-normal: 0.28s ease;
+}
+
+
+/* نفس هوية Red Team في dark mode */
+body.dark {
+  --bg: #07090d;
+  --bg-elevated: #0a0d12;
+  --card: #0e1319;
+  --card-elevated: #11171e;
+  --surface: #151b23;
+  --surface-hover: #1a212a;
+
+  --text: #f8fafc;
+  --text-soft: #d1d5db;
+  --muted: #9299a3;
+
+  --border: #29313b;
+  --border-soft: rgba(255, 255, 255, 0.07);
+
+  --primary: #ef233c;
+  --primary-hover: #ff4055;
+  --primary-dark: #991b1b;
+  --primary-soft: rgba(239, 35, 60, 0.12);
+
+  --ai: #a78bfa;
+  --ai-soft: rgba(167, 139, 250, 0.12);
+}s

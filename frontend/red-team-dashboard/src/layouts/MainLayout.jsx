@@ -1,50 +1,52 @@
-import {Outlet} from "react-router-dom";
-import {useState} from "react";
+import { Outlet } from "react-router-dom";
+import { useState } from "react";
 
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 
 
-function MainLayout(){
+function MainLayout({
+  dark,
+  setDark
+}) {
+  const [open, setOpen] = useState(true);
 
+  function toggleSidebar() {
+    setOpen((current) => !current);
+  }
 
-const [open,setOpen]=useState(false);
+  function closeSidebar() {
+    setOpen(false);
+  }
 
+  return (
+    <div
+      className={
+        open
+          ? "app-layout sidebar-visible"
+          : "app-layout sidebar-hidden"
+      }
+    >
 
+      <Navbar
+        toggleSidebar={toggleSidebar}
+        darkMode={dark}
+        toggleDarkMode={() =>
+          setDark((current) => !current)
+        }
+      />
 
-return (
+      <Sidebar
+        open={open}
+        close={closeSidebar}
+      />
 
-<div className="app-layout">
+      <main className="content">
+        <Outlet />
+      </main>
 
-
-<Navbar 
-toggleSidebar={()=>setOpen(true)}
-/>
-
-
-
-<Sidebar
-
-open={open}
-
-close={()=>setOpen(false)}
-
-/>
-
-
-
-<main className="content">
-
-<Outlet/>
-
-</main>
-
-
-
-</div>
-
-)
-
+    </div>
+  );
 }
 
 

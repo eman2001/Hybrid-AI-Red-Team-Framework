@@ -3,6 +3,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split, cross_val_score, StratifiedKFold
 from sklearn.metrics import accuracy_score, classification_report
 import pickle
+from pathlib import Path
 
 data = pd.read_csv("training_data.csv")
 data["exploit_type"] = data["exploit_type"].map({
@@ -46,7 +47,10 @@ print(classification_report(y_test, test_preds, target_names=["low", "medium", "
 final_model = DecisionTreeClassifier(max_depth=4, min_samples_leaf=2, random_state=42)
 final_model.fit(X, y)
 
-with open("exploit_model.pkl", "wb") as f:
+MODEL_PATH = Path(__file__).resolve().parent / "engine" / "models" / "exploit_model.pkl"
+MODEL_PATH.parent.mkdir(parents=True, exist_ok=True)
+
+with open(MODEL_PATH, "wb") as f:
     pickle.dump(final_model, f)
 
-print("\nFinal model (trained on full data, max_depth=4) saved to exploit_model.pkl")
+print(f"\nFinal model saved to: {MODEL_PATH}")

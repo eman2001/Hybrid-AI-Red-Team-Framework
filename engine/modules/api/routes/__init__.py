@@ -6,6 +6,7 @@ from engine.modules.api.routes.analytics          import router as analytics_rou
 from engine.modules.api.routes.attack_chain       import router as chain_router
 from engine.modules.api.routes.attack_graph       import router as graph_router
 from engine.modules.api.routes.threat_intelligence import router as ti_router
+from engine.modules.api.routes.report_routes import router as report_router
 
 ALL_ROUTERS = [scan_router, vuln_router, mitre_router, analytics_router,
-               chain_router, graph_router, ti_router]
+               chain_router, graph_router, ti_router,report_router]

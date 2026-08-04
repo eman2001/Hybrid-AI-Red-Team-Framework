@@ -1,46 +1,119 @@
+import {
+  Minus,
+  TrendingDown,
+  TrendingUp
+} from "lucide-react";
+
+
 function StatCard({
-title,
-value,
-icon
-}){
+  title,
+  value,
+  icon,
+  trend,
+  trendDirection = "neutral",
+  hint,
+  variant = "default"
+}) {
+  const TrendIcon =
+    trendDirection === "up"
+      ? TrendingUp
+      : trendDirection === "down"
+        ? TrendingDown
+        : Minus;
+
+  return (
+    <article
+      className={
+        `stat-card stat-card-${variant}`
+      }
+    >
+
+      <div className="stat-card-top">
+
+        <div className="stat-icon">
+          {icon}
+        </div>
 
 
-return(
+        <span className="stat-card-status-dot" />
 
-<div className="stat-card">
-
-
-<div className="stat-icon">
-
-{icon}
-
-</div>
+      </div>
 
 
+      <div className="stat-content">
 
-<div className="stat-content">
+        <span className="stat-title">
+          {title}
+        </span>
 
-
-<span>
-{title}
-</span>
-
-
-
-<h2>
-{value}
-</h2>
+        <strong className="stat-value">
+          {value}
+        </strong>
 
 
+        {
+          (trend || hint) && (
 
-</div>
+            <div className="stat-footer">
+
+              {
+                trend && (
+
+                  <span
+                    className={
+                      `stat-trend ${
+                        trendDirection
+                      }`
+                    }
+                  >
+
+                    <TrendIcon size={13} />
+
+                    {trend}
+
+                  </span>
+
+                )
+              }
 
 
-</div>
+              {
+                hint && (
+                  <span className="stat-hint">
+                    {hint}
+                  </span>
+                )
+              }
 
-)
+            </div>
+
+          )
+        }
+
+      </div>
 
 
+      <svg
+        className="stat-card-graph"
+        viewBox="0 0 150 55"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+
+        <path
+          d="
+            M0 46
+            C15 42, 22 49, 34 35
+            S55 40, 67 25
+            S86 41, 100 18
+            S123 31, 150 8
+          "
+        />
+
+      </svg>
+
+    </article>
+  );
 }
 
 

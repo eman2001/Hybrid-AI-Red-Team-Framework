@@ -1,4 +1,4 @@
-﻿"""
+"""
 reporting/report_generator.py
 -------------------------------
 Orchestrates all report sections into a single unified report.
