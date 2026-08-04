@@ -7,8 +7,6 @@ import {
 import {
   Activity,
   AlertTriangle,
-  BrainCircuit,
-  ChevronRight,
   GitBranch,
   ShieldAlert,
   ShieldCheck,
@@ -19,7 +17,7 @@ import StatCard from "../components/StatCard";
 import ActivityFeed from "../components/ActivityFeed";
 
 
-const API_BASE =
+const API =
   "http://127.0.0.1:8000";
 
 
@@ -47,474 +45,520 @@ function Dashboard() {
   const [
     loading,
     setLoading
-  ] = useState(true);
+  ] = useState(false);
+
+  const [
+    engineStatus,
+    setEngineStatus
+  ] = useState("idle");
+
+  const [
+    error,
+    setError
+  ] = useState("");
 
 
   useEffect(() => {
-    loadDashboard();
-  }, []);
+    let cancelled = false;
+    let timer;
 
 
-  async function loadDashboard() {
-    try {
-      setLoading(true);
+    function resetDashboard() {
+      setVulnerabilities([]);
+      setTechniques([]);
+      setChain({});
+      setActivities([]);
+      setError("");
+    }
 
+
+    async function synchronizeDashboard() {
+      const scanStarted =
+        sessionStorage.getItem(
+          "currentScanStarted"
+        ) === "true";
+
+
+      /*
+       * عند فتح الموقع في Tab جديد:
+       * لا نعرض نتائج قديمة من قاعدة البيانات.
+       */
+      if (!scanStarted) {
+        resetDashboard();
+        setLoading(false);
+        setEngineStatus("idle");
+        return;
+      }
+
+
+      try {
+        const progressResponse =
+          await fetch(
+            `${API}/api/progress?_=${Date.now()}`,
+            {
+              cache: "no-store",
+              headers: {
+                "Cache-Control":
+                  "no-cache, no-store, must-revalidate"
+              }
+            }
+          );
+
+
+        if (!progressResponse.ok) {
+          throw new Error(
+            `Progress request failed: ${progressResponse.status}`
+          );
+        }
+
+
+        const progressData =
+          await progressResponse.json();
+
+
+        if (cancelled) {
+          return;
+        }
+
+
+        const phase =
+          Number(
+            progressData?.phase || 0
+          );
+
+
+        const status =
+          String(
+            progressData?.status || "idle"
+          )
+            .trim()
+            .toLowerCase();
+
+
+        setEngineStatus(status);
+
+
+        const fullyCompleted =
+          status === "completed"
+          &&
+          phase >= 12;
+
+
+        const currentlyRunning =
+          status === "running"
+          ||
+          status === "started";
+
+
+        if (currentlyRunning) {
+          resetDashboard();
+          setLoading(true);
+
+          sessionStorage.removeItem(
+            "currentScanCompleted"
+          );
+
+          return;
+        }
+
+
+        if (status === "failed") {
+          resetDashboard();
+          setLoading(false);
+
+          setError(
+            progressData?.message
+            ||
+            "The latest security assessment failed."
+          );
+
+          return;
+        }
+
+
+        if (fullyCompleted) {
+          sessionStorage.setItem(
+            "currentScanCompleted",
+            "true"
+          );
+
+          await loadDashboardData(
+            cancelled
+          );
+
+          setLoading(false);
+          return;
+        }
+
+
+        /*
+         * لو الحالة idle لكن تم بدء Scan في هذا الـTab،
+         * لا نعرض نتائج قاعدة البيانات القديمة.
+         */
+        resetDashboard();
+        setLoading(false);
+
+      } catch (requestError) {
+        console.error(
+          "Dashboard synchronization error:",
+          requestError
+        );
+
+        if (!cancelled) {
+          resetDashboard();
+          setLoading(false);
+          setEngineStatus("error");
+
+          setError(
+            "Unable to synchronize with the framework engine."
+          );
+        }
+      }
+    }
+
+
+    async function loadDashboardData() {
       const [
-        vulnResponse,
-        mitreResponse,
-        chainResponse,
-        activityResponse
-      ] = await Promise.allSettled([
-        fetch(
-          `${API_BASE}/api/vulnerabilities/`
+        vulnerabilityData,
+        mitreData,
+        chainData,
+        activityData
+      ] = await Promise.all([
+        fetchJsonOrDefault(
+          `${API}/api/vulnerabilities/?_=${Date.now()}`,
+          {
+            vulnerabilities: []
+          }
         ),
-        fetch(
-          `${API_BASE}/api/mitre/techniques`
+
+        fetchJsonOrDefault(
+          `${API}/api/mitre/techniques?_=${Date.now()}`,
+          {
+            techniques: []
+          }
         ),
-        fetch(
-          `${API_BASE}/api/attack-chain/`
+
+        fetchJsonOrDefault(
+          `${API}/api/attack-chain/?_=${Date.now()}`,
+          {}
         ),
-        fetch(
-          `${API_BASE}/api/activity/`
+
+        fetchJsonOrDefault(
+          `${API}/api/activity/?_=${Date.now()}`,
+          {
+            activities: []
+          }
         )
       ]);
 
 
-      if (
-        vulnResponse.status === "fulfilled"
-        &&
-        vulnResponse.value.ok
-      ) {
-        const vulnData =
-          await vulnResponse.value.json();
-
-        setVulnerabilities(
-          vulnData.vulnerabilities || []
-        );
+      if (cancelled) {
+        return;
       }
 
 
-      if (
-        mitreResponse.status === "fulfilled"
-        &&
-        mitreResponse.value.ok
-      ) {
-        const mitreData =
-          await mitreResponse.value.json();
-
-        setTechniques(
-          mitreData.techniques || []
-        );
-      }
-
-
-      if (
-        chainResponse.status === "fulfilled"
-        &&
-        chainResponse.value.ok
-      ) {
-        const chainData =
-          await chainResponse.value.json();
-
-        setChain(
-          chainData || {}
-        );
-      }
-
-
-      if (
-        activityResponse.status === "fulfilled"
-        &&
-        activityResponse.value.ok
-      ) {
-        const activityData =
-          await activityResponse.value.json();
-
-        setActivities(
-          activityData.activities || []
-        );
-      }
-
-    } catch (error) {
-      console.error(
-        "Dashboard Error:",
-        error
+      setVulnerabilities(
+        Array.isArray(
+          vulnerabilityData?.vulnerabilities
+        )
+          ? vulnerabilityData.vulnerabilities
+          : []
       );
 
-    } finally {
-      setLoading(false);
-    }
-  }
 
-
-  const severityStats = useMemo(() => {
-    const result = {
-      critical: 0,
-      high: 0,
-      medium: 0,
-      low: 0
-    };
-
-    vulnerabilities.forEach((item) => {
-      const severity =
-        String(
-          item.severity || ""
-        ).toLowerCase();
-
-      if (
-        Object.prototype.hasOwnProperty.call(
-          result,
-          severity
+      setTechniques(
+        Array.isArray(
+          mitreData?.techniques
         )
-      ) {
-        result[severity] += 1;
-      }
-    });
-
-    return result;
-  }, [vulnerabilities]);
+          ? mitreData.techniques
+          : []
+      );
 
 
-  const riskScore = useMemo(() => {
-    const weightedScore =
-      severityStats.critical * 25
-      +
-      severityStats.high * 14
-      +
-      severityStats.medium * 7
-      +
-      severityStats.low * 2;
+      setChain(
+        chainData
+        &&
+        typeof chainData === "object"
+          ? chainData
+          : {}
+      );
 
-    return Math.min(
-      100,
-      weightedScore
+
+      setActivities(
+        Array.isArray(
+          activityData?.activities
+        )
+          ? activityData.activities
+          : []
+      );
+
+
+      setError("");
+    }
+
+
+    function handleScanStarted() {
+      resetDashboard();
+      setLoading(true);
+      setEngineStatus("running");
+    }
+
+
+    function handleScanCompleted() {
+      synchronizeDashboard();
+    }
+
+
+    /*
+     * التهيئة الأولى.
+     */
+    synchronizeDashboard();
+
+
+    /*
+     * فحص حالة الـBackend كل ثانيتين.
+     */
+    timer = window.setInterval(
+      synchronizeDashboard,
+      2000
     );
-  }, [severityStats]);
 
 
-  const riskLevel =
-    riskScore >= 85
-      ? "CRITICAL"
-      : riskScore >= 65
-        ? "HIGH"
-        : riskScore >= 40
-          ? "MEDIUM"
-          : "LOW";
+    window.addEventListener(
+      "scanStarted",
+      handleScanStarted
+    );
 
 
-  const attackPhaseCount =
-    chain.phase_count
-    ||
-    chain.phases?.length
-    ||
-    0;
+    window.addEventListener(
+      "scanCompleted",
+      handleScanCompleted
+    );
 
 
-  const latestVulnerabilities =
-    vulnerabilities.slice(0, 6);
+    return () => {
+      cancelled = true;
+
+      if (timer) {
+        window.clearInterval(timer);
+      }
+
+      window.removeEventListener(
+        "scanStarted",
+        handleScanStarted
+      );
+
+      window.removeEventListener(
+        "scanCompleted",
+        handleScanCompleted
+      );
+    };
+  }, []);
 
 
-  const latestTechniques =
-    techniques.slice(0, 6);
+  const criticalCount =
+    useMemo(() => {
+      return vulnerabilities.filter(
+        vulnerability =>
+          String(
+            vulnerability?.severity || ""
+          ).toLowerCase() === "critical"
+      ).length;
+    }, [vulnerabilities]);
+
+
+  const phaseCount =
+    Number(
+      chain?.phase_count
+      ??
+      (
+        Array.isArray(chain?.phases)
+          ? chain.phases.length
+          : chain?.phases
+            ? Object.keys(
+                chain.phases
+              ).length
+            : 0
+      )
+    ) || 0;
+
+
+  const dashboardStatus =
+    getDashboardStatus({
+      loading,
+      engineStatus,
+      error
+    });
 
 
   return (
     <div className="dashboard">
 
-      {/* =====================================
-          HERO
-      ====================================== */}
+      <div className="dashboard-header">
 
-      <section className="dashboard-hero">
+        <div className="dashboard-title">
 
-        <div className="dashboard-hero-icon">
-          <ShieldAlert size={42} />
-        </div>
+          <div className="dashboard-logo">
+            <ShieldCheck size={30} />
+          </div>
 
 
-        <div className="dashboard-hero-copy">
+          <div>
 
-          <span className="dashboard-eyebrow">
-            Offensive Security Platform
-          </span>
-
-          <h1>
-            Hybrid AI
-            <span> Red Team </span>
-          </h1>
-
-          <p>
-            Automated reconnaissance, vulnerability
-            assessment, MITRE ATT&amp;CK mapping,
-            AI-assisted analysis and professional reporting.
-          </p>
+            <h1>
+              Hybrid AI Red Team Framework
+            </h1>
 
 
-          <div className="dashboard-live-status">
+            <p className="dashboard-subtitle">
 
-            <span
-              className={
-                `live-dot ${
-                  loading
-                    ? "pending"
-                    : "active"
-                }`
-              }
-            />
+              <span
+                className={
+                  `live-dot ${
+                    dashboardStatus.className
+                  }`
+                }
+              />
 
-            {loading
-              ? "Synchronizing with framework engine..."
-              : "Framework engine connected and operational"
-            }
+              {dashboardStatus.text}
+
+            </p>
 
           </div>
 
         </div>
 
-      </section>
+      </div>
 
 
 
-      {/* =====================================
-          STATISTICS
-      ====================================== */}
+      {error && (
+        <div className="dashboard-error-message">
 
-      <section className="stats-grid">
+          <AlertTriangle size={18} />
+
+          <span>
+            {error}
+          </span>
+
+        </div>
+      )}
+
+
+
+      <div className="stats-grid">
 
         <StatCard
           icon={
-            <ShieldAlert size={27} />
+            <ShieldAlert size={26} />
           }
           title="Vulnerabilities"
           value={vulnerabilities.length}
-          hint="Detected findings"
+          hint={
+            loading
+              ? "Assessment in progress"
+              : "Confirmed findings"
+          }
         />
 
 
         <StatCard
           icon={
-            <Target size={27} />
+            <Target size={26} />
           }
           title="MITRE Techniques"
           value={techniques.length}
-          hint="Mapped techniques"
+          hint={
+            loading
+              ? "Waiting for mapping"
+              : "Mapped techniques"
+          }
         />
 
 
         <StatCard
           icon={
-            <GitBranch size={27} />
+            <GitBranch size={26} />
           }
           title="Attack Phases"
-          value={attackPhaseCount}
-          hint="Observed attack stages"
+          value={phaseCount}
+          hint={
+            loading
+              ? "Building attack chain"
+              : "Generated phases"
+          }
         />
 
 
         <StatCard
           icon={
-            <AlertTriangle size={27} />
+            <AlertTriangle size={26} />
           }
           title="Critical Threats"
-          value={severityStats.critical}
-          hint="Immediate attention"
-          variant="critical"
+          value={criticalCount}
+          hint={
+            loading
+              ? "Risk analysis pending"
+              : "Immediate attention"
+          }
         />
 
-      </section>
+      </div>
 
 
 
-      {/* =====================================
-          MAIN GRID
-      ====================================== */}
-
-      <section className="dashboard-main-grid">
-
-        {/* ACTIVITY */}
-
-        <article className="panel activity-panel">
-
-          <div className="panel-header">
-
-            <div className="panel-title">
-
-              <div className="panel-title-icon">
-                <Activity size={21} />
-              </div>
-
-              <div>
-                <h2>
-                  Framework Activity
-                </h2>
-
-                <p>
-                  Latest pipeline and engine events
-                </p>
-              </div>
-
-            </div>
-
-
-            <span className="panel-badge">
-              {activities.length} events
-            </span>
-
-          </div>
-
-
-          <ActivityFeed
-            activities={activities}
-          />
-
-        </article>
-
-
-
-        {/* RISK OVERVIEW */}
-
-        <article className="panel risk-overview-panel">
-
-          <div className="panel-header">
-
-            <div className="panel-title">
-
-              <div className="panel-title-icon">
-                <ShieldCheck size={21} />
-              </div>
-
-              <div>
-                <h2>
-                  Risk Overview
-                </h2>
-
-                <p>
-                  Overall security posture
-                </p>
-              </div>
-
-            </div>
-
-
-            <span
-              className={
-                `risk-level-badge ${
-                  riskLevel.toLowerCase()
-                }`
-              }
-            >
-              {riskLevel}
-            </span>
-
-          </div>
-
-
-          <div className="risk-overview-content">
-
-            <div
-              className="risk-score-ring"
-              style={{
-                "--risk-angle":
-                  `${riskScore * 3.6}deg`
-              }}
-            >
-
-              <div className="risk-score-inner">
-
-                <strong>
-                  {riskScore}
-                </strong>
-
-                <span>
-                  Risk Score
-                </span>
-
-              </div>
-
-            </div>
-
-
-            <div className="risk-severity-list">
-
-              <SeverityRow
-                label="Critical"
-                value={severityStats.critical}
-                total={vulnerabilities.length}
-                type="critical"
-              />
-
-              <SeverityRow
-                label="High"
-                value={severityStats.high}
-                total={vulnerabilities.length}
-                type="high"
-              />
-
-              <SeverityRow
-                label="Medium"
-                value={severityStats.medium}
-                total={vulnerabilities.length}
-                type="medium"
-              />
-
-              <SeverityRow
-                label="Low"
-                value={severityStats.low}
-                total={vulnerabilities.length}
-                type="low"
-              />
-
-            </div>
-
-          </div>
-
-        </article>
-
-      </section>
-
-
-
-      {/* =====================================
-          VULNERABILITIES
-      ====================================== */}
-
-      <section className="panel dashboard-table-panel">
+      <div className="panel">
 
         <div className="panel-header">
 
-          <div className="panel-title">
+          <h2>
+            <Activity size={20} />
+            Activity Feed
+          </h2>
 
-            <div className="panel-title-icon">
-              <ShieldAlert size={21} />
-            </div>
+          <span className="panel-badge">
+            {activities.length} events
+          </span>
 
-            <div>
-              <h2>
-                Latest Vulnerabilities
-              </h2>
-
-              <p>
-                Most recent confirmed findings
-              </p>
-            </div>
-
-          </div>
+        </div>
 
 
-          <button
-            type="button"
-            className="panel-action"
-          >
-            View All
-            <ChevronRight size={16} />
-          </button>
+        {loading ? (
+          <DashboardWaitingState
+            title="Assessment in Progress"
+            description={
+              "Live findings will appear after the current assessment is completed."
+            }
+          />
+        ) : (
+          <ActivityFeed
+            activities={activities}
+          />
+        )}
+
+      </div>
+
+
+
+      <div className="panel">
+
+        <div className="panel-header">
+
+          <h2>
+            <ShieldAlert size={20} />
+            Latest Vulnerabilities
+          </h2>
+
+          <span className="panel-badge">
+            {vulnerabilities.length} total
+          </span>
 
         </div>
 
 
         <div className="table-wrap">
 
-          <table className="security-table">
+          <table>
 
             <thead>
               <tr>
@@ -539,85 +583,96 @@ function Dashboard() {
 
             <tbody>
 
-              {
-                latestVulnerabilities.length === 0
-                  ? (
-                    <tr className="table-empty-row">
+              {vulnerabilities.length === 0 ? (
 
-                      <td colSpan={4}>
-                        No vulnerability data available.
-                        Run a security assessment first.
-                      </td>
+                <tr className="table-empty-row">
 
-                    </tr>
-                  )
-                  : (
-                    latestVulnerabilities.map(
-                      (item, index) => (
+                  <td colSpan={4}>
 
-                        <tr
-                          key={
-                            item.cve
+                    {loading
+                      ? "The assessment is running. New findings will appear after completion."
+                      : "No vulnerabilities available. Start a new security assessment."
+                    }
+
+                  </td>
+
+                </tr>
+
+              ) : (
+
+                vulnerabilities
+                  .slice(0, 8)
+                  .map(
+                    (
+                      vulnerability,
+                      index
+                    ) => (
+
+                      <tr
+                        key={
+                          vulnerability.id
+                          ||
+                          vulnerability.cve
+                          ||
+                          index
+                        }
+                      >
+
+                        <td className="mono">
+                          {vulnerability.host || "N/A"}
+                        </td>
+
+
+                        <td className="mono">
+                          {
+                            vulnerability.cve
                             ||
-                            `${item.host}-${index}`
+                            vulnerability.vulnerability
+                            ||
+                            "-"
                           }
-                        >
-
-                          <td className="mono">
-                            {item.host || "N/A"}
-                          </td>
+                        </td>
 
 
-                          <td className="mono table-primary-text">
-                            {
-                              item.cve
-                              ||
-                              item.vulnerability
-                              ||
-                              "-"
+                        <td>
+
+                          <span
+                            className={
+                              `severity ${
+                                String(
+                                  vulnerability.severity
+                                  ||
+                                  "unknown"
+                                ).toLowerCase()
+                              }`
                             }
-                          </td>
-
-
-                          <td>
-
-                            <span
-                              className={
-                                `severity ${
-                                  String(
-                                    item.severity
-                                    ||
-                                    "unknown"
-                                  ).toLowerCase()
-                                }`
-                              }
-                            >
-                              {
-                                item.severity
-                                ||
-                                "Unknown"
-                              }
-                            </span>
-
-                          </td>
-
-
-                          <td className="mono cvss-value">
+                          >
                             {
-                              item.cvss_live
-                              ??
-                              item.cvss
-                              ??
-                              "-"
+                              vulnerability.severity
+                              ||
+                              "Unknown"
                             }
-                          </td>
+                          </span>
 
-                        </tr>
+                        </td>
 
-                      )
+
+                        <td className="mono">
+                          {
+                            vulnerability.cvss_live
+                            ??
+                            vulnerability.cvss
+                            ??
+                            "-"
+                          }
+                        </td>
+
+                      </tr>
+
                     )
                   )
-              }
+
+              )}
 
             </tbody>
 
@@ -625,36 +680,18 @@ function Dashboard() {
 
         </div>
 
-      </section>
+      </div>
 
 
 
-      {/* =====================================
-          MITRE
-      ====================================== */}
-
-      <section className="panel dashboard-table-panel">
+      <div className="panel">
 
         <div className="panel-header">
 
-          <div className="panel-title">
-
-            <div className="panel-title-icon">
-              <Target size={21} />
-            </div>
-
-            <div>
-              <h2>
-                MITRE ATT&amp;CK Coverage
-              </h2>
-
-              <p>
-                Techniques mapped by the framework
-              </p>
-            </div>
-
-          </div>
-
+          <h2>
+            <Target size={20} />
+            MITRE ATT&amp;CK Coverage
+          </h2>
 
           <span className="panel-badge">
             {techniques.length} techniques
@@ -665,11 +702,10 @@ function Dashboard() {
 
         <div className="table-wrap">
 
-          <table className="security-table">
+          <table>
 
             <thead>
               <tr>
-
                 <th>
                   ID
                 </th>
@@ -685,110 +721,105 @@ function Dashboard() {
                 <th>
                   Confidence
                 </th>
-
               </tr>
             </thead>
 
 
             <tbody>
 
-              {
-                latestTechniques.length === 0
-                  ? (
-                    <tr className="table-empty-row">
+              {techniques.length === 0 ? (
 
-                      <td colSpan={4}>
-                        No MITRE ATT&amp;CK techniques
-                        are available yet.
-                      </td>
+                <tr className="table-empty-row">
 
-                    </tr>
-                  )
-                  : (
-                    latestTechniques.map(
-                      (technique, index) => {
+                  <td colSpan={4}>
 
-                        const confidence =
-                          normalizeConfidence(
-                            technique.confidence
-                          );
+                    {loading
+                      ? "MITRE mapping will appear after the current assessment is completed."
+                      : "No MITRE techniques available. Start a new security assessment."
+                    }
 
-                        return (
-                          <tr
-                            key={
-                              technique.technique_id
-                              ||
-                              index
-                            }
-                          >
+                  </td>
 
-                            <td className="mono table-primary-text">
-                              {
-                                technique.technique_id
-                                ||
-                                technique.techniqueID
-                                ||
-                                "-"
-                              }
-                            </td>
+                </tr>
 
+              ) : (
 
-                            <td>
-                              {
-                                technique.technique_name
-                                ||
-                                technique.name
-                                ||
-                                "-"
-                              }
-                            </td>
+                techniques
+                  .slice(0, 8)
+                  .map(
+                    (
+                      technique,
+                      index
+                    ) => {
 
-
-                            <td>
-
-                              {
-                                technique.tactic
-                                  ? (
-                                    <span className="tactic-pill">
-                                      {technique.tactic}
-                                    </span>
-                                  )
-                                  : "-"
-                              }
-
-                            </td>
-
-
-                            <td className="mono">
-
-                              <div className="confidence-value">
-
-                                <span>
-                                  {confidence}%
-                                </span>
-
-                                <div className="confidence-bar">
-
-                                  <i
-                                    style={{
-                                      width:
-                                        `${confidence}%`
-                                    }}
-                                  />
-
-                                </div>
-
-                              </div>
-
-                            </td>
-
-                          </tr>
+                      const confidence =
+                        normalizeConfidence(
+                          technique.confidence
                         );
 
-                      }
-                    )
+
+                      return (
+                        <tr
+                          key={
+                            technique.technique_id
+                            ||
+                            technique.techniqueID
+                            ||
+                            index
+                          }
+                        >
+
+                          <td className="mono">
+                            {
+                              technique.technique_id
+                              ||
+                              technique.techniqueID
+                              ||
+                              "-"
+                            }
+                          </td>
+
+
+                          <td>
+                            {
+                              technique.technique_name
+                              ||
+                              technique.name
+                              ||
+                              "-"
+                            }
+                          </td>
+
+
+                          <td>
+
+                            {technique.tactic ? (
+
+                              <span className="tactic-pill">
+                                {technique.tactic}
+                              </span>
+
+                            ) : (
+                              "-"
+                            )}
+
+                          </td>
+
+
+                          <td className="mono">
+                            {
+                              confidence !== null
+                                ? `${confidence}%`
+                                : "-"
+                            }
+                          </td>
+
+                        </tr>
+                      );
+                    }
                   )
-              }
+
+              )}
 
             </tbody>
 
@@ -796,76 +827,84 @@ function Dashboard() {
 
         </div>
 
-      </section>
+      </div>
 
     </div>
   );
 }
 
 
-
-function SeverityRow({
-  label,
-  value,
-  total,
-  type
-}) {
-  const percentage =
-    total > 0
-      ? Math.round(
-          (value / total) * 100
-        )
-      : 0;
-
-  return (
-    <div
-      className={
-        `severity-overview-row ${type}`
+async function fetchJsonOrDefault(
+  url,
+  fallback
+) {
+  try {
+    const response = await fetch(
+      url,
+      {
+        cache: "no-store",
+        headers: {
+          "Cache-Control":
+            "no-cache, no-store, must-revalidate",
+          "Pragma":
+            "no-cache"
+        }
       }
-    >
-
-      <div className="severity-overview-label">
-
-        <span />
-
-        {label}
-
-      </div>
+    );
 
 
-      <div className="severity-overview-track">
-
-        <i
-          style={{
-            width: `${percentage}%`
-          }}
-        />
-
-      </div>
+    /*
+     * بعض الـEndpoints ترجع 404 عندما
+     * لا توجد بيانات بعد. نعتبرها قائمة فارغة.
+     */
+    if (response.status === 404) {
+      return fallback;
+    }
 
 
-      <strong>
-        {value}
-      </strong>
+    if (!response.ok) {
+      throw new Error(
+        `Request failed: ${response.status}`
+      );
+    }
 
-    </div>
-  );
+
+    return await response.json();
+
+  } catch (error) {
+    console.warn(
+      `Dashboard request failed for ${url}:`,
+      error
+    );
+
+    return fallback;
+  }
 }
-
 
 
 function normalizeConfidence(value) {
-  const number = Number(value);
-
   if (
-    Number.isNaN(number)
-    ||
     value === null
     ||
     value === undefined
+    ||
+    value === ""
   ) {
-    return 0;
+    return null;
   }
+
+
+  const number = Number(
+    String(value)
+      .replace("%", "")
+      .trim()
+  );
+
+
+  if (Number.isNaN(number)) {
+    return null;
+  }
+
 
   if (number <= 1) {
     return Math.round(
@@ -873,9 +912,74 @@ function normalizeConfidence(value) {
     );
   }
 
+
   return Math.min(
     100,
     Math.round(number)
+  );
+}
+
+
+function getDashboardStatus({
+  loading,
+  engineStatus,
+  error
+}) {
+  if (error) {
+    return {
+      className: "pending",
+      text: "Engine synchronization unavailable"
+    };
+  }
+
+
+  if (
+    loading
+    ||
+    engineStatus === "running"
+    ||
+    engineStatus === "started"
+  ) {
+    return {
+      className: "pending",
+      text: "Live · assessment in progress"
+    };
+  }
+
+
+  if (engineStatus === "completed") {
+    return {
+      className: "active",
+      text: "Live · latest assessment loaded"
+    };
+  }
+
+
+  return {
+    className: "active",
+    text: "Ready · waiting for a new assessment"
+  };
+}
+
+
+function DashboardWaitingState({
+  title,
+  description
+}) {
+  return (
+    <div className="dashboard-waiting-state">
+
+      <div className="dashboard-waiting-spinner" />
+
+      <strong>
+        {title}
+      </strong>
+
+      <p>
+        {description}
+      </p>
+
+    </div>
   );
 }
 

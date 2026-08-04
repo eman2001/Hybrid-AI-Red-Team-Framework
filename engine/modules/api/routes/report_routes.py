@@ -17,7 +17,9 @@ import os
 
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import FileResponse, JSONResponse
-
+from engine.modules.api.current_report import (
+    get_latest_session_id,
+)
 router = APIRouter(prefix="/api/report", tags=["Reports"])
 
 REPORTS_DIR = "reports"
@@ -73,11 +75,17 @@ async def list_reports():
 # ----------------------------------------------------------------------
 @router.get("/latest")
 async def latest_report():
-    sessions = _report_session_dirs()
-    if not sessions:
-        raise HTTPException(status_code=404, detail="No reports found yet")
-    return {"session_id": sessions[0]}
+    session_id = get_latest_session_id()
 
+    if not session_id:
+        raise HTTPException(
+            status_code=404,
+            detail="No completed report found yet",
+        )
+
+    return {
+        "session_id": session_id
+    }
 
 # ----------------------------------------------------------------------
 # GET /api/report/{session_id}/pdf -> streams the PDF file

@@ -27,7 +27,6 @@ import {
   ServerCog,
   ShieldAlert,
   ShieldCheck,
-  Sparkles,
   Target,
   TerminalSquare,
   Users
@@ -37,6 +36,9 @@ import {
   startScan,
   getProgress
 } from "../api/apiClient";
+
+
+const TOTAL_STAGES = 12;
 
 
 const PIPELINE_STAGES = [
@@ -143,10 +145,6 @@ function Scan() {
 
 
   useEffect(() => {
-    if (!loading) {
-      return undefined;
-    }
-
     let cancelled = false;
 
     async function pollProgress() {
@@ -157,36 +155,102 @@ function Scan() {
           return;
         }
 
+        const phase = normalizePhase(
+          data?.phase
+        );
+
+        const status = normalizeStatus(
+          data?.status
+        );
+
+        const percentage = normalizeProgress(
+          data?.progress
+        );
+
         setProgress({
-          phase: Number(data.phase || 0),
+          phase,
           title:
-            data.title ||
-            data.message ||
-            "Security assessment running",
-          progress: normalizeProgress(
-            data.progress
-          ),
-          status:
-            String(
-              data.status || "running"
-            ).toLowerCase()
+            data?.title
+            ||
+            data?.message
+            ||
+            "Security assessment status",
+          progress: percentage,
+          status
         });
 
+
         if (
-          data.status === "completed"
+          status === "running"
           ||
-          data.status === "failed"
+          status === "started"
+        ) {
+          setLoading(true);
+
+          sessionStorage.setItem(
+            "currentScanStarted",
+            "true"
+          );
+
+          sessionStorage.removeItem(
+            "currentScanCompleted"
+          );
+        }
+
+
+        if (
+          status === "completed"
+          &&
+          phase >= TOTAL_STAGES
         ) {
           setLoading(false);
 
-          if (data.status === "failed") {
-            setError(
-              data.error ||
-              data.message ||
-              "The security assessment failed."
-            );
-          }
+          sessionStorage.setItem(
+            "currentScanStarted",
+            "true"
+          );
+
+          sessionStorage.setItem(
+            "currentScanCompleted",
+            "true"
+          );
+
+          window.dispatchEvent(
+            new Event("scanCompleted")
+          );
         }
+
+
+        if (status === "failed") {
+          setLoading(false);
+
+          sessionStorage.setItem(
+            "currentScanStarted",
+            "true"
+          );
+
+          sessionStorage.removeItem(
+            "currentScanCompleted"
+          );
+
+          setError(
+            data?.error
+            ||
+            data?.message
+            ||
+            "The security assessment failed."
+          );
+        }
+
+
+        if (
+          status === "idle"
+          &&
+          phase === 0
+        ) {
+          setLoading(false);
+        }
+
       } catch (requestError) {
         console.error(
           "Progress polling error:",
@@ -201,6 +265,7 @@ function Scan() {
       }
     }
 
+
     pollProgress();
 
     const timer = window.setInterval(
@@ -208,16 +273,18 @@ function Scan() {
       2000
     );
 
+
     return () => {
       cancelled = true;
       window.clearInterval(timer);
     };
-  }, [loading]);
+  }, []);
 
 
   async function runAssessment() {
     const cleanTarget = target.trim();
     const cleanLhost = lhost.trim();
+
 
     if (!cleanTarget) {
       setError(
@@ -227,6 +294,7 @@ function Scan() {
       return;
     }
 
+
     if (!cleanLhost) {
       setError(
         "Enter the Kali LHOST address before starting the assessment."
@@ -235,8 +303,28 @@ function Scan() {
       return;
     }
 
+
     setError("");
     setLoading(true);
+
+
+    /*
+     * بدء جلسة واجهة جديدة.
+     * يمنع عرض نتائج الفحص القديم.
+     */
+    sessionStorage.setItem(
+      "currentScanStarted",
+      "true"
+    );
+
+    sessionStorage.removeItem(
+      "currentScanCompleted"
+    );
+
+    window.dispatchEvent(
+      new Event("scanStarted")
+    );
+
 
     setProgress({
       phase: 0,
@@ -245,11 +333,13 @@ function Scan() {
       status: "running"
     });
 
+
     try {
       await startScan(
         cleanTarget,
         cleanLhost
       );
+
     } catch (requestError) {
       console.error(
         "Scan start error:",
@@ -257,6 +347,10 @@ function Scan() {
       );
 
       setLoading(false);
+
+      sessionStorage.removeItem(
+        "currentScanCompleted"
+      );
 
       setProgress({
         phase: 0,
@@ -266,46 +360,75 @@ function Scan() {
       });
 
       setError(
-        requestError?.message ||
+        requestError?.message
+        ||
         "The framework engine could not start the assessment."
       );
     }
   }
 
 
-  const activeStage = useMemo(() => {
-    return (
-      PIPELINE_STAGES.find(
-        stage => stage.id === progress.phase
-      )
-      ||
-      null
+  const currentPhase =
+    Number(progress.phase) || 0;
+
+
+  const normalizedStatus =
+    normalizeStatus(
+      progress.status
     );
-  }, [progress.phase]);
 
 
-  const statusLabel = formatStatus(
-    progress.status
-  );
+  const assessmentFullyCompleted =
+    normalizedStatus === "completed"
+    &&
+    currentPhase >= TOTAL_STAGES;
 
 
-  const completedStages = Math.max(
-    0,
-    Math.min(
-      PIPELINE_STAGES.length,
-      progress.status === "completed"
-        ? PIPELINE_STAGES.length
-        : progress.phase - 1
-    )
-  );
+  const completedStages =
+    assessmentFullyCompleted
+      ? TOTAL_STAGES
+      : Math.max(
+          0,
+          Math.min(
+            TOTAL_STAGES,
+            currentPhase - 1
+          )
+        );
+
+
+  const activeStage =
+    useMemo(() => {
+      return (
+        PIPELINE_STAGES.find(
+          stage =>
+            stage.id === currentPhase
+        )
+        ||
+        null
+      );
+    }, [currentPhase]);
+
+
+  const statusLabel =
+    getStatusLabel(
+      normalizedStatus,
+      assessmentFullyCompleted
+    );
+
+
+  const engineStateText =
+    getEngineStateText({
+      loading,
+      status: normalizedStatus,
+      fullyCompleted:
+        assessmentFullyCompleted
+    });
 
 
   return (
     <div className="scan-page">
 
-      {/* =====================================
-          HERO
-      ====================================== */}
+      {/* HERO */}
 
       <section className="scan-hero">
 
@@ -338,22 +461,18 @@ function Scan() {
             <span
               className={
                 `scan-engine-dot ${
-                  loading
-                    ? "running"
-                    : progress.status
+                  getEngineDotClass({
+                    loading,
+                    status: normalizedStatus,
+                    fullyCompleted:
+                      assessmentFullyCompleted
+                  })
                 }`
               }
             />
 
             <strong>
-              {loading
-                ? "Assessment engine active"
-                : progress.status === "completed"
-                  ? "Assessment completed"
-                  : progress.status === "failed"
-                    ? "Assessment interrupted"
-                    : "Engine ready"
-              }
+              {engineStateText}
             </strong>
 
           </div>
@@ -390,9 +509,7 @@ function Scan() {
 
 
 
-      {/* =====================================
-          CONTROL PANEL
-      ====================================== */}
+      {/* CONTROL AND STATUS */}
 
       <section className="scan-control-grid">
 
@@ -553,10 +670,6 @@ function Scan() {
 
 
 
-        {/* =====================================
-            LIVE STATUS
-        ====================================== */}
-
         <article className="scan-panel scan-status-panel">
 
           <div className="scan-panel-header">
@@ -583,7 +696,9 @@ function Scan() {
             <span
               className={
                 `scan-status-badge ${
-                  progress.status
+                  assessmentFullyCompleted
+                    ? "completed"
+                    : normalizedStatus
                 }`
               }
             >
@@ -599,6 +714,8 @@ function Scan() {
 
               {activeStage ? (
                 <activeStage.icon size={28} />
+              ) : assessmentFullyCompleted ? (
+                <CheckCircle2 size={28} />
               ) : (
                 <ServerCog size={28} />
               )}
@@ -613,13 +730,18 @@ function Scan() {
               </span>
 
               <strong>
-                {progress.title}
+                {assessmentFullyCompleted
+                  ? "Assessment completed"
+                  : progress.title
+                }
               </strong>
 
               <p>
-                {activeStage?.description
-                  ||
-                  "The framework is waiting for a new authorized assessment."
+                {assessmentFullyCompleted
+                  ? "All framework stages completed successfully."
+                  : activeStage?.description
+                    ||
+                    "The framework is waiting for a new authorized assessment."
                 }
               </p>
 
@@ -650,7 +772,7 @@ function Scan() {
               </span>
 
               <strong>
-                {progress.phase || 0}/12
+                {currentPhase}/12
               </strong>
 
             </div>
@@ -704,9 +826,7 @@ function Scan() {
 
 
 
-      {/* =====================================
-          PIPELINE
-      ====================================== */}
+      {/* PIPELINE */}
 
       <section className="scan-panel scan-pipeline-panel">
 
@@ -746,8 +866,8 @@ function Scan() {
               const state =
                 getStageState(
                   stage.id,
-                  progress.phase,
-                  progress.status
+                  currentPhase,
+                  normalizedStatus
                 );
 
               const StageIcon =
@@ -849,6 +969,23 @@ function Scan() {
 }
 
 
+function normalizePhase(value) {
+  const number = Number(value);
+
+  if (Number.isNaN(number)) {
+    return 0;
+  }
+
+  return Math.max(
+    0,
+    Math.min(
+      TOTAL_STAGES,
+      Math.round(number)
+    )
+  );
+}
+
+
 function normalizeProgress(value) {
   const number = Number(value);
 
@@ -866,20 +1003,32 @@ function normalizeProgress(value) {
 }
 
 
-function formatStatus(status) {
-  const value = String(
-    status || "idle"
-  ).toLowerCase();
+function normalizeStatus(value) {
+  return String(
+    value || "idle"
+  )
+    .trim()
+    .toLowerCase();
+}
 
-  if (value === "running") {
-    return "Running";
-  }
 
-  if (value === "completed") {
+function getStatusLabel(
+  status,
+  fullyCompleted
+) {
+  if (fullyCompleted) {
     return "Completed";
   }
 
-  if (value === "failed") {
+  if (
+    status === "running"
+    ||
+    status === "started"
+  ) {
+    return "Running";
+  }
+
+  if (status === "failed") {
     return "Failed";
   }
 
@@ -892,40 +1041,107 @@ function getStageState(
   currentPhase,
   status
 ) {
-  const normalizedStatus =
-    String(
-      status || "idle"
-    ).toLowerCase();
+  const phase =
+    Number(currentPhase) || 0;
 
-  if (
+  const normalizedStatus =
+    normalizeStatus(status);
+
+  const fullyCompleted =
     normalizedStatus === "completed"
-  ) {
+    &&
+    phase >= TOTAL_STAGES;
+
+
+  if (fullyCompleted) {
     return "completed";
   }
+
 
   if (
     normalizedStatus === "failed"
     &&
-    stageId === currentPhase
+    stageId === phase
   ) {
     return "failed";
   }
 
-  if (
-    stageId < currentPhase
-  ) {
+
+  if (stageId < phase) {
     return "completed";
   }
 
+
   if (
-    stageId === currentPhase
+    stageId === phase
     &&
-    normalizedStatus === "running"
+    (
+      normalizedStatus === "running"
+      ||
+      normalizedStatus === "started"
+      ||
+      normalizedStatus === "completed"
+    )
   ) {
     return "active";
   }
 
+
   return "pending";
+}
+
+
+function getEngineDotClass({
+  loading,
+  status,
+  fullyCompleted
+}) {
+  if (fullyCompleted) {
+    return "completed";
+  }
+
+  if (status === "failed") {
+    return "failed";
+  }
+
+  if (
+    loading
+    ||
+    status === "running"
+    ||
+    status === "started"
+  ) {
+    return "running";
+  }
+
+  return "idle";
+}
+
+
+function getEngineStateText({
+  loading,
+  status,
+  fullyCompleted
+}) {
+  if (fullyCompleted) {
+    return "Assessment completed";
+  }
+
+  if (status === "failed") {
+    return "Assessment interrupted";
+  }
+
+  if (
+    loading
+    ||
+    status === "running"
+    ||
+    status === "started"
+  ) {
+    return "Assessment engine active";
+  }
+
+  return "Engine ready";
 }
 
 

@@ -1,62 +1,294 @@
 """
-api/routes/attack_chain.py — Attack Chain API
+api/routes/attack_chain.py
+--------------------------
+Serves the real attack chain from the latest completed
+assessment report.
 """
-from fastapi import APIRouter
-from engine.modules.api.schemas import AttackChainResponse, ChainPhaseOut
 
-router = APIRouter(prefix="/api/attack-chain", tags=["Attack Chain"])
+from datetime import datetime, timezone
 
-DEMO_CHAIN = {
-    "1": {"phase_name":"Initial Access",       "tactic":"initial-access",       "techniques":[{"id":"T1190","name":"Exploit Public-Facing App"},{"id":"T1566","name":"Phishing"}],     "hosts":["192.168.1.100"],"confidence":0.95,"source":"rule_exact"},
-    "2": {"phase_name":"Execution",            "tactic":"execution",            "techniques":[{"id":"T1059.004","name":"Unix Shell"}],                                                 "hosts":["192.168.1.100"],"confidence":0.90,"source":"rule_exact"},
-    "3": {"phase_name":"Privilege Escalation", "tactic":"privilege-escalation", "techniques":[{"id":"T1068","name":"Exploitation for Priv. Escalation"}],                             "hosts":["192.168.1.100"],"confidence":0.93,"source":"post_exploit"},
-    "4": {"phase_name":"Credential Access",    "tactic":"credential-access",    "techniques":[{"id":"T1003","name":"OS Credential Dumping"},{"id":"T1110","name":"Brute Force"}],    "hosts":["192.168.1.100"],"confidence":0.91,"source":"post_exploit"},
-    "5": {"phase_name":"Discovery",            "tactic":"discovery",            "techniques":[{"id":"T1082","name":"System Info Discovery"},{"id":"T1016","name":"Network Config"},{"id":"T1057","name":"Process Discovery"}],"hosts":["192.168.1.100"],"confidence":0.94,"source":"post_exploit"},
-    "6": {"phase_name":"Lateral Movement",     "tactic":"lateral-movement",     "techniques":[{"id":"T1210","name":"Exploitation of Remote Services"}],                               "hosts":["192.168.1.100"],"confidence":0.88,"source":"stix"},
-    "7": {"phase_name":"Exfiltration",         "tactic":"exfiltration",         "techniques":[{"id":"T1041","name":"Exfiltration Over C2"}],                                          "hosts":["192.168.1.100"],"confidence":0.60,"source":"ml"},
-}
+from fastapi import (
+    APIRouter,
+    HTTPException,
+)
+
+from engine.modules.api.current_report import (
+    load_latest_report,
+)
+
+from engine.modules.api.schemas import (
+    AttackChainResponse,
+    ChainPhaseOut,
+)
 
 
-@router.get("/", response_model=AttackChainResponse)
+router = APIRouter(
+    prefix="/api/attack-chain",
+    tags=["Attack Chain"],
+)
+
+
+def _load_chain() -> dict:
+    report = load_latest_report()
+
+    chain = report.get(
+        "attack_chain",
+        {}
+    )
+
+    if not isinstance(chain, dict):
+        return {}
+
+    return chain
+
+
+def _normalize_phase(
+    phase: dict,
+) -> dict:
+    raw_techniques = phase.get(
+        "techniques",
+        []
+    )
+
+    techniques = []
+
+    if isinstance(
+        raw_techniques,
+        list
+    ):
+        for technique in raw_techniques:
+            if isinstance(
+                technique,
+                str
+            ):
+                techniques.append({
+                    "id": technique,
+                    "name": "",
+                })
+
+            elif isinstance(
+                technique,
+                dict
+            ):
+                techniques.append({
+                    "id": (
+                        technique.get("id")
+                        or
+                        technique.get(
+                            "technique_id"
+                        )
+                        or
+                        technique.get(
+                            "techniqueID"
+                        )
+                        or
+                        "N/A"
+                    ),
+                    "name": (
+                        technique.get("name")
+                        or
+                        technique.get(
+                            "technique_name"
+                        )
+                        or
+                        ""
+                    ),
+                })
+
+    hosts = phase.get(
+        "hosts",
+        []
+    )
+
+    if not isinstance(hosts, list):
+        hosts = [str(hosts)]
+
+    return {
+        "phase_name": (
+            phase.get("phase_name")
+            or
+            phase.get("name")
+            or
+            "Unknown Phase"
+        ),
+        "tactic": phase.get(
+            "tactic",
+            "unknown"
+        ),
+        "techniques": techniques,
+        "hosts": hosts,
+        "confidence": float(
+            phase.get(
+                "confidence",
+                0
+            )
+        ),
+        "source": phase.get(
+            "source",
+            "unknown"
+        ),
+    }
+
+
+@router.get(
+    "/",
+    response_model=AttackChainResponse,
+)
 async def get_attack_chain():
-    total_techs = sum(len(p["techniques"]) for p in DEMO_CHAIN.values())
-    avg_conf    = round(sum(p["confidence"] for p in DEMO_CHAIN.values()) / len(DEMO_CHAIN), 3)
-    phases      = {k: ChainPhaseOut(**v) for k, v in DEMO_CHAIN.items()}
+    chain = _load_chain()
+
+    if not chain:
+        raise HTTPException(
+            status_code=404,
+            detail=(
+                "No attack chain is available. "
+                "Run a scan first."
+            ),
+        )
+
+    normalized = {
+        str(key): _normalize_phase(value)
+        for key, value in chain.items()
+        if isinstance(value, dict)
+    }
+
+    if not normalized:
+        raise HTTPException(
+            status_code=404,
+            detail="No valid attack-chain phases found.",
+        )
+
+    total_techniques = sum(
+        len(
+            phase["techniques"]
+        )
+        for phase in normalized.values()
+    )
+
+    confidence_values = [
+        phase["confidence"]
+        for phase in normalized.values()
+    ]
+
+    average_confidence = (
+        round(
+            sum(confidence_values)
+            /
+            len(confidence_values),
+            3,
+        )
+        if confidence_values
+        else 0.0
+    )
+
+    phases = {
+        key: ChainPhaseOut(**value)
+        for key, value in normalized.items()
+    }
+
+    report = load_latest_report()
+
     return AttackChainResponse(
-        generated      = "2026-06-05T08:00:00",
-        phase_count    = len(DEMO_CHAIN),
-        tech_count     = total_techs,
-        avg_confidence = avg_conf,
-        phases         = phases,
+        generated=report.get(
+            "generated_at",
+            datetime.now(
+                timezone.utc
+            ).isoformat(),
+        ),
+        phase_count=len(phases),
+        tech_count=total_techniques,
+        avg_confidence=average_confidence,
+        phases=phases,
     )
 
 
 @router.get("/phases")
 async def get_phases():
-    return {"phases": DEMO_CHAIN, "count": len(DEMO_CHAIN)}
+    chain = _load_chain()
+
+    normalized = {
+        str(key): _normalize_phase(value)
+        for key, value in chain.items()
+        if isinstance(value, dict)
+    }
+
+    return {
+        "phases": normalized,
+        "count": len(normalized),
+    }
 
 
-@router.get("/phases/{phase_num}")
-async def get_phase(phase_num: str):
-    if phase_num not in DEMO_CHAIN:
-        from fastapi import HTTPException
-        raise HTTPException(status_code=404, detail=f"Phase {phase_num} not found.")
-    return DEMO_CHAIN[phase_num]
+@router.get(
+    "/phases/{phase_num}"
+)
+async def get_phase(
+    phase_num: str,
+):
+    chain = _load_chain()
+
+    if phase_num not in chain:
+        raise HTTPException(
+            status_code=404,
+            detail=(
+                f"Phase {phase_num} not found."
+            ),
+        )
+
+    return _normalize_phase(
+        chain[phase_num]
+    )
 
 
-@router.get("/export/navigator")
+@router.get(
+    "/export/navigator"
+)
 async def export_navigator():
-    """Export ATT&CK Navigator compatible layer JSON."""
-    from engine.modules.mitre.heatmap_generator import HeatmapGenerator
-    gen = HeatmapGenerator()
-    # Build fake mapped results from chain
-    fake = []
-    for phase in DEMO_CHAIN.values():
-        for tech in phase["techniques"]:
-            fake.append({"host":"192.168.1.100","layers":[{
-                "technique_id": tech["id"], "technique_name": tech["name"],
-                "tactic": phase["tactic"], "confidence": phase["confidence"],
-                "source": phase["source"],
-            }]})
-    layer = gen.generate(fake)
-    return layer
+    chain = _load_chain()
+
+    mapped_results = []
+
+    for phase in chain.values():
+        if not isinstance(
+            phase,
+            dict
+        ):
+            continue
+
+        normalized = _normalize_phase(
+            phase
+        )
+
+        for technique in normalized[
+            "techniques"
+        ]:
+            mapped_results.append({
+                "host": (
+                    normalized["hosts"][0]
+                    if normalized["hosts"]
+                    else ""
+                ),
+                "layers": [{
+                    "technique_id":
+                        technique["id"],
+                    "technique_name":
+                        technique["name"],
+                    "tactic":
+                        normalized["tactic"],
+                    "confidence":
+                        normalized[
+                            "confidence"
+                        ],
+                    "source":
+                        normalized["source"],
+                }],
+            })
+
+    from engine.modules.mitre.heatmap_generator import (
+        HeatmapGenerator,
+    )
+
+    generator = HeatmapGenerator()
+
+    return generator.generate(
+        mapped_results
+    )

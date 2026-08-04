@@ -234,6 +234,8 @@ __pycache__/
 # Virtual env
 venv/
 .env
+latest_session.txt
+reports/latest_session.txt
 
 # Node
 node_modules/

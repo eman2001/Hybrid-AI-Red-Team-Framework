@@ -5,17 +5,28 @@ api/routes/vulnerabilities.py — Vulnerability Intelligence API
 
 from fastapi import APIRouter, HTTPException, Query
 from engine.modules.api.schemas import VulnOut, VulnListResponse
-from engine.database.repository import get_all_sessions, get_vulns_by_session
+from engine.modules.api.current_report import (
+    load_latest_report,
+)
 
 router = APIRouter(prefix="/api/vulnerabilities", tags=["Vulnerabilities"])
 
 
 def _get_latest_vulns() -> list[dict]:
-    sessions = get_all_sessions()
-    if not sessions:
-        return []
-    return get_vulns_by_session(sessions[0]["id"])
+    report = load_latest_report()
 
+    vulnerabilities = report.get(
+        "vulnerabilities",
+        []
+    )
+
+    if not isinstance(
+        vulnerabilities,
+        list
+    ):
+        return []
+
+    return vulnerabilities
 
 def _to_vuln_out(v: dict) -> VulnOut:
     intel = v.get("intel", {})

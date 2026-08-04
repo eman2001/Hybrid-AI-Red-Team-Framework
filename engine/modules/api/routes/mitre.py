@@ -8,7 +8,10 @@ from engine.modules.api.schemas import (
     MitreResponse, TechniqueOut, TacticDistOut,
     HeatmapResponse, HeatmapTechniqueOut,
 )
-from engine.database.repository import get_all_sessions, get_mitre_by_session
+
+from engine.modules.api.current_report import (
+    load_latest_report,
+)
 
 router = APIRouter(prefix="/api/mitre", tags=["MITRE ATT&CK"])
 
@@ -27,10 +30,70 @@ SCORE_MAP = {
 
 
 def _get_latest_techniques() -> list[dict]:
-    sessions = get_all_sessions()
-    if not sessions:
+    report = load_latest_report()
+
+    mitre_analysis = report.get(
+        "mitre_analysis",
+        {}
+    )
+
+    raw_techniques = mitre_analysis.get(
+        "techniques",
+        []
+    )
+
+    if not isinstance(
+        raw_techniques,
+        list
+    ):
         return []
-    return get_mitre_by_session(sessions[0]["id"])
+
+    # The report may contain repeated mappings for
+    # multiple findings. The frontend needs unique
+    # ATT&CK techniques.
+    unique = {}
+
+    for technique in raw_techniques:
+        if not isinstance(
+            technique,
+            dict
+        ):
+            continue
+
+        technique_id = (
+            technique.get("technique_id")
+            or
+            technique.get("techniqueID")
+        )
+
+        if not technique_id:
+            continue
+
+        existing = unique.get(
+            technique_id
+        )
+
+        if (
+            existing is None
+            or float(
+                technique.get(
+                    "confidence",
+                    0
+                )
+            )
+            >
+            float(
+                existing.get(
+                    "confidence",
+                    0
+                )
+            )
+        ):
+            unique[technique_id] = technique
+
+    return list(
+        unique.values()
+    )
 
 
 @router.get("/techniques", response_model=MitreResponse)

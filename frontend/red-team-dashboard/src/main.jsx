@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 /* Temporary legacy CSS — سنحذفه بعد نقل جميع الأقسام */
-import "./index.css";
+
 import App from "./App.jsx";
 
 

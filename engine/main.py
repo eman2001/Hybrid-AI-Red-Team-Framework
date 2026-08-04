@@ -35,7 +35,9 @@ from engine.modules.reporting          import ReportGenerator
 from engine.modules.social_engineering import SocialEngineeringModule
 from backend.core.progress import update, finish, reset
 from backend.storage.activity_store import add_activity
-
+from engine.modules.api.current_report import (
+    set_latest_session,
+)
 
 # ── OWASP Web Security Module (NEW) ──────────────────────────────────
 from engine.modules.web_security import (
@@ -189,15 +191,37 @@ def run_pipeline(target: str, lhost: str):
     16
     )
     print("\n[Phase 2] Scanning & Service Enumeration")
-    scanner      = ScannerModule(live_hosts[0])
+    scanner = ScannerModule(live_hosts[0])
     scan_results = scanner.scan_target()
-   
-    
-    # Run OWASP web security scan (adds web vulnerability detection)
+
+# Run OWASP web security scan
     owasp_results = run_owasp_web_scan(target)
-    
-    if not scan_results or all(len(d["ports"]) == 0 for d in scan_results.values()):
-        print("[-] No open ports found. Halting."); return
+
+# Normalize results
+    scan_results = scan_results or {}
+    owasp_results = owasp_results or {}
+
+    has_open_ports = any(
+        isinstance(host_data, dict)
+        and bool(host_data.get("ports"))
+        for host_data in scan_results.values()
+    )
+
+    has_owasp_findings = bool(
+        owasp_results.get("owasp_findings")
+    )
+
+# Stop only if both Nmap and OWASP returned nothing
+    if not has_open_ports and not has_owasp_findings:
+        print("[-] No open ports or OWASP findings found. Halting.")
+        return
+
+# Continue when OWASP detected valid web findings
+    if not has_open_ports and has_owasp_findings:
+        print(
+            "[!] No Nmap ports were parsed, but OWASP findings exist. "
+            "Continuing in web-assessment mode."
+        )
     add_activity(
     title="Scanning Completed",
     description="Port and service enumeration finished",
@@ -212,7 +236,11 @@ def run_pipeline(target: str, lhost: str):
     )
     print("\n[Phase 3] Vulnerability Mapping (ExploitDB + Fallback + OWASP)")
     vuln_mapper   = VulnMapperModule()
-    vuln_findings = vuln_mapper.map_vulnerabilities(scan_results)
+    vuln_findings = (
+        vuln_mapper.map_vulnerabilities(scan_results)
+        if has_open_ports
+        else []
+    )
 
     # Merge OWASP findings into vulnerability list
     if owasp_results.get('owasp_findings'):
@@ -464,7 +492,8 @@ def run_pipeline(target: str, lhost: str):
         output_dir     = report_dir,
     )
     report_file = report.get("saved_files", {}).get("json", "")
-
+    # Make this completed assessment the active frontend session.
+    set_latest_session(session_id)
     # Database
     try:
         db_id = save_session(session_id, target, lhost, live_hosts)
