@@ -1,0 +1,16 @@
+[
+  "os_type_linux",
+  "os_type_windows",
+  "privilege_level_admin",
+  "privilege_level_high",
+  "privilege_level_low",
+  "privilege_level_medium",
+  "privilege_level_root",
+  "privilege_level_system",
+  "privilege_level_user",
+  "hashdump_success",
+  "sysinfo_success",
+  "network_enum",
+  "process_list",
+  "local_exploit_suggested"
+]

@@ -3,8 +3,15 @@ train_mitre_model.py
 --------------------
 Trains the MITRE ATT&CK tactic classifier (TF-IDF + Random Forest).
 
-v2: Builds training data automatically from the official STIX enterprise-attack.json
-    (709 techniques -> 890+ samples) and merges with the original hand-crafted set.
+v3.2: Base dataset is the clean v2.1 technique-description set (697 samples,
+      one per technique, first kill-chain phase only -- this was the best
+      result so far at 82.9% accuracy). Procedure examples are added ONLY
+      for the tactics with very few native techniques (privilege-escalation:
+      26, initial-access: 15, exfiltration: 19), capped at a modest number
+      per tactic. Strong tactics (defense-evasion, discovery, etc.) are left
+      untouched to avoid re-introducing the label/text mismatch noise seen
+      in v3 (uncapped procedures, 70.3%) and v3.1 (procedures for all
+      tactics, 67.1%).
 
 Run once before starting the pipeline:
     python train_mitre_model.py
@@ -18,6 +25,7 @@ import csv
 import json
 import os
 import pickle
+import random
 import re
 
 from sklearn.ensemble import RandomForestClassifier
@@ -30,6 +38,11 @@ STIX_PATH         = "data/enterprise-attack.json"
 STIX_TRAINING_CSV = "data/stix_training.csv"
 MODEL_PATH        = "models/mitre_classifier.pkl"
 
+MIN_PROCEDURE_WORDS = 6
+MAX_PROCEDURE_PER_WEAK_TACTIC = 40   # only applied to WEAK_TACTICS below
+WEAK_TACTICS = {"privilege-escalation", "initial-access", "exfiltration"}
+RANDOM_SEED = 42
+
 TACTIC_ALIASES = {
     "stealth":            "defense-evasion",
     "defense-impairment": "defense-evasion",
@@ -38,51 +51,53 @@ TACTIC_ALIASES = {
 HANDCRAFTED_DATA = [
     ("vsftpd backdoor remote code execution ftp 21",           "initial-access"),
     ("samba usermap script smb 445 command injection",         "lateral-movement"),
-    ("eternalblue ms17 smb 445 windows",                       "lateral-movement"),
-    ("bluekeep rdp 3389 windows remote",                       "lateral-movement"),
-    ("drupalgeddon web http 80 exploit",                       "initial-access"),
-    ("struts ognl injection http 8080 java",                   "initial-access"),
-    ("unreal ircd backdoor irc 6667",                          "initial-access"),
-    ("distcc exec remote code linux 3632",                     "initial-access"),
-    ("java rmi server lateral 1099",                           "lateral-movement"),
-    ("ms08 netapi smb 445 windows buffer overflow",            "lateral-movement"),
-    ("ssh brute force credential 22",                          "credential-access"),
-    ("ftp brute force credential 21",                          "credential-access"),
-    ("telnet brute force valid accounts 23",                   "credential-access"),
-    ("rdp brute force credential 3389",                        "credential-access"),
-    ("mysql brute force credential 3306",                      "credential-access"),
-    ("hashdump credential dump ntlm windows",                  "credential-access"),
-    ("ssh private key credential dump linux",                  "credential-access"),
-    ("getsystem privilege escalation windows",                 "privilege-escalation"),
-    ("sudo nopasswd privilege escalation linux",               "privilege-escalation"),
-    ("local exploit suggester privilege linux windows",        "privilege-escalation"),
-    ("sysinfo discovery system information",                   "discovery"),
-    ("getuid user discovery system owner",                     "discovery"),
-    ("arp route network discovery enum",                       "discovery"),
-    ("ping sweep remote system discovery network",             "discovery"),
-    ("process list discovery ps windows linux",                "discovery"),
-    ("meterpreter command shell execution interpreter",        "execution"),
-    ("bash shell command scripting interpreter linux",         "execution"),
-    ("powershell command scripting windows execution",         "execution"),
-    ("web application exploit public facing http",             "initial-access"),
-    ("php cgi argument injection web 80",                      "initial-access"),
-    ("wordpress admin shell upload http",                      "initial-access"),
-    ("jenkins script console http 8080",                       "execution"),
-    ("exfiltration ftp c2 channel data",                       "exfiltration"),
-    ("phishing spearphishing email smtp link",                 "initial-access"),
-    ("scheduled task persistence cron windows",                "persistence"),
-    ("registry run key persistence windows",                   "persistence"),
-    ("lateral movement psexec smb windows",                    "lateral-movement"),
-    ("remote services ssh linux lateral",                      "lateral-movement"),
-    ("collection files directory discovery",                   "collection"),
-    ("impact ransomware encryption data",                      "impact"),
+    ("eternalblue ms17 smb 445 windows",                        "lateral-movement"),
+    ("bluekeep rdp 3389 windows remote",                        "lateral-movement"),
+    ("drupalgeddon web http 80 exploit",                        "initial-access"),
+    ("struts ognl injection http 8080 java",                    "initial-access"),
+    ("unreal ircd backdoor irc 6667",                           "initial-access"),
+    ("distcc exec remote code linux 3632",                      "initial-access"),
+    ("java rmi server lateral 1099",                            "lateral-movement"),
+    ("ms08 netapi smb 445 windows buffer overflow",             "lateral-movement"),
+    ("ssh brute force credential 22",                           "credential-access"),
+    ("ftp brute force credential 21",                           "credential-access"),
+    ("telnet brute force valid accounts 23",                    "credential-access"),
+    ("rdp brute force credential 3389",                         "credential-access"),
+    ("mysql brute force credential 3306",                       "credential-access"),
+    ("hashdump credential dump ntlm windows",                   "credential-access"),
+    ("ssh private key credential dump linux",                   "credential-access"),
+    ("getsystem privilege escalation windows",                  "privilege-escalation"),
+    ("sudo nopasswd privilege escalation linux",                "privilege-escalation"),
+    ("local exploit suggester privilege linux windows",         "privilege-escalation"),
+    ("sysinfo discovery system information",                    "discovery"),
+    ("getuid user discovery system owner",                      "discovery"),
+    ("arp route network discovery enum",                        "discovery"),
+    ("ping sweep remote system discovery network",              "discovery"),
+    ("process list discovery ps windows linux",                 "discovery"),
+    ("meterpreter command shell execution interpreter",         "execution"),
+    ("bash shell command scripting interpreter linux",          "execution"),
+    ("powershell command scripting windows execution",          "execution"),
+    ("web application exploit public facing http",              "initial-access"),
+    ("php cgi argument injection web 80",                       "initial-access"),
+    ("wordpress admin shell upload http",                       "initial-access"),
+    ("jenkins script console http 8080",                        "execution"),
+    ("exfiltration ftp c2 channel data",                        "exfiltration"),
+    ("phishing spearphishing email smtp link",                  "initial-access"),
+    ("scheduled task persistence cron windows",                 "persistence"),
+    ("registry run key persistence windows",                    "persistence"),
+    ("lateral movement psexec smb windows",                     "lateral-movement"),
+    ("remote services ssh linux lateral",                       "lateral-movement"),
+    ("collection files directory discovery",                    "collection"),
+    ("impact ransomware encryption data",                       "impact"),
 ]
 
 
 def _clean(text):
     text = re.sub(r"```.*?```", " ", text, flags=re.DOTALL)
     text = re.sub(r"`[^`]+`", " ", text)
+    text = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", text)
     text = re.sub(r"https?://\S+", " ", text)
+    text = re.sub(r"\(Citation:[^)]*\)", " ", text)
     text = re.sub(r"[/_\-\.\(\)\[\]]", " ", text)
     text = re.sub(r"\s+", " ", text).strip().lower()
     return text
@@ -95,38 +110,71 @@ def _tech_to_text(obj):
     return _clean(f"{name} {desc} {plats}")
 
 
-def build_stix_samples(stix_path):
-    if not os.path.exists(stix_path):
-        print(f"  [!] STIX file not found: {stix_path}")
-        return []
-
-    print(f"  [*] Loading STIX data from {stix_path} ...")
-    with open(stix_path, encoding="utf-8") as f:
-        data = json.load(f)
-
-    samples = []
-    skipped = 0
-
+def build_technique_tactic_map(data):
+    tactic_map = {}
     for obj in data.get("objects", []):
         if obj.get("type") != "attack-pattern":
             continue
         if obj.get("revoked") or obj.get("x_mitre_deprecated"):
-            skipped += 1
             continue
-
-        text = _tech_to_text(obj)
-        if not text:
-            continue
-
         for phase in obj.get("kill_chain_phases", []):
             if phase.get("kill_chain_name") != "mitre-attack":
                 continue
             tactic = phase.get("phase_name", "").strip()
             tactic = TACTIC_ALIASES.get(tactic, tactic)
             if tactic:
-                samples.append((text, tactic))
+                tactic_map[obj["id"]] = tactic
+                break
+    return tactic_map
 
-    print(f"  [+] Extracted {len(samples)} samples ({skipped} skipped).")
+
+def build_stix_samples(data, tactic_map):
+    """One clean sample per technique -- the proven v2.1 backbone."""
+    samples = []
+    for obj in data.get("objects", []):
+        if obj.get("type") != "attack-pattern":
+            continue
+        if obj.get("id") not in tactic_map:
+            continue
+        text = _tech_to_text(obj)
+        if text:
+            samples.append((text, tactic_map[obj["id"]]))
+    print(f"  [+] Technique description samples: {len(samples)}")
+    return samples
+
+
+def build_weak_tactic_procedures(data, tactic_map):
+    """Procedure examples, but ONLY for WEAK_TACTICS, capped per tactic."""
+    by_tactic = {t: [] for t in WEAK_TACTICS}
+    skipped_short = 0
+
+    for obj in data.get("objects", []):
+        if obj.get("type") != "relationship":
+            continue
+        if obj.get("relationship_type") != "uses":
+            continue
+        if obj.get("revoked"):
+            continue
+        target = obj.get("target_ref", "")
+        tactic = tactic_map.get(target)
+        if tactic not in WEAK_TACTICS:
+            continue
+        desc = (obj.get("description") or "").strip()
+        if len(desc.split()) < MIN_PROCEDURE_WORDS:
+            skipped_short += 1
+            continue
+        text = _clean(desc)
+        if text:
+            by_tactic[tactic].append(text)
+
+    rng = random.Random(RANDOM_SEED)
+    samples = []
+    print(f"  [*] Procedure examples for weak tactics (skipped {skipped_short} too-short):")
+    for tactic, texts in by_tactic.items():
+        rng.shuffle(texts)
+        kept = texts[:MAX_PROCEDURE_PER_WEAK_TACTIC]
+        samples.extend((t, tactic) for t in kept)
+        print(f"    {tactic:<30} {len(texts):>6} available -> kept {len(kept)}")
     return samples
 
 
@@ -144,9 +192,23 @@ def normalize(text):
 
 
 def train():
-    print("\n[MITRE Classifier Training - v2 STIX-augmented]\n")
+    print("\n[MITRE Classifier Training - v3.2 technique backbone + targeted weak-tactic procedures]\n")
 
-    stix_samples = build_stix_samples(STIX_PATH)
+    if not os.path.exists(STIX_PATH):
+        print(f"  [!] STIX file not found: {STIX_PATH}")
+        return
+
+    print(f"  [*] Loading STIX data from {STIX_PATH} ...")
+    with open(STIX_PATH, encoding="utf-8") as f:
+        data = json.load(f)
+
+    tactic_map = build_technique_tactic_map(data)
+    print(f"  [+] Techniques with a known tactic: {len(tactic_map)}")
+
+    technique_samples = build_stix_samples(data, tactic_map)
+    weak_procedure_samples = build_weak_tactic_procedures(data, tactic_map)
+
+    stix_samples = technique_samples + weak_procedure_samples
     save_stix_csv(stix_samples, STIX_TRAINING_CSV)
 
     all_samples = stix_samples + HANDCRAFTED_DATA
@@ -160,7 +222,7 @@ def train():
     print("  Tactic distribution:")
     for tactic, count in sorted(dist.items(), key=lambda x: -x[1]):
         bar = "=" * (count // 5)
-        print(f"    {tactic:<30} {count:>4}  {bar}")
+        print(f"    {tactic:<30} {count:>5}  {bar}")
 
     le = LabelEncoder()
     y  = le.fit_transform(tactics)
@@ -204,14 +266,16 @@ def train():
             "model":         model,
             "vectorizer":    vectorizer,
             "label_encoder": le,
-            "version":       "2.0-stix",
+            "version":       "3.2-technique-backbone-targeted-procedures",
             "n_train":       X_train.shape[0],
             "accuracy":      round(accuracy, 4),
         }, f)
 
     print(f"\n  [+] Model saved -> {MODEL_PATH}")
     print(f"  [+] Tactics covered ({len(le.classes_)}): {list(le.classes_)}")
-    print(f"  [+] Training samples : {len(texts)} ({len(stix_samples)} STIX + {len(HANDCRAFTED_DATA)} hand-crafted)")
+    print(f"  [+] Training samples : {len(texts)} "
+          f"({len(technique_samples)} technique + {len(weak_procedure_samples)} weak-tactic-procedure + "
+          f"{len(HANDCRAFTED_DATA)} hand-crafted)")
 
 
 if __name__ == "__main__":

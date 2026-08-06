@@ -7,9 +7,9 @@ import sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import pytest
-from modules.mitre.rule_resolver   import RuleResolver
-from modules.mitre.chain_builder   import ChainBuilder
-from modules.mitre.heatmap_generator import HeatmapGenerator
+from engine.modules.mitre.rule_resolver   import RuleResolver
+from engine.modules.mitre.chain_builder   import ChainBuilder
+from engine.modules.mitre.heatmap_generator import HeatmapGenerator
 
 
 class TestRuleResolver:

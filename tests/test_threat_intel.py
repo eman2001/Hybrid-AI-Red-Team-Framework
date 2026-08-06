@@ -7,9 +7,9 @@ import sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import pytest
-from modules.threat_intelligence.epss_engine  import EpssEngine
-from modules.threat_intelligence.kev_engine   import KevEngine
-from modules.threat_intelligence.threat_score  import ThreatScore
+from engine.modules.threat_intelligence.epss_engine  import EpssEngine
+from engine.modules.threat_intelligence.kev_engine   import KevEngine
+from engine.modules.threat_intelligence.threat_score  import ThreatScore
 
 
 class TestEpssEngine:

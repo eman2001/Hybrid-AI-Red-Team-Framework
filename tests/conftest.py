@@ -7,6 +7,14 @@ import pytest
 # Make project root importable from tests/
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from engine.config.database import init_db
+
+
+@pytest.fixture(scope="session", autouse=True)
+def _init_test_db():
+    """Create all DB tables once before the test session runs."""
+    init_db()
+
 
 @pytest.fixture(scope="session")
 def sample_findings():

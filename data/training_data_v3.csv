@@ -1,0 +1,3 @@
+exploit_name,service,port,auth_required,remote,severity,exploitability,label
+exploit/java/remote/zenworks_uploadservlet,remote,80,0,1,high,20.0,1
+exploit/unix/ftp/vsftpd_234_backdoor,ftp,0,0,1,critical,20.0,1
