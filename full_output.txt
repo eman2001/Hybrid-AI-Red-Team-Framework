@@ -1,0 +1,21 @@
+  [KEV] 1612 known exploited CVEs loaded.
+INFO     | Logging initialised — file: /home/nada/Documents/Hybrid-AI-Red-Team-Framework/engine/logs/redteam.log
+==============================================================
+   Hybrid AI Red Team Simulation Framework v2.1
+   UCAS Cyber Security Engineering 2026
+==============================================================
+
+Enter Target IP or Network (e.g. 192.168.1.100 or http://site.com): Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/nada/Documents/Hybrid-AI-Red-Team-Framework/engine/main.py", line 570, in <module>
+    main()
+    ~~~~^^
+  File "/home/nada/Documents/Hybrid-AI-Red-Team-Framework/engine/main.py", line 559, in main
+    target = input(
+             ~~~~~^
+        "\nEnter Target IP or Network (e.g. 192.168.1.100 or http://site.com): "
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ).strip()
+    ^
+KeyboardInterrupt
