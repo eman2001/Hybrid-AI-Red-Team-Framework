@@ -12,6 +12,13 @@ import re
 
 MODEL_PATH = "models/mitre_classifier.pkl"
 
+def _normalize_for_model(text: str) -> str:
+    """نفس normalize() تماما اللي استخدمها train_mitre_model.py وقت
+    التدريب (استبدال / _ - بمسافات) -- لازم تطابق حرفيا وقت الاستدلال
+    عشان الكلمات متل 'local_exploit_suggester' تتفكك لنفس الشكل اللي
+    شافه الموديل بالتدريب."""
+    return re.sub(r"[/_\-]", " ", text.lower())
+
 # ── Lightweight fallback (no model file needed) ───────────────────────
 FALLBACK_KEYWORDS = [
     (["vsftpd", "backdoor", "irc", "unreal", "distcc", "drupal", "struts",
@@ -77,10 +84,11 @@ class MLClassifier:
 
     def _model_predict(self, text: str, context: dict) -> dict | None:
         try:
+            normalized_text = _normalize_for_model(text)
             if hasattr(self._fe, "transform_one"):
                 X = self._fe.transform_one(context)
             else:
-                X = self._fe.transform([text])
+                X = self._fe.transform([normalized_text])
 
             pred   = self._model.predict(X)[0]
             if hasattr(self._model, 'predict_proba'):

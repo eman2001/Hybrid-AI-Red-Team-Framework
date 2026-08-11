@@ -111,6 +111,18 @@ def save_exploit_results(db_id: int, exploit_results: list) -> None:
     try:
         rows = []
         for r in exploit_results:
+            built_details = {
+                "exploit_type":     r.get("type", ""),
+                "cvss":             r.get("cvss", None),
+                "cve":              r.get("cve", ""),
+                "service":          r.get("service", ""),
+                "epss":             r.get("epss", None),
+                "in_kev":           r.get("in_kev", False),
+                "winning_method":   r.get("winning_method"),
+                "session_obtained": r.get("session_obtained", False),
+                "attempts":         r.get("attempts", []),
+                "selection_reason": r.get("selection_reason", ""),
+            }
             rows.append(ExploitResult(
                 session_id = db_id,
                 host       = r.get("host", ""),
@@ -118,7 +130,7 @@ def save_exploit_results(db_id: int, exploit_results: list) -> None:
                 exploit    = r.get("exploit", r.get("module", "")),
                 success    = bool(r.get("success", False)),
                 score      = float(r.get("selection_score", 0.0)),
-                details    = _safe(r.get("details", {})),
+                details    = _safe(r.get("details") or built_details),
             ))
         db.bulk_save_objects(rows)
         db.commit()

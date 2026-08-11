@@ -51,10 +51,15 @@ class ChainBuilder:
         Ordered dict keyed by phase index (1-based string),
         each value contains tactic name, techniques list, hosts, confidence.
         """
-        # Collect all techniques grouped by tactic
         by_tactic: dict[str, list] = {}
 
         for result in mapped_results:
+            # A failed exploit attempt must never appear as an "achieved"
+            # step in the Attack Chain. Only successful exploitation
+            # (or non-exploit phases that don't carry a success flag at
+            # all) contributes techniques here.
+            if "success" in result and not result.get("success"):
+                continue
             for layer_result in result.get("layers", []):
                 tactic = str(layer_result.get("tactic", "unknown")).lower()
                 entry  = {
@@ -64,17 +69,14 @@ class ChainBuilder:
                     "source":         layer_result.get("source", "unknown"),
                     "host":           result.get("host", ""),
                 }
-                # Skip ML pseudo-IDs (T-KW, T-ML) — not real ATT&CK IDs
                 if entry["technique_id"].startswith("T-"):
                     continue
                 if tactic not in by_tactic:
                     by_tactic[tactic] = []
-                # Deduplicate by technique_id
                 ids = [e["technique_id"] for e in by_tactic[tactic]]
                 if entry["technique_id"] not in ids:
                     by_tactic[tactic].append(entry)
 
-        # Build ordered chain
         chain = {}
         phase_num = 1
 

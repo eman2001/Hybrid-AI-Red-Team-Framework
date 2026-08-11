@@ -335,29 +335,17 @@ def run_pipeline(target: str, lhost: str):
     post_commands = []
 
     for result in exploit_results:
-        if result.get("session_obtained"):
+        if result.get("success"):
             pe        = PostExploitModule(lhost)
             # attack_chain=None — integrator runs after Phase 8 (correct order)
             post_data = pe.run_post_exploitation(
                 result["host"], result["port"],
                 result.get("exploit", ""),
-                session_id=result.get("session_id"),
                 attack_chain=None,
             )
-            if post_data.get("session_obtained"):
-                post_commands = ["sysinfo", "getuid", "hashdump",
-                                 "arp", "ps", "getsystem"]
+            post_commands = ["sysinfo", "getuid", "hashdump",
+                             "arp", "ps", "getsystem"]
             break
-        elif result.get("success"):
-            # Exploit "succeeded" (e.g. credentials found via hydra) but
-            # no Metasploit session was opened -- there is nothing to run
-            # post-exploitation commands on, so we correctly skip it
-            # instead of faking session-based results.
-            log.info(
-                "Exploit succeeded via %s on %s:%s but no MSF session was "
-                "obtained -- skipping post-exploitation for this target.",
-                result.get("winning_method"), result.get("host"), result.get("port"),
-            )
 
     # ── Phase 8: Hybrid MITRE ATT&CK Engine ──────────────────────────
     update(

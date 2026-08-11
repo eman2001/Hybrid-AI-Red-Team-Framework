@@ -1,7 +1,8 @@
 """
-build_vuln_dataset.py
-------------------------
-Builds data/vuln_training_data.csv for train_vuln_model.py.
+build_vuln_dataset.py (v3 -- no-leakage + expanded)
+-------------------------------------------------------
+in_kev/has_msf are used ONLY to build the label, never as features.
+Also includes KEV-only CVEs (no public exploit) to grow the "high" class.
 """
 import argparse
 import csv
@@ -52,6 +53,23 @@ def classify_label(in_kev, has_msf, cvss):
     return 3
 
 
+def nvd_fields_or_none(nvd_rec):
+    if not nvd_rec:
+        return None
+    av = nvd_rec.get("attack_vector")
+    pr = nvd_rec.get("privileges_required")
+    ex = nvd_rec.get("exploitability_score")
+    if av is None or pr is None or ex is None:
+        return None
+    return {
+        "auth_required": 0 if pr == "NONE" else 1,
+        "remote": 1 if av == "NETWORK" else 0,
+        "severity": nvd_rec.get("severity") or "UNKNOWN",
+        "exploitability": ex,
+        "cvss": nvd_rec.get("cvss_score"),
+    }
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--edb", default="data/edb_metadata.json")
@@ -72,6 +90,7 @@ def main():
     print(f"[+] NVD lookup entries: {len(nvd_lookup)}")
 
     rows = []
+    covered_cves = set()
     skipped_missing_fields = 0
 
     for edb_id, rec in edb_records.items():
@@ -84,17 +103,8 @@ def main():
         service = PORT_TO_SERVICE.get(port, "other")
 
         for cve_id in rec.get("cve_ids", []):
-            nvd_rec = nvd_lookup.get(cve_id)
-            if not nvd_rec:
-                continue
-
-            attack_vector = nvd_rec.get("attack_vector")
-            privileges_required = nvd_rec.get("privileges_required")
-            exploitability = nvd_rec.get("exploitability_score")
-            severity = nvd_rec.get("severity")
-            cvss = nvd_rec.get("cvss_score")
-
-            if attack_vector is None or privileges_required is None or exploitability is None:
+            nvd_fields = nvd_fields_or_none(nvd_lookup.get(cve_id))
+            if nvd_fields is None:
                 skipped_missing_fields += 1
                 continue
 
@@ -103,15 +113,41 @@ def main():
                 "exploit_name": exploit_name,
                 "service": service,
                 "port": port,
-                "auth_required": 0 if privileges_required == "NONE" else 1,
-                "remote": 1 if attack_vector == "NETWORK" else 0,
-                "severity": severity or "UNKNOWN",
-                "exploitability": exploitability,
-                "label": classify_label(cve_id in kev_ids, has_msf, cvss),
+                "auth_required": nvd_fields["auth_required"],
+                "remote": nvd_fields["remote"],
+                "severity": nvd_fields["severity"],
+                "exploitability": nvd_fields["exploitability"],
+                "label": classify_label(cve_id in kev_ids, has_msf, nvd_fields["cvss"]),
             })
+            covered_cves.add(cve_id)
 
-    print(f"[+] Rows built: {len(rows)}")
-    print(f"[+] Rows skipped (missing NVD extra fields): {skipped_missing_fields}")
+    edb_row_count = len(rows)
+    print(f"[+] Rows from EDB entries (real port/exploit): {edb_row_count} "
+          f"({skipped_missing_fields} skipped: missing NVD extra fields)")
+
+    kev_only_added = 0
+    for cve_id in kev_ids:
+        if cve_id in covered_cves:
+            continue
+        nvd_fields = nvd_fields_or_none(nvd_lookup.get(cve_id))
+        if nvd_fields is None:
+            continue
+
+        rows.append({
+            "cve_id": cve_id,
+            "exploit_name": "unknown (KEV-confirmed, no public exploit found)",
+            "service": "unknown",
+            "port": 0,
+            "auth_required": nvd_fields["auth_required"],
+            "remote": nvd_fields["remote"],
+            "severity": nvd_fields["severity"],
+            "exploitability": nvd_fields["exploitability"],
+            "label": classify_label(True, False, nvd_fields["cvss"]),
+        })
+        kev_only_added += 1
+
+    print(f"[+] Additional KEV-only rows (no public exploit found): {kev_only_added}")
+    print(f"[+] Total rows: {len(rows)}")
 
     from collections import Counter
     dist = Counter(r["label"] for r in rows)

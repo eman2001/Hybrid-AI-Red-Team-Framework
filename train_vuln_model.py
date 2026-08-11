@@ -1,8 +1,9 @@
 """
-train_vuln_model.py (v2)
----------------------------
-Trains the Vulnerability Prioritizer model on data/vuln_training_data.csv
-(real, NVD/EDB/KEV-grounded), with class_weight="balanced" and stratified CV.
+train_vuln_model.py (v2, no-leakage)
+---------------------------------------
+Trains on data/vuln_training_data.csv using ONLY features that don't
+already encode the label (no in_kev/has_msf -- see build_vuln_dataset.py
+design note). class_weight="balanced" + stratified 5-fold CV.
 
 Run:
     python train_vuln_model.py --data data/vuln_training_data.csv
@@ -79,7 +80,7 @@ def train(data_path, model_out):
         "le_service": le_service,
         "le_severity": le_severity,
         "feature_columns": features,
-        "version": "2.0-real-data-balanced",
+        "version": "2.1-no-leakage-balanced",
     }
     with open(model_out, "wb") as f:
         pickle.dump(model_data, f)

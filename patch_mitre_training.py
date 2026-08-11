@@ -1,54 +1,25 @@
 """
-train_mitre_model.py
---------------------
-Trains the MITRE ATT&CK tactic classifier (TF-IDF + Random Forest).
-
-v3.2: Base dataset is the clean v2.1 technique-description set (697 samples,
-      one per technique, first kill-chain phase only -- this was the best
-      result so far at 82.9% accuracy). Procedure examples are added ONLY
-      for the tactics with very few native techniques (privilege-escalation:
-      26, initial-access: 15, exfiltration: 19), capped at a modest number
-      per tactic. Strong tactics (defense-evasion, discovery, etc.) are left
-      untouched to avoid re-introducing the label/text mismatch noise seen
-      in v3 (uncapped procedures, 70.3%) and v3.1 (procedures for all
-      tactics, 67.1%).
-
-Run once before starting the pipeline:
-    python train_mitre_model.py
-
-Outputs:
-    models/mitre_classifier.pkl
-    data/stix_training.csv
+patch_mitre_training.py
+------------------------
+يوسّع HANDCRAFTED_DATA بـ train_mitre_model.py بمئات الأمثلة القصيرة
+المتنوعة (بنفس شكل ml_classifier._context_text: exploit+service+cve+
+post_commands)، ويغيّر min_df من 2 لـ 1 عشان الكلمات القصيرة النادرة
+ما تنشال من التمثيل الرقمي.
 """
 
-import csv
-import json
-import os
-import pickle
-import random
 import re
 
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics import classification_report
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
+path = "train_mitre_model.py"
+with open(path, encoding="utf-8") as f:
+    content = f.read()
 
-STIX_PATH         = "data/enterprise-attack.json"
-STIX_TRAINING_CSV = "data/stix_training.csv"
-MODEL_PATH        = "models/mitre_classifier.pkl"
+# نسخة احتياطية
+with open(path + ".bak", "w", encoding="utf-8") as f:
+    f.write(content)
+print("✅ نسخة احتياطية: train_mitre_model.py.bak")
 
-MIN_PROCEDURE_WORDS = 6
-MAX_PROCEDURE_PER_WEAK_TACTIC = 40   # only applied to WEAK_TACTICS below
-WEAK_TACTICS = {"privilege-escalation", "initial-access", "exfiltration"}
-RANDOM_SEED = 42
-
-TACTIC_ALIASES = {
-    "stealth":            "defense-evasion",
-    "defense-impairment": "defense-evasion",
-}
-
-HANDCRAFTED_DATA = [
+# ── 1) البيانات الموسّعة (متنوعة ومكرّرة عشان تعدّي min_df) ──────────
+NEW_HANDCRAFTED = '''HANDCRAFTED_DATA = [
     # initial-access
     ("vsftpd backdoor remote code execution ftp 21",           "initial-access"),
     ("drupalgeddon web http 80 exploit",                        "initial-access"),
@@ -168,194 +139,23 @@ HANDCRAFTED_DATA = [
     ("data exfiltration upload transfer c2",                    "exfiltration"),
     ("exfil download all files transfer",                       "exfiltration"),
     ("dns tunneling exfiltration covert channel",               "exfiltration"),
-]
+]'''
 
+pattern = re.compile(r"HANDCRAFTED_DATA = \[.*?\n\]", re.DOTALL)
+if not pattern.search(content):
+    print("❌ ما لقيت HANDCRAFTED_DATA بالشكل المتوقع — لازم تعديل يدوي.")
+else:
+    content = pattern.sub(NEW_HANDCRAFTED, content, count=1)
+    print("✅ تم توسيع HANDCRAFTED_DATA")
 
-def _clean(text):
-    text = re.sub(r"```.*?```", " ", text, flags=re.DOTALL)
-    text = re.sub(r"`[^`]+`", " ", text)
-    text = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", text)
-    text = re.sub(r"https?://\S+", " ", text)
-    text = re.sub(r"\(Citation:[^)]*\)", " ", text)
-    text = re.sub(r"[/_\-\.\(\)\[\]]", " ", text)
-    text = re.sub(r"\s+", " ", text).strip().lower()
-    return text
+# ── 2) تعديل min_df=2 -> min_df=1 ────────────────────────────────────
+if "min_df=2" in content:
+    content = content.replace("min_df=2", "min_df=1")
+    print("✅ تم تعديل min_df=2 -> min_df=1")
+else:
+    print("⚠️ ما لقيت min_df=2 بالضبط — تحققي يدويًا.")
 
+with open(path, "w", encoding="utf-8") as f:
+    f.write(content)
 
-def _tech_to_text(obj):
-    name  = obj.get("name", "")
-    desc  = obj.get("description", "")[:400]
-    plats = " ".join(obj.get("x_mitre_platforms", []))
-    return _clean(f"{name} {desc} {plats}")
-
-
-def build_technique_tactic_map(data):
-    tactic_map = {}
-    for obj in data.get("objects", []):
-        if obj.get("type") != "attack-pattern":
-            continue
-        if obj.get("revoked") or obj.get("x_mitre_deprecated"):
-            continue
-        for phase in obj.get("kill_chain_phases", []):
-            if phase.get("kill_chain_name") != "mitre-attack":
-                continue
-            tactic = phase.get("phase_name", "").strip()
-            tactic = TACTIC_ALIASES.get(tactic, tactic)
-            if tactic:
-                tactic_map[obj["id"]] = tactic
-                break
-    return tactic_map
-
-
-def build_stix_samples(data, tactic_map):
-    """One clean sample per technique -- the proven v2.1 backbone."""
-    samples = []
-    for obj in data.get("objects", []):
-        if obj.get("type") != "attack-pattern":
-            continue
-        if obj.get("id") not in tactic_map:
-            continue
-        text = _tech_to_text(obj)
-        if text:
-            samples.append((text, tactic_map[obj["id"]]))
-    print(f"  [+] Technique description samples: {len(samples)}")
-    return samples
-
-
-def build_weak_tactic_procedures(data, tactic_map):
-    """Procedure examples, but ONLY for WEAK_TACTICS, capped per tactic."""
-    by_tactic = {t: [] for t in WEAK_TACTICS}
-    skipped_short = 0
-
-    for obj in data.get("objects", []):
-        if obj.get("type") != "relationship":
-            continue
-        if obj.get("relationship_type") != "uses":
-            continue
-        if obj.get("revoked"):
-            continue
-        target = obj.get("target_ref", "")
-        tactic = tactic_map.get(target)
-        if tactic not in WEAK_TACTICS:
-            continue
-        desc = (obj.get("description") or "").strip()
-        if len(desc.split()) < MIN_PROCEDURE_WORDS:
-            skipped_short += 1
-            continue
-        text = _clean(desc)
-        if text:
-            by_tactic[tactic].append(text)
-
-    rng = random.Random(RANDOM_SEED)
-    samples = []
-    print(f"  [*] Procedure examples for weak tactics (skipped {skipped_short} too-short):")
-    for tactic, texts in by_tactic.items():
-        rng.shuffle(texts)
-        kept = texts[:MAX_PROCEDURE_PER_WEAK_TACTIC]
-        samples.extend((t, tactic) for t in kept)
-        print(f"    {tactic:<30} {len(texts):>6} available -> kept {len(kept)}")
-    return samples
-
-
-def save_stix_csv(samples, path):
-    os.makedirs(os.path.dirname(path) if os.path.dirname(path) else ".", exist_ok=True)
-    with open(path, "w", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f)
-        writer.writerow(["text", "tactic"])
-        writer.writerows(samples)
-    print(f"  [+] Saved {len(samples)} samples -> {path}")
-
-
-def normalize(text):
-    return re.sub(r"[/_\-]", " ", text.lower())
-
-
-def train():
-    print("\n[MITRE Classifier Training - v3.2 technique backbone + targeted weak-tactic procedures]\n")
-
-    if not os.path.exists(STIX_PATH):
-        print(f"  [!] STIX file not found: {STIX_PATH}")
-        return
-
-    print(f"  [*] Loading STIX data from {STIX_PATH} ...")
-    with open(STIX_PATH, encoding="utf-8") as f:
-        data = json.load(f)
-
-    tactic_map = build_technique_tactic_map(data)
-    print(f"  [+] Techniques with a known tactic: {len(tactic_map)}")
-
-    technique_samples = build_stix_samples(data, tactic_map)
-    weak_procedure_samples = build_weak_tactic_procedures(data, tactic_map)
-
-    stix_samples = technique_samples + weak_procedure_samples
-    save_stix_csv(stix_samples, STIX_TRAINING_CSV)
-
-    all_samples = stix_samples + HANDCRAFTED_DATA
-    texts   = [normalize(t[0]) for t in all_samples]
-    tactics = [t[1] for t in all_samples]
-
-    print(f"\n  Total training samples : {len(texts)}")
-
-    from collections import Counter
-    dist = Counter(tactics)
-    print("  Tactic distribution:")
-    for tactic, count in sorted(dist.items(), key=lambda x: -x[1]):
-        bar = "=" * (count // 5)
-        print(f"    {tactic:<30} {count:>5}  {bar}")
-
-    le = LabelEncoder()
-    y  = le.fit_transform(tactics)
-
-    vectorizer = TfidfVectorizer(
-        ngram_range=(1, 2),
-        max_features=2000,
-        min_df=1,
-        sublinear_tf=True,
-    )
-    X = vectorizer.fit_transform(texts)
-
-    print(f"\n  Vocabulary size : {len(vectorizer.vocabulary_)}")
-    print(f"  Feature matrix  : {X.shape[0]} x {X.shape[1]}")
-
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.15, random_state=42, stratify=y
-    )
-    print(f"  Train / Test    : {X_train.shape[0]} / {X_test.shape[0]}")
-
-    print("\n  [*] Training Random Forest classifier ...")
-    model = RandomForestClassifier(
-        n_estimators=300,
-        max_depth=None,
-        min_samples_leaf=2,
-        random_state=42,
-        class_weight="balanced",
-        n_jobs=-1,
-    )
-    model.fit(X_train, y_train)
-
-    y_pred   = model.predict(X_test)
-    accuracy = (y_pred == y_test).mean()
-    print(f"\n  Test Accuracy   : {accuracy:.1%}\n")
-    print("  Classification Report:")
-    print(classification_report(y_test, y_pred, target_names=le.classes_, zero_division=0))
-
-    os.makedirs("models", exist_ok=True)
-    with open(MODEL_PATH, "wb") as f:
-        pickle.dump({
-            "model":         model,
-            "vectorizer":    vectorizer,
-            "label_encoder": le,
-            "version":       "3.2-technique-backbone-targeted-procedures",
-            "n_train":       X_train.shape[0],
-            "accuracy":      round(accuracy, 4),
-        }, f)
-
-    print(f"\n  [+] Model saved -> {MODEL_PATH}")
-    print(f"  [+] Tactics covered ({len(le.classes_)}): {list(le.classes_)}")
-    print(f"  [+] Training samples : {len(texts)} "
-          f"({len(technique_samples)} technique + {len(weak_procedure_samples)} weak-tactic-procedure + "
-          f"{len(HANDCRAFTED_DATA)} hand-crafted)")
-
-
-if __name__ == "__main__":
-    train()
+print("\n✅ خلص التعديل. شغّلي الآن: python3 train_mitre_model.py")
