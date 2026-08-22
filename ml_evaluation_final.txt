@@ -1,0 +1,200 @@
+
+======================================================================
+1. DATASET INFORMATION
+======================================================================
+Dataset file           : data/training_data_v2.csv
+Total rows             : 3341
+Unique CVE identifiers : 3082
+Exact duplicate rows   : 187
+Repeated CVE rows      : 259
+
+Priority label distribution:
+  low     : 24     (0.72%)
+  medium  : 1876   (56.15%)
+  high    : 1441   (43.13%)
+
+Exploit type distribution:
+  exploitdb      : 1959
+  kev_only       : 1296
+  metasploit     : 86
+
+Exploit Type vs Priority Label:
+priority_label  high  low  medium
+exploit_type                     
+exploitdb         76   24    1859
+kev_only        1296    0       0
+metasploit        69    0      17
+
+======================================================================
+2. FEATURE ENGINEERING
+======================================================================
+Exploit type encoding: {'exploitdb': 0, 'kev_only': 1, 'metasploit': 2}
+
+======================================================================
+3. STRATIFIED HOLD-OUT SPLIT
+======================================================================
+Training samples : 2672 (80.0%)
+Testing samples  : 669 (20.0%)
+
+Training class distribution:
+  low     : 19
+  medium  : 1500
+  high    : 1153
+
+Testing class distribution:
+  low     : 5
+  medium  : 376
+  high    : 288
+
+======================================================================
+4. BASELINE MODELS
+======================================================================
+
+Dummy Majority Baseline
+-----------------------
+Accuracy        : 0.5620
+Macro Precision : 0.1873
+Macro Recall    : 0.3333
+Macro F1-score  : 0.2399
+
+Classification Report:
+              precision    recall  f1-score   support
+
+         low     0.0000    0.0000    0.0000         5
+      medium     0.5620    1.0000    0.7196       376
+        high     0.0000    0.0000    0.0000       288
+
+    accuracy                         0.5620       669
+   macro avg     0.1873    0.3333    0.2399       669
+weighted avg     0.3159    0.5620    0.4044       669
+
+Confusion Matrix:
+Rows = Actual, Columns = Predicted
+               LOW   MEDIUM   HIGH
+ LOW          0        5      0
+ MEDIUM       0      376      0
+ HIGH         0      288      0
+
+Simple Rule-Based Baseline
+--------------------------
+Accuracy        : 0.9611
+Macro Precision : 0.6432
+Macro Recall    : 0.6434
+Macro F1-score  : 0.6430
+
+Classification Report:
+              precision    recall  f1-score   support
+
+         low     0.0000    0.0000    0.0000         5
+      medium     0.9442    0.9894    0.9662       376
+        high     0.9855    0.9410    0.9627       288
+
+    accuracy                         0.9611       669
+   macro avg     0.6432    0.6434    0.6430       669
+weighted avg     0.9549    0.9611    0.9575       669
+
+Confusion Matrix:
+Rows = Actual, Columns = Predicted
+               LOW   MEDIUM   HIGH
+ LOW          0        5      0
+ MEDIUM       0      372      4
+ HIGH         0       17    271
+
+======================================================================
+5. MACHINE LEARNING MODEL COMPARISON
+======================================================================
+
+5-Fold Stratified Cross-Validation (scoring = Macro-F1)
+DecisionTree_balanced        Macro-F1 = 0.9567 (+/- 0.0223)
+  Fold scores: 0.9232 0.9520 0.9820 0.9806 0.9455
+RandomForest_balanced        Macro-F1 = 0.9718 (+/- 0.0252)
+  Fold scores: 0.9220 0.9898 0.9820 0.9780 0.9871
+
+======================================================================
+6. GROUPED CROSS-VALIDATION BY CVE ID
+======================================================================
+This evaluation prevents the same CVE identifier from appearing in both training and validation within a fold.
+DecisionTree_balanced        Grouped Macro-F1 = 0.9506 (+/- 0.0443)
+  Fold scores: 0.9856 0.9815 0.8724 0.9299 0.9835
+RandomForest_balanced        Grouped Macro-F1 = 0.9717 (+/- 0.0275)
+  Fold scores: 0.9866 0.9815 0.9170 0.9897 0.9835
+
+======================================================================
+7. HELD-OUT TEST EVALUATION
+======================================================================
+
+DecisionTree_balanced
+---------------------
+Accuracy        : 0.9701
+Macro Precision : 0.8891
+Macro Recall    : 0.9771
+Macro F1-score  : 0.9247
+
+Classification Report:
+              precision    recall  f1-score   support
+
+         low     0.7143    1.0000    0.8333         5
+      medium     0.9566    0.9973    0.9766       376
+        high     0.9963    0.9340    0.9642       288
+
+    accuracy                         0.9701       669
+   macro avg     0.8891    0.9771    0.9247       669
+weighted avg     0.9719    0.9701    0.9702       669
+
+Confusion Matrix:
+Rows = Actual, Columns = Predicted
+               LOW   MEDIUM   HIGH
+ LOW          5        0      0
+ MEDIUM       0      375      1
+ HIGH         2       17    269
+
+RandomForest_balanced
+---------------------
+Accuracy        : 0.9761
+Macro Precision : 0.9864
+Macro Recall    : 0.9815
+Macro F1-score  : 0.9835
+
+Classification Report:
+              precision    recall  f1-score   support
+
+         low     1.0000    1.0000    1.0000         5
+      medium     0.9592    1.0000    0.9792       376
+        high     1.0000    0.9444    0.9714       288
+
+    accuracy                         0.9761       669
+   macro avg     0.9864    0.9815    0.9835       669
+weighted avg     0.9771    0.9761    0.9760       669
+
+Confusion Matrix:
+Rows = Actual, Columns = Predicted
+               LOW   MEDIUM   HIGH
+ LOW          5        0      0
+ MEDIUM       0      376      0
+ HIGH         0       16    272
+
+======================================================================
+8. BEST MODEL SELECTION
+======================================================================
+Selected model       : RandomForest_balanced
+Best CV Macro-F1     : 0.9718
+
+======================================================================
+9. FINAL MODEL TRAINING
+======================================================================
+Final deployment model saved -> /home/eman/Desktop/gradution_Pro_edit/engine/models/exploit_model.pkl
+
+======================================================================
+10. EXPERIMENT SUMMARY
+======================================================================
+Dataset size           : 3341
+Unique CVEs            : 3082
+Train/Test split       : 2672/669
+Selected model         : RandomForest_balanced
+5-fold CV Macro-F1     : 0.9718
+Held-out accuracy      : 0.9761
+Held-out macro precision: 0.9864
+Held-out macro recall  : 0.9815
+Held-out macro F1      : 0.9835
+
+[+] Training and evaluation completed.

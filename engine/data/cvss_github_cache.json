@@ -1,0 +1,17 @@
+{
+  "CVE-2024-3400": {
+    "score": 10.0,
+    "version": "3.1",
+    "source": "CVEProject"
+  },
+  "CVE-2021-44228": {
+    "score": 10.0,
+    "version": "3.1",
+    "source": "NVD"
+  },
+  "CVE-2017-0144": {
+    "score": 8.8,
+    "version": "3.1",
+    "source": "CVEProject"
+  }
+}

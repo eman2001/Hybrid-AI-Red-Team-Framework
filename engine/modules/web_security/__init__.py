@@ -1,7 +1,7 @@
 """
 web_security
 ------------
-OWASP Top 10 (2021) analysis engine for the Hybrid AI Red Team Framework.
+OWASP Top 10 (2025) analysis engine for the Hybrid AI Red Team Framework.
 Analyses web services using service banners, technology fingerprints,
 and Nmap HTTP script output — no active payload injection.
 """

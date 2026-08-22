@@ -47,7 +47,7 @@ class OWASPReportBuilder:
             "meta": {
                 "target":         target,
                 "scan_timestamp": datetime.utcnow().isoformat() + "Z",
-                "framework":      "OWASP Top 10 2021",
+                "framework":      "OWASP Top 10 2025",
                 "total_findings": len(findings),
                 "max_cvss":       max_cvss,
             },
