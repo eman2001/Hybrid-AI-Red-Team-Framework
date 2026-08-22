@@ -1,0 +1,221 @@
+engine/config/settings.py:64:CVSS_CRITICAL_MIN      = 9.0
+engine/config/settings.py:65:CVSS_HIGH_MIN          = 7.0
+engine/config/settings.py:66:CVSS_MEDIUM_MIN        = 4.0
+engine/config/constants.py:9:# CVSS Severity Bands
+engine/config/constants.py:11:CVSS_NONE     = (0.0, 0.0)
+engine/config/constants.py:12:CVSS_LOW      = (0.1, 3.9)
+engine/config/constants.py:13:CVSS_MEDIUM   = (4.0, 6.9)
+engine/config/constants.py:14:CVSS_HIGH     = (7.0, 8.9)
+engine/config/constants.py:15:CVSS_CRITICAL = (9.0, 10.0)
+engine/config/constants.py:18:    "CRITICAL": CVSS_CRITICAL,
+engine/config/constants.py:19:    "HIGH":     CVSS_HIGH,
+engine/config/constants.py:20:    "MEDIUM":   CVSS_MEDIUM,
+engine/config/constants.py:21:    "LOW":      CVSS_LOW,
+engine/config/constants.py:22:    "NONE":     CVSS_NONE,
+engine/config/constants.py:25:def cvss_to_severity(score: float) -> str:
+engine/config/constants.py:190:# Known CVE → CVSS table (authoritative — used by risk_engine & cvss_engine)
+engine/config/constants.py:192:KNOWN_CVSS_SCORES = {
+engine/modules/ai/risk_predictor.py:10:        cvss  = finding.get("cvss", 3.0)
+engine/modules/ai/risk_predictor.py:15:        score = min(100, cvss * 4 + epss * 25 + kev + etype)
+engine/modules/ai/dataset_builder.py:12:                "port", "severity", "cvss"]
+engine/modules/exploiter/exploit_path_builder.py:30:                "cvss":        f.get("cvss"),
+engine/modules/exploiter/exploit_ranker.py:10:        cvss_normalised  * 0.15  +
+engine/modules/exploiter/exploit_ranker.py:17:(exploit_model.pkl — features: cvss_score, exploit_type, port) assigns
+engine/modules/exploiter/exploit_ranker.py:38:# ── CVE-year baseline confidence (absence of live CVSS → use year heuristic) ──
+engine/modules/exploiter/exploit_ranker.py:56:# ── ML-based priority signal (DecisionTreeClassifier: cvss/type/port -> priority) ──
+engine/modules/exploiter/exploit_ranker.py:107:        cvss  = min(float(f.get("cvss", 3.0)), 10.0)
+engine/modules/exploiter/exploit_ranker.py:110:        X = pd.DataFrame([[cvss, etype, port]], columns=["cvss_score", "exploit_type", "port"])
+engine/modules/exploiter/exploit_ranker.py:125:    cvss_norm    = min(float(f.get("cvss", 3.0)), 10.0) / 10.0
+engine/modules/exploiter/exploit_ranker.py:133:        cvss_norm  * 0.15 +
+engine/modules/exploiter/exploit_ranker.py:145:    parts.append(f"CVSS={f.get('cvss', 'N/A')}")
+engine/modules/exploiter/exploit_probability.py:19:        cvss  = finding.get("cvss", 3.0) / 10.0
+engine/modules/exploiter/exploit_probability.py:22:        prob  = min(1.0, base + cvss * 0.15 + epss * 0.10 + kev)
+engine/modules/web_security/web_findings.py:53:    Returns list of {cve_id, cvss, description} dicts.
+engine/modules/web_security/web_findings.py:80:            # Extract CVSS v3.1 score
+engine/modules/web_security/web_findings.py:81:            cvss_score = 0.0
+engine/modules/web_security/web_findings.py:83:            for m in metrics.get("cvssMetricV31", []):
+engine/modules/web_security/web_findings.py:84:                cvss_score = m.get("cvssData", {}).get("baseScore", 0.0)
+engine/modules/web_security/web_findings.py:86:            if not cvss_score:
+engine/modules/web_security/web_findings.py:87:                for m in metrics.get("cvssMetricV30", []):
+engine/modules/web_security/web_findings.py:88:                    cvss_score = m.get("cvssData", {}).get("baseScore", 0.0)
+engine/modules/web_security/web_findings.py:94:                    "cvss":        cvss_score,
+engine/modules/web_security/web_findings.py:118:    cvss_base:       float
+engine/modules/web_security/web_findings.py:137:            "cvss_base":       self.cvss_base,
+engine/modules/web_security/web_findings.py:158:    Factory — enriches finding with OWASP/MITRE/CVSS/CWE metadata
+engine/modules/web_security/web_findings.py:170:            "cvss":       5.0,
+engine/modules/web_security/web_findings.py:175:    cvss  = float(meta["cvss"])
+engine/modules/web_security/web_findings.py:179:    if cvss >= 9.0:     risk = "CRITICAL"
+engine/modules/web_security/web_findings.py:180:    elif cvss >= 7.0:   risk = "HIGH"
+engine/modules/web_security/web_findings.py:181:    elif cvss >= 4.0:   risk = "MEDIUM"
+engine/modules/web_security/web_findings.py:188:            f"NVD reference ({cwe}): {c['cve_id']} — CVSS {c['cvss']}"
+engine/modules/web_security/web_findings.py:198:        cvss_base       = cvss,
+engine/modules/web_security/models.py:50:    cvss          = Column(Float,       default=0.0)
+engine/modules/web_security/owasp_report_builder.py:44:        max_cvss = max((f.cvss_base for f in findings), default=0.0)
+engine/modules/web_security/owasp_report_builder.py:52:                "max_cvss":       max_cvss,
+engine/modules/web_security/vulnerable_components_checker.py:94:                            f"(CVSS {cve.get('cvss', 0.0)})"
+engine/modules/web_security/repository.py:91:                cvss          = float(v.get("cvss_live", v.get("cvss", 0.0))),
+engine/modules/web_security/technology_detector.py:95:    Returns list of {cve_id, cvss, description}.
+engine/modules/web_security/technology_detector.py:123:            cvss_score = 0.0
+engine/modules/web_security/technology_detector.py:125:            for m in metrics.get("cvssMetricV31", []):
+engine/modules/web_security/technology_detector.py:126:                cvss_score = m.get("cvssData", {}).get("baseScore", 0.0)
+engine/modules/web_security/technology_detector.py:129:                results.append({"cve_id": cve_id, "cvss": cvss_score,
+engine/modules/threat_intelligence/cvss_engine.py:2:threat_intelligence/cvss_engine.py
+engine/modules/threat_intelligence/cvss_engine.py:4:CVSS v3.1 score lookup and band classification.
+engine/modules/threat_intelligence/cvss_engine.py:8:              cached locally in data/cvss_github_cache.json so repeat runs are instant
+engine/modules/threat_intelligence/cvss_engine.py:10:  3. None    - caller decides the fallback (keeps an existing finding's own CVSS
+engine/modules/threat_intelligence/cvss_engine.py:20:_CACHE_PATH = Path(__file__).resolve().parents[2] / "data" / "cvss_github_cache.json"
+engine/modules/threat_intelligence/cvss_engine.py:23:class CvssEngine:
+engine/modules/threat_intelligence/cvss_engine.py:29:        """Returns a CVSS base score, or None if no data could be found anywhere."""
+engine/modules/threat_intelligence/cvss_engine.py:63:                for key in ("cvssV3_1", "cvssV3_0", "cvssV2_0"):
+engine/modules/threat_intelligence/cvss_engine.py:65:                        score = m[key].get("baseScore")
+engine/modules/threat_intelligence/cvss_engine.py:97:                cvss3 = metrics.get("cvssMetricV31", [{}])[0]
+engine/modules/threat_intelligence/cvss_engine.py:98:                return cvss3.get("cvssData", {}).get("baseScore")
+engine/modules/threat_intelligence/__init__.py:7:from engine.modules.threat_intelligence.cvss_engine        import CvssEngine
+engine/modules/threat_intelligence/__init__.py:19:    "CvssEngine", "EpssEngine", "KevEngine",
+engine/modules/threat_intelligence/threat_score.py:4:Composite threat score (0–100) combining CVSS, EPSS, KEV, and exposure.
+engine/modules/threat_intelligence/threat_score.py:13:        # CVSS contribution (max 40)
+engine/modules/threat_intelligence/threat_score.py:14:        cvss = finding.get("cvss_live", finding.get("cvss", 3.0))
+engine/modules/threat_intelligence/threat_score.py:15:        score += cvss * 4
+engine/modules/threat_intelligence/threat_correlation.py:5:(CVSS, EPSS, KEV, vendor intel) to produce an enriched finding.
+engine/modules/threat_intelligence/threat_correlation.py:8:from engine.modules.threat_intelligence.cvss_engine        import CvssEngine
+engine/modules/threat_intelligence/threat_correlation.py:18:        self._cvss    = CvssEngine()
+engine/modules/threat_intelligence/threat_correlation.py:29:        cvss_found = self._cvss.score(cve)
+engine/modules/threat_intelligence/threat_correlation.py:31:        # keep the finding's own CVSS estimate from vulnerability mapping (Phase 3)
+engine/modules/threat_intelligence/threat_correlation.py:33:        cvss   = cvss_found if cvss_found is not None else finding.get("cvss", 5.0)
+engine/modules/threat_intelligence/threat_correlation.py:37:        finding["cvss_live"]    = cvss
+engine/modules/attack_path/path_prioritizer.py:4:Prioritises attack paths by composite score (risk + exploit type + CVSS).
+engine/modules/attack_path/path_prioritizer.py:14:                f.get("cvss", 0) * 4 +
+engine/modules/attack_path/critical_path_analyzer.py:30:            "cvss":               top.get("cvss", 0),
+engine/modules/vulnerability/vuln_correlator.py:44:                "cvss":        sc.to_cvss(sc.classify(best["title"])),
+engine/modules/vulnerability/vuln_correlator.py:64:                "cvss":        sc.to_cvss(sev),
+engine/modules/vulnerability/cve_mapper.py:5:بعدين يُثري كل CVE بـ CVSS + EPSS + KEV من APIs حية.
+engine/modules/vulnerability/cve_mapper.py:36:    """يجيب CVSS + severity + description من NVD API."""
+engine/modules/vulnerability/cve_mapper.py:56:        # CVSS score — prefer v3.1 → v3.0 → v2
+engine/modules/vulnerability/cve_mapper.py:57:        cvss = 0.0
+engine/modules/vulnerability/cve_mapper.py:62:        for key in ("cvssMetricV31", "cvssMetricV30", "cvssMetricV2"):
+engine/modules/vulnerability/cve_mapper.py:65:                cvss = float(
+engine/modules/vulnerability/cve_mapper.py:66:                    m.get("cvssData", {}).get("baseScore", 0.0)
+engine/modules/vulnerability/cve_mapper.py:70:                    m.get("cvssData", {})
+engine/modules/vulnerability/cve_mapper.py:78:                if cvss:
+engine/modules/vulnerability/cve_mapper.py:81:            if cvss:
+engine/modules/vulnerability/cve_mapper.py:93:            "cvss": cvss,
+engine/modules/vulnerability/cve_mapper.py:371:        بـ CVSS + EPSS + KEV من APIs حية.
+engine/modules/vulnerability/cve_mapper.py:395:            cvss
+engine/modules/vulnerability/cve_mapper.py:486:                    "cvss": 0.0,
+engine/modules/vulnerability/cve_mapper.py:505:                    finding["cvss"] = nvd.get(
+engine/modules/vulnerability/cve_mapper.py:506:                        "cvss",
+engine/modules/vulnerability/__init__.py:151:                        f"CVSS:{finding.get('cvss', 0)} | "
+engine/modules/vulnerability/severity_classifier.py:4:Classifies exploit titles into severity levels and maps to CVSS scores.
+engine/modules/vulnerability/severity_classifier.py:14:CVSS_MAP     = {"critical": 9.5, "high": 7.5, "medium": 5.0, "low": 3.0}
+engine/modules/vulnerability/severity_classifier.py:27:    def to_cvss(self, severity: str) -> float:
+engine/modules/vulnerability/severity_classifier.py:28:        return CVSS_MAP.get(severity, 3.0)
+engine/modules/risk_engine.py:2:from engine.config.constants import KNOWN_CVSS_SCORES
+engine/modules/risk_engine.py:18:    def _cvss_score(self, cve: str, finding_cvss: float) -> float:
+engine/modules/risk_engine.py:19:        # Priority: cvss_live from TI → KNOWN table → finding cvss → 3.0
+engine/modules/risk_engine.py:20:        if finding_cvss and finding_cvss > 3.0:
+engine/modules/risk_engine.py:21:            return finding_cvss
+engine/modules/risk_engine.py:22:        known = KNOWN_CVSS_SCORES.get(cve, 0)
+engine/modules/risk_engine.py:25:        if finding_cvss and finding_cvss > 0:
+engine/modules/risk_engine.py:26:            return finding_cvss
+engine/modules/risk_engine.py:32:        cvss = self._cvss_score(
+engine/modules/risk_engine.py:34:            finding.get("cvss_live", finding.get("cvss", 0)),
+engine/modules/risk_engine.py:36:        finding["cvss"] = cvss
+engine/modules/risk_engine.py:37:        score += cvss * 4
+engine/modules/risk_engine.py:71:        scored.sort(key=lambda x: (x["risk_score"], x.get("cvss",0)), reverse=True)
+engine/modules/risk_engine.py:75:                  f"CVSS={f.get('cvss','?')} EPSS={f.get('epss',0):.3f}")
+engine/modules/api/routes/threat_intelligence.py:18:    {"cve":"CVE-2011-2523","cvss":10.0,"service":"ftp",   "vendor":"vsftpd project","product":"vsftpd","severity":"critical"},
+engine/modules/api/routes/threat_intelligence.py:19:    {"cve":"CVE-2007-2447","cvss":9.3, "service":"smb",   "vendor":"samba",         "product":"samba", "severity":"critical"},
+engine/modules/api/routes/threat_intelligence.py:20:    {"cve":"CVE-2017-0144","cvss":9.8, "service":"smb",   "vendor":"microsoft",     "product":"windows smb","severity":"critical"},
+engine/modules/api/routes/threat_intelligence.py:21:    {"cve":"CVE-2010-2075","cvss":9.8, "service":"irc",   "vendor":"unrealircd",    "product":"unrealircd","severity":"critical"},
+engine/modules/api/routes/threat_intelligence.py:22:    {"cve":"CVE-2008-0166","cvss":7.8, "service":"ssh",   "vendor":"debian",        "product":"openssl","severity":"high"},
+engine/modules/api/routes/threat_intelligence.py:23:    {"cve":"CVE-2009-2446","cvss":8.5, "service":"mysql", "vendor":"oracle",        "product":"mysql", "severity":"high"},
+engine/modules/api/routes/threat_intelligence.py:36:        cvss      = f["cvss"],
+engine/modules/api/routes/threat_intelligence.py:57:        avg_cvss      = round(sum(e.cvss for e in enriched) / len(enriched), 2),
+engine/modules/api/routes/threat_intelligence.py:83:    estimated = {"cve": cve_id.upper(), "cvss": 7.5, "service": "unknown",
+engine/modules/api/routes/vulnerabilities.py:39:        cvss       = float(v.get("cvss_live", v.get("cvss", 0.0))),
+engine/modules/api/routes/vulnerabilities.py:53:    min_cvss: float      = Query(0.0,  description="Minimum CVSS score"),
+engine/modules/api/routes/vulnerabilities.py:65:        and float(v.get("cvss_live", v.get("cvss", 0.0))) >= min_cvss
+engine/modules/api/routes/analytics.py:100:    cvss_vals = [float(v.get("cvss_live", v.get("cvss", 0.0))) for v in vulns]
+engine/modules/api/routes/analytics.py:116:        "avg_cvss":          round(sum(cvss_vals) / len(cvss_vals), 2) if cvss_vals else 0,
+engine/modules/api/schemas/__init__.py:60:    cvss:      float
+engine/modules/api/schemas/__init__.py:76:    cvss:         float
+engine/modules/api/schemas/__init__.py:93:    avg_cvss:      float
+engine/modules/reporting/pdf_reporter.py:646:        headers = ["Severity", "CVE / CWE", "Asset", "CVSS", "Finding"]
+engine/modules/reporting/pdf_reporter.py:668:            cvss = item.get("cvss_live", item.get("cvss", "-"))
+engine/modules/reporting/pdf_reporter.py:673:            pdf.cell(widths[3], row_h, self._truncate(cvss, widths[3]), border="B", align="C")
+engine/modules/reporting/pdf_reporter.py:823:        headers = ["Asset", "Severity", "CVSS", "EPSS", "KEV"]
+engine/modules/reporting/pdf_reporter.py:839:            cvss = finding.get("cvss_live", finding.get("cvss", "-"))
+engine/modules/reporting/pdf_reporter.py:848:            pdf.cell(widths[2], row_h, self._truncate(cvss, widths[2]), border="B", align="C")
+engine/modules/llm/prompts.py:10:- CVSS / EPSS / KEV values
+engine/modules/llm/prompts.py:47:   - CVSS scores
+engine/modules/llm/prompts.py:76:   risk score, CVSS, EPSS, confidence, and other assessment values.
+engine/modules/llm/summary_builder.py:49:            "cvss": f.get("cvss_live", f.get("cvss", "-")),
+engine/database/repository.py:82:                cvss       = float(v.get("cvss_live", v.get("cvss", 0.0))),
+engine/database/repository.py:116:                "cvss":             r.get("cvss", None),
+engine/database/repository.py:248:            "cve": r.cve, "cvss": r.cvss, "severity": r.severity,
+engine/database/models/vulnerability.py:13:    cvss       = Column(Float)
+engine/main.py:8:  4   Threat Intelligence     (CVSS · EPSS · KEV · Vendor)
+engine/main.py:339:    print("\n[Phase 4] Threat Intelligence (CVSS · EPSS · KEV · Vendor)")
+engine/main.py:355:            f"CVSS={f.get('cvss_live', f.get('cvss', 0))} "
+engine/main.py:365:        description="CVSS EPSS KEV analysis completed",
+engine/main.py:377:    print("\n[Phase 5] Risk Scoring (CVSS+EPSS+KEV → composite score)")
+build_priority_dataset_v2.py:5:index + NVD CVSS -- the real-data exploit prioritizer dataset.
+build_priority_dataset_v2.py:8:    HIGH:   in KEV (actively exploited) OR (has Metasploit module AND cvss>=7.0)
+build_priority_dataset_v2.py:9:    MEDIUM: has public exploit AND 4.0<=cvss<7.0, OR has Metasploit module and cvss<7.0
+build_priority_dataset_v2.py:28:def load_nvd_cvss_lookup(path):
+build_priority_dataset_v2.py:33:        if r.get("cve_id") and r.get("cvss_score") is not None:
+build_priority_dataset_v2.py:34:            lookup[r["cve_id"]] = r["cvss_score"]
+build_priority_dataset_v2.py:38:def classify_priority(in_kev, has_msf, cvss):
+build_priority_dataset_v2.py:39:    if cvss is None:
+build_priority_dataset_v2.py:40:        cvss = 0.0
+build_priority_dataset_v2.py:43:    if has_msf and cvss >= 7.0:
+build_priority_dataset_v2.py:45:    if (has_msf or cvss >= 4.0) and cvss >= 4.0:
+build_priority_dataset_v2.py:47:    if has_msf and cvss < 7.0:
+build_priority_dataset_v2.py:64:    cvss_lookup = load_nvd_cvss_lookup(args.nvd)
+build_priority_dataset_v2.py:69:    print(f"[+] NVD CVSS lookup entries: {len(cvss_lookup)}")
+build_priority_dataset_v2.py:80:            cvss = cvss_lookup.get(cve_id)
+build_priority_dataset_v2.py:81:            if cvss is None:
+build_priority_dataset_v2.py:86:            label = classify_priority(in_kev, has_msf, cvss)
+build_priority_dataset_v2.py:89:                "cvss_score": cvss,
+build_priority_dataset_v2.py:97:        cvss = cvss_lookup.get(cve_id)
+build_priority_dataset_v2.py:98:        if cvss is None:
+build_priority_dataset_v2.py:102:            "cvss_score": cvss,
+build_priority_dataset_v2.py:109:    print(f"[+] Rows from EDB x CVE x CVSS matches: {len(rows) - kev_only_added}")
+build_priority_dataset_v2.py:120:        writer = csv.DictWriter(f, fieldnames=["cve_id", "cvss_score", "exploit_type",
+build_priority_dataset_v3.py:9:  data/nvd_raw.json          -> cve_id -> cvss_score, severity
+build_priority_dataset_v3.py:23:  exploitability  <- parsed from the matching CVE's CVSSv2 vector
+build_priority_dataset_v3.py:25:                      approximating the CVSSv2 Exploitability sub-score
+build_priority_dataset_v3.py:26:                      formula; falls back to cvss_score if vector missing
+build_priority_dataset_v3.py:125:        cvss_score = matched.get("cvss_score", 0.0)
+build_priority_dataset_v3.py:127:            matched.get("cvss_vector"), cvss_score
+build_vuln_dataset.py:42:def classify_label(in_kev, has_msf, cvss):
+build_vuln_dataset.py:43:    if cvss is None:
+build_vuln_dataset.py:44:        cvss = 0.0
+build_vuln_dataset.py:47:    if has_msf and cvss >= 7.0:
+build_vuln_dataset.py:49:    if cvss >= 4.0:
+build_vuln_dataset.py:51:    if has_msf and cvss < 7.0:
+build_vuln_dataset.py:69:        "cvss": nvd_rec.get("cvss_score"),
+build_vuln_dataset.py:120:                "label": classify_label(cve_id in kev_ids, has_msf, nvd_fields["cvss"]),
+build_vuln_dataset.py:145:            "label": classify_label(True, False, nvd_fields["cvss"]),
+enrich_nvd_extra_fields.py:4:Parses the cvss_vector already present in each nvd_raw.json record to add
+enrich_nvd_extra_fields.py:79:    vector = rec.get("cvss_vector")
+enrich_nvd_extra_fields.py:86:    parsed = parse_v3(vector) if vector.startswith("CVSS:3") else parse_v2(vector)
+enrich_nvd_extra_fields.py:119:          f"({len(records) - enriched_count} had no parseable cvss_vector)")
+fetch_nvd_cves.py:55:    cvss_score, cvss_vector, severity = None, None, None
+fetch_nvd_cves.py:56:    for key in ("cvssMetricV31", "cvssMetricV30", "cvssMetricV2"):
+fetch_nvd_cves.py:59:            cvss_data = m.get("cvssData", {})
+fetch_nvd_cves.py:60:            cvss_score = cvss_data.get("baseScore")
+fetch_nvd_cves.py:61:            cvss_vector = cvss_data.get("vectorString")
+fetch_nvd_cves.py:62:            severity = m.get("baseSeverity") or cvss_data.get("baseSeverity")
+fetch_nvd_cves.py:74:        "cvss_score": cvss_score,
+fetch_nvd_cves.py:75:        "cvss_vector": cvss_vector,
+patch_ranker_colname.py:9:old = '''X = pd.DataFrame([[cvss, etype, port]], columns=["cvss_score", "exploit_type", "port"])'''
+patch_ranker_colname.py:10:new = '''X = pd.DataFrame([[cvss, etype, port]], columns=["cvss_score", "exploit_type_enc", "port"])'''
+patch_save_exploit_results.py:5:الموجودة أصلا بكل exploit result (type, cvss, service, cve,
+patch_save_exploit_results.py:30:                "cvss":             r.get("cvss", None),
+test_report_writer.py:24:        "cvss": 7.5,
+test_report_writer.py:34:        "cvss": 9.8,
+train_model_v2.py:10:    - cvss_score
+train_model_v2.py:239:        "cvss_score",
+train_model_v2.py:369:            "cvss_score",
+train_model_v2.py:729:            "cvss_score",

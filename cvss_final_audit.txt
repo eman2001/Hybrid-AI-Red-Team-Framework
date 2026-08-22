@@ -1,0 +1,28 @@
+engine/modules/web_security/web_findings.py:9:    CVSS v4.0 -> v3.1 -> v3.0 -> v2.0
+engine/modules/web_security/web_findings.py:157:                ("cvssMetricV40", "4.0"),
+engine/modules/web_security/web_findings.py:158:                ("cvssMetricV31", "3.1"),
+engine/modules/web_security/web_findings.py:159:                ("cvssMetricV30", "3.0"),
+engine/modules/web_security/web_findings.py:160:                ("cvssMetricV2", "2.0"),
+engine/modules/web_security/technology_detector.py:9:    CVSS v4.0 -> v3.1 -> v3.0 -> v2.0
+engine/modules/web_security/technology_detector.py:206:                ("cvssMetricV40", "4.0"),
+engine/modules/web_security/technology_detector.py:207:                ("cvssMetricV31", "3.1"),
+engine/modules/web_security/technology_detector.py:208:                ("cvssMetricV30", "3.0"),
+engine/modules/web_security/technology_detector.py:209:                ("cvssMetricV2", "2.0"),
+engine/modules/threat_intelligence/cvss_engine.py:7:    CVSS v4.0
+engine/modules/threat_intelligence/cvss_engine.py:8:    CVSS v3.1
+engine/modules/threat_intelligence/cvss_engine.py:68:            CVSS v4.0
+engine/modules/threat_intelligence/cvss_engine.py:69:            CVSS v3.1
+engine/modules/threat_intelligence/cvss_engine.py:425:                ("cvssMetricV40", "4.0"),
+engine/modules/threat_intelligence/cvss_engine.py:426:                ("cvssMetricV31", "3.1"),
+engine/modules/threat_intelligence/cvss_engine.py:427:                ("cvssMetricV30", "3.0"),
+engine/modules/threat_intelligence/cvss_engine.py:428:                ("cvssMetricV2", "2.0"),
+engine/modules/vulnerability/cve_mapper.py:8:    CVSS v4.0 -> v3.1 -> v3.0 -> v2.0
+engine/modules/vulnerability/cve_mapper.py:102:            ("cvssMetricV40", "4.0"),
+engine/modules/vulnerability/cve_mapper.py:103:            ("cvssMetricV31", "3.1"),
+engine/modules/vulnerability/cve_mapper.py:104:            ("cvssMetricV30", "3.0"),
+engine/modules/vulnerability/cve_mapper.py:105:            ("cvssMetricV2", "2.0"),
+fetch_nvd_cves.py:8:    CVSS v4.0 -> v3.1 -> v3.0 -> v2.0
+fetch_nvd_cves.py:142:        ("cvssMetricV40", "4.0"),
+fetch_nvd_cves.py:143:        ("cvssMetricV31", "3.1"),
+fetch_nvd_cves.py:144:        ("cvssMetricV30", "3.0"),
+fetch_nvd_cves.py:145:        ("cvssMetricV2", "2.0"),
