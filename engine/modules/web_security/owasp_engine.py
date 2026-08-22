@@ -34,9 +34,20 @@ class OWASPEngine:
         from engine.modules.web_security.vulnerable_components_checker     import VulnerableComponentsChecker
         from engine.modules.web_security.cryptographic_failure_checker     import CryptographicFailureChecker
         from engine.modules.web_security.ssrf_checker                      import SSRFChecker
+        from engine.modules.web_security.web_discovery                    import WebDiscovery
 
+        try:
+            discovery = WebDiscovery(self.target_url).discover()
+            endpoints = discovery["endpoints"]
+            print(f"[OWASP] Discovery: {discovery['pages_visited']} page(s) visited, "
+                  f"{len(endpoints)} endpoint(s), {len(discovery['forms'])} form(s)")
+        except Exception as e:
+            print(f"[OWASP] Discovery failed ({e}) -- falling back to homepage-only testing")
+            endpoints = []
+
+        self._checkers.append(InjectionChecker(self.target_url, discovered_endpoints=endpoints))
         for cls in [
-            InjectionChecker, BrokenAccessControlChecker,
+            BrokenAccessControlChecker,
             AuthFailureChecker, SecurityMisconfigurationChecker,
             VulnerableComponentsChecker, CryptographicFailureChecker,
             SSRFChecker,

@@ -20,6 +20,7 @@ sqlmap in the Exploitation phase -- this checker's job is just to
 flag *which* parameter, on *which* URL, looks suspicious.
 """
 
+import json
 import re
 import urllib.request
 import urllib.parse
@@ -38,16 +39,29 @@ _SQL_ERROR_SIGNATURES = [
     "odbc sql server driver",
     "microsoft ole db provider for sql server",
     "supplied argument is not a valid mysql",
+    # Node.js/Sequelize + raw SQLite error strings (e.g. Express/Node
+    # apps like OWASP Juice Shop): "Error: SQLITE_ERROR: near ...".
+    # These are distinct from Python's "sqlite3.OperationalError" above.
+    "sqlite_error",
+    r"near \".*\": syntax error",
+    "sequelizedatabaseerror",
 ]
 
 _PROBE_PAYLOAD = "'"
 
 
 class InjectionChecker:
-    def __init__(self, target_url: str, timeout: int = 10):
+    def __init__(self, target_url: str, timeout: int = 10, discovered_endpoints: list | None = None):
+        """`discovered_endpoints`: optional list of dicts from WebDiscovery
+        (each with a 'url' key, e.g. {'url': 'http://host/rest/products'}).
+        When provided, every discovered URL is added to the probe list on
+        top of the old single-homepage crawl -- this is what lets an SPA's
+        hidden REST endpoints (never linked from rendered HTML) actually
+        get tested. When omitted, behavior is 100% unchanged from before."""
         self.target_url = target_url.rstrip("/")
         self.timeout = timeout
         self.findings = []
+        self._discovered_endpoints = discovered_endpoints or []
 
     def _fetch(self, url: str) -> str:
         try:
@@ -56,6 +70,49 @@ class InjectionChecker:
                 return r.read().decode("utf-8", errors="ignore")
         except (URLError, HTTPError, TimeoutError, Exception):
             return ""
+
+    def _post_json_raw(self, path: str, payload: dict) -> str:
+        """POSTs a JSON body and returns the raw response text -- used
+        for probing JSON-body endpoints (e.g. login) rather than URL
+        query parameters, which _probe_url() already covers."""
+        url = self.target_url + path
+        try:
+            data = json.dumps(payload).encode("utf-8")
+            req = urllib.request.Request(
+                url, data=data, method="POST",
+                headers={"User-Agent": "RedTeamFramework/2.0", "Content-Type": "application/json"},
+            )
+            with urllib.request.urlopen(req, timeout=self.timeout) as r:
+                return r.read().decode("utf-8", errors="ignore")
+        except HTTPError as e:
+            try:
+                return e.read().decode("utf-8", errors="ignore")
+            except Exception:
+                return ""
+        except (URLError, TimeoutError, Exception):
+            return ""
+
+    def _probe_login_body(self) -> Dict:
+        """Error-based SQLi probe against the login endpoint's JSON body
+        (email field), mirroring _probe_url()'s baseline-vs-probed logic
+        but for a POST body field instead of a URL query parameter --
+        _probe_url() alone never tests this because it only enumerates
+        query-string parameters, and the login endpoint takes none."""
+        baseline = self._post_json_raw("/rest/user/login", {
+            "email": "nonexistent-probe-account@example.invalid",
+            "password": "wrong-password",
+        })
+        probed = self._post_json_raw("/rest/user/login", {
+            "email": "nonexistent-probe-account@example.invalid" + _PROBE_PAYLOAD,
+            "password": "wrong-password",
+        })
+        if probed and self._has_sql_error(probed) and not self._has_sql_error(baseline):
+            return {
+                "url": self.target_url + "/rest/user/login",
+                "param": "email",
+                "test_url": self.target_url + "/rest/user/login (POST body)",
+            }
+        return {}
 
     def _extract_param_urls(self, html: str) -> List[str]:
         """Pull any href="...?param=value..." links from the page, same-host only."""
@@ -104,14 +161,33 @@ class InjectionChecker:
         candidate_urls = [self.target_url] if "?" in self.target_url else []
 
         # 2. Crawl the homepage for other links that carry query parameters
+        #    (old behavior -- unchanged, still runs even with no discovery data)
         homepage = self._fetch(self.target_url)
         candidate_urls += self._extract_param_urls(homepage)
+
+        # 3. NEW: any endpoint WebDiscovery found (robots.txt, sitemap.xml,
+        #    multi-page crawl, or the common REST-path probe) that already
+        #    carries a query parameter is added too. This is what lets an
+        #    SPA's hidden REST endpoints get tested even when nothing in
+        #    the rendered homepage HTML links to them -- if the discovery
+        #    step wasn't run, this list is simply empty and nothing changes.
+        for ep in self._discovered_endpoints:
+            url = ep.get("url", "")
+            if "?" in url and url not in candidate_urls:
+                candidate_urls.append(url)
 
         hits = []
         for url in candidate_urls:
             result = self._probe_url(url)
             if result:
                 hits.append(result)
+
+        # POST-body probe: covers endpoints like /rest/user/login that
+        # take no query parameters at all, so the loop above never
+        # tests them.
+        login_hit = self._probe_login_body()
+        if login_hit:
+            hits.append(login_hit)
 
         if hits:
             for h in hits:
