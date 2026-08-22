@@ -41,6 +41,7 @@ class ReportGenerator:
         attack_chain: dict,
         risk_summary: dict,
         coverage: dict,
+        exploit_results: list[dict] | None = None,
         formats: list[str] | None = None,
         output_dir: str = "reports"
     ) -> dict:
@@ -52,8 +53,32 @@ class ReportGenerator:
 
         os.makedirs(output_dir, exist_ok=True)
 
+        deterministic_exec = self._exec.build(
+            scan_results,
+            findings,
+            attack_chain,
+            risk_summary
+        )
+        authoritative_risk = dict(risk_summary or {})
 
+        authoritative_risk["overall_risk"] = (
+            authoritative_risk.get("overall_risk")
+            or authoritative_risk.get("risk_level")
+            or deterministic_exec.get("overall_risk")
+            or "UNKNOWN"
+        )
 
+        authoritative_risk["risk_score"] = (
+            authoritative_risk.get("risk_score")
+            if authoritative_risk.get("risk_score") is not None
+            else deterministic_exec.get("risk_score", 0)
+        )
+
+        authoritative_risk["scope"] = (
+            authoritative_risk.get("scope")
+            or deterministic_exec.get("scope")
+            or []
+        )
         # =========================
         # LLM ANALYSIS
         # (rule-based engine already decided everything below;
@@ -64,7 +89,8 @@ class ReportGenerator:
             findings=findings,
             mapped_results=mapped_results,
             attack_chain=attack_chain,
-            risk_summary=risk_summary
+            risk_summary=risk_summary,
+            exploit_results=exploit_results or [],
         )
 
 
@@ -85,12 +111,7 @@ class ReportGenerator:
 
 
             "executive_summary":
-                self._exec.build(
-                    scan_results,
-                    findings,
-                    attack_chain,
-                    risk_summary
-                ),
+                deterministic_exec,
 
 
 
@@ -133,7 +154,7 @@ class ReportGenerator:
 
 
             "risk_summary":
-                risk_summary,
+                authoritative_risk,
 
         }
 

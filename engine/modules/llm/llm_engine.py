@@ -16,9 +16,9 @@ import requests
 
 logger = logging.getLogger(__name__)
 
-OLLAMA_HOST      = os.getenv("OLLAMA_HOST", "http://192.168.56.1:11434")
+OLLAMA_HOST      = os.getenv("OLLAMA_HOST", "http://192.168.56.104:11434")
 OLLAMA_MODEL     = os.getenv("OLLAMA_MODEL", "qwen2.5:3b")
-REQUEST_TIMEOUT  = int(os.getenv("LLM_TIMEOUT", "60"))
+REQUEST_TIMEOUT  = int(os.getenv("LLM_TIMEOUT", "300"))
 
 
 class LLMEngine:
@@ -65,6 +65,7 @@ class LLMEngine:
             return ""
 
         payload = {
+            "keep_alive": "30m",
             "model":  self.model,
             "prompt": prompt,
             "stream": False,
@@ -103,9 +104,4 @@ class LLMEngine:
     def _fallback(prompt: str) -> str:
         """Used only when Ollama is unreachable, so the report is still
         generated (with a clear placeholder) instead of crashing."""
-        return (
-            "[AI narrative unavailable - could not reach the local LLM "
-            "(Ollama / Qwen2.5). The rule-based findings in this report "
-            "remain fully valid; only this narrative text is missing. "
-            "Run `ollama serve` and `ollama run qwen2.5:3b` and retry.]"
-        )
+        return ""

@@ -2,22 +2,26 @@
 summary_builder.py
 ---------------------
 Condenses the large, raw pipeline output (findings, mapped MITRE results,
-risk_summary, attack_chain) into small, clean structures that are cheap
-and safe to feed into an LLM prompt.
+risk_summary, attack_chain, exploit_results) into small, clean structures
+that are cheap and safe to feed into an LLM prompt.
 
 THIS IS THE RULE-BASED / LLM BOUNDARY:
 No function in this file calls an LLM. Everything here only selects,
 ranks, and trims data that has ALREADY been decided upstream by the
-rule-based engine (severity, scores, technique mapping, etc). The LLM
-never sees raw pipeline output — only what this file hands it.
+rule-based engine (severity, scores, technique mapping, exploitation
+results, etc). The LLM never sees raw pipeline output — only what this
+file hands it.
 """
 
-_SEVERITY_ORDER = {"critical": 0, "high": 1, "medium": 2, "low": 3}
+_SEVERITY_ORDER = {
+    "critical": 0,
+    "high": 1,
+    "medium": 2,
+    "low": 3,
+}
 
 
 def build_findings_summary(findings: list[dict], top_n: int = 8) -> list[dict]:
-    """Pick the most important findings (already scored/ranked upstream)
-    and strip them down to only the fields report writing needs."""
     if not findings:
         return []
 
@@ -32,43 +36,73 @@ def build_findings_summary(findings: list[dict], top_n: int = 8) -> list[dict]:
     summary = []
     for f in ranked[:top_n]:
         summary.append({
-            "cve":         f.get("cve") or f.get("vulnerability", "N/A"),
-            "severity":    f.get("severity", "unknown"),
-            "host":        f.get("host", "unknown"),
-            "port":        f.get("port", "-"),
-            "cvss":        f.get("cvss_live", f.get("cvss", "-")),
-            "in_kev":      bool(f.get("in_kev")),
+            "identifier": f.get("cve") or f.get("cwe_id") or "N/A",
+            "finding": (
+                f.get("vulnerability")
+                or f.get("title")
+                or f.get("edb_title")
+                or "Unknown finding"
+            ),
+            "severity": str(f.get("severity", "unknown")).upper(),
+            "host": f.get("host", "unknown"),
+            "port": f.get("port", "-"),
+            "cvss": f.get("cvss_live", f.get("cvss", "-")),
+            "epss": f.get("epss", "N/A"),
+            "in_kev": bool(f.get("in_kev", False)),
             "remediation": f.get("remediation", ""),
         })
+
     return summary
 
 
 def build_mitre_summary(mapped_results: list[dict], top_n: int = 8) -> list[dict]:
-    """Flatten + rank MITRE technique layers already mapped by the rule
-    engine / STIX / ML fusion — this file does not re-map anything."""
     if not mapped_results:
         return []
 
     techniques = []
     seen = set()
 
-    for r in mapped_results:
-        for layer in r.get("layers", []):
-            tid = layer.get("technique_id") or layer.get("techniqueID", "")
-            if not tid or tid in seen:
-                continue
-            seen.add(tid)
-            techniques.append({
-                "technique_id":   tid,
-                "technique_name": layer.get("technique_name", ""),
-                "tactic":         layer.get("tactic", "unknown"),
-                "score":          layer.get("score", layer.get("confidence", 0)),
-                "confidence":     layer.get("confidence", "N/A"),
-                "source":         layer.get("source", "N/A"),
-                "severity": layer.get("severity", "UNKNOWN"),
-            })
+    def add_technique(layer):
+        if not isinstance(layer, dict):
+            return
 
-    techniques.sort(key=lambda t: -_as_number(t.get("score", 0)))
+        tid = layer.get("technique_id") or layer.get("techniqueID") or ""
+        if not tid or tid in seen:
+            return
+
+        seen.add(tid)
+        confidence = layer.get("confidence", layer.get("score", 0))
+
+        techniques.append({
+            "technique_id": tid,
+            "technique_name": layer.get("technique_name") or layer.get("name") or "",
+            "tactic": layer.get("tactic", "unknown"),
+            "score": layer.get("score", confidence),
+            "confidence": confidence,
+            "source": layer.get("source", "N/A"),
+            "severity": layer.get("severity", "UNKNOWN"),
+        })
+
+    for result in mapped_results:
+        if not isinstance(result, dict):
+            continue
+
+        primary = result.get("mitre")
+        if isinstance(primary, dict):
+            add_technique(primary)
+
+        layers = result.get("layers", [])
+        if isinstance(layers, list):
+            for layer in layers:
+                add_technique(layer)
+
+        if result.get("technique_id") or result.get("techniqueID"):
+            add_technique(result)
+
+    techniques.sort(
+        key=lambda item: -_as_number(item.get("confidence", item.get("score", 0)))
+    )
+
     return techniques[:top_n]
 
 
@@ -78,16 +112,19 @@ def build_risk_summary(risk_summary: dict) -> dict:
 
     scope = risk_summary.get("scope", "N/A")
     if isinstance(scope, list):
-        scope = ", ".join(scope)
+        scope = ", ".join(str(item) for item in scope)
 
     return {
-        "overall_risk":    risk_summary.get("overall_risk", risk_summary.get("risk_level", "UNKNOWN")),
-        "risk_score":      risk_summary.get("risk_score", 0),
-        "total_findings":  risk_summary.get("total_findings", 0),
+        "scope": scope,
+        "overall_risk": risk_summary.get(
+            "overall_risk",
+            risk_summary.get("risk_level", "UNKNOWN"),
+        ),
+        "risk_score": risk_summary.get("risk_score", 0),
+        "total_findings": risk_summary.get("total_findings", 0),
         "high_risk_count": risk_summary.get("high_risk_count", 0),
-        "kev_count":       risk_summary.get("kev_count", 0),
+        "kev_count": risk_summary.get("kev_count", 0),
         "exploit_success": risk_summary.get("exploit_success", 0),
-        "scope":           scope,
     }
 
 
@@ -96,19 +133,120 @@ def build_attack_chain_summary(attack_chain, top_n: int = 10) -> list[str]:
         return []
 
     if isinstance(attack_chain, dict):
-        phases = attack_chain.get("phases", list(attack_chain.values()))
-    else:
+        if "phases" in attack_chain:
+            phases = attack_chain.get("phases", [])
+            if isinstance(phases, dict):
+                phases = list(phases.values())
+        else:
+            phases = [
+                value
+                for value in attack_chain.values()
+                if isinstance(value, dict)
+            ]
+    elif isinstance(attack_chain, list):
         phases = attack_chain
+    else:
+        return []
 
     lines = []
+
     for phase in phases[:top_n]:
-        if isinstance(phase, dict):
-            label = phase.get("phase", phase.get("name", "phase"))
-            action = phase.get("technique_id", phase.get("action", ""))
-            lines.append(f"{label}: {action}".strip(": "))
-        else:
+        if not isinstance(phase, dict):
             lines.append(str(phase))
+            continue
+
+        label = (
+            phase.get("phase_name")
+            or phase.get("phase")
+            or phase.get("name")
+            or "Phase"
+        )
+
+        technique_ids = []
+        techniques = phase.get("techniques", [])
+
+        if isinstance(techniques, dict):
+            techniques = list(techniques.values())
+
+        if isinstance(techniques, list):
+            for technique in techniques:
+                if isinstance(technique, dict):
+                    tid = (
+                        technique.get("id")
+                        or technique.get("technique_id")
+                        or technique.get("techniqueID")
+                    )
+                    if tid:
+                        technique_ids.append(str(tid))
+                elif isinstance(technique, str):
+                    technique_ids.append(technique)
+
+        if not technique_ids:
+            tid = phase.get("technique_id") or phase.get("techniqueID")
+            if tid:
+                technique_ids.append(str(tid))
+
+        action = ", ".join(technique_ids)
+        lines.append(f"{label}: {action}" if action else str(label))
+
     return lines
+
+
+def build_exploitation_summary(exploit_results: list[dict]) -> dict:
+    if not exploit_results:
+        return {
+            "attempts": 0,
+            "successful": 0,
+            "failed": 0,
+            "success_rate": 0.0,
+            "successful_examples": [],
+        }
+
+    def is_success(result: dict) -> bool:
+        if result.get("success") is True:
+            return True
+
+        status = str(
+            result.get("result")
+            or result.get("status")
+            or ""
+        ).strip().lower()
+
+        return status in {
+            "success",
+            "successful",
+            "succeeded",
+            "exploited",
+        }
+
+    valid_results = [r for r in exploit_results if isinstance(r, dict)]
+    attempts = len(valid_results)
+    successful_results = [r for r in valid_results if is_success(r)]
+    successful = len(successful_results)
+    failed = max(0, attempts - successful)
+    success_rate = round((successful / attempts) * 100, 2) if attempts else 0.0
+
+    examples = []
+    for result in successful_results[:5]:
+        examples.append({
+            "host": result.get("host", "N/A"),
+            "port": result.get("port", "N/A"),
+            "method": (
+                result.get("type")
+                or result.get("exploit_type")
+                or result.get("module")
+                or result.get("exploit")
+                or "N/A"
+            ),
+        })
+
+    return {
+        "attempts": attempts,
+        "successful": successful,
+        "failed": failed,
+        "success_rate": success_rate,
+        "successful_examples": examples,
+    }
 
 
 def _as_number(value):
