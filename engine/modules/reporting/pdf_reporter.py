@@ -226,8 +226,28 @@ class PdfReporter:
             risk_summary.get("risk_score", exec_summary.get("risk_score", 0))
         )
 
+# ============================================================
+# COVER PAGE
+# Disable automatic page breaking because the cover uses
+# absolute positioning near the bottom edge of the page.
+# ============================================================
+
+        pdf.set_auto_page_break(auto=False)
+
         pdf.add_page()
-        self._cover_page(pdf, data, report_id, session_id, overall_risk, risk_score)
+
+        self._cover_page(
+            pdf,
+            data,
+            report_id,
+            session_id,
+            overall_risk,
+            risk_score,
+         )
+
+        # Restore normal pagination for report content
+        pdf.set_auto_page_break(auto=True, margin=21)
+        pdf.set_margins(15, 27, 15)
 
         pdf.add_page()
         self._section_title(pdf, "1", "Executive Summary", "Assessment posture and high-level findings")
@@ -728,7 +748,8 @@ class PdfReporter:
         phases = self._normalize_chain(attack_chain)
 
         if not phases:
-            self._empty_note(pdf, "No attack-chain phases were recorded.")
+            self._empty_note(pdf,     "No successful attack-chain phases were established during this assessment. "
+    "MITRE ATT&CK mappings may still represent observed or attempted techniques.")
             return
 
         for index, phase in enumerate(phases, start=1):

@@ -8,6 +8,7 @@ and nmap HTTP script output.  No active probing — passive analysis only.
 import re
 import json
 import urllib.request
+import urllib.parse
 from typing import Dict, List, Optional
 
 
@@ -101,7 +102,7 @@ def fetch_nvd_by_product(tech: str, version: str) -> List[dict]:
     try:
         keyword = tech.replace("_", " ")
         url = (f"{NVD_API_BASE}"
-               f"?keywordSearch={urllib.request.quote(keyword)}"
+               f"?keywordSearch={urllib.parse.quote(keyword)}"
                f"&resultsPerPage=3"
                f"&sortBy=publishedDate&sortOrder=desc")
         req = urllib.request.Request(
