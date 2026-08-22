@@ -767,5 +767,6 @@
   "16809": "exploit/win/remote/oracle9i_xdb_pass",
   "16786": "exploit/win/remote/peercast_url",
   "16751": "exploit/win/remote/shoutcast_format",
-  "16759": "exploit/win/remote/shttpd_post"
+  "16759": "exploit/win/remote/shttpd_post",
+  "": "exploit/win/remote/32bitftp_pasv_reply"
 }
