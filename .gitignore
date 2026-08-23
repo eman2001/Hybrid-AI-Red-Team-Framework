@@ -255,3 +255,5 @@ logs/
 # OS
 .DS_Store
 data/nvd_raw.json
+hydra.restore
+*.restore
