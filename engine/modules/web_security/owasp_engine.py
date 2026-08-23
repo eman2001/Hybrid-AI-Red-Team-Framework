@@ -35,6 +35,9 @@ class OWASPEngine:
         from engine.modules.web_security.cryptographic_failure_checker     import CryptographicFailureChecker
         from engine.modules.web_security.ssrf_checker                      import SSRFChecker
         from engine.modules.web_security.web_discovery                    import WebDiscovery
+        from engine.modules.web_security.security_headers                  import SecurityHeadersChecker
+        from engine.modules.web_security.cors_checker                      import CORSChecker
+        from engine.modules.web_security.xss_checker                       import XSSChecker
 
         try:
             discovery = WebDiscovery(self.target_url).discover()
@@ -50,7 +53,7 @@ class OWASPEngine:
             BrokenAccessControlChecker,
             AuthFailureChecker, SecurityMisconfigurationChecker,
             VulnerableComponentsChecker, CryptographicFailureChecker,
-            SSRFChecker,
+            SSRFChecker, SecurityHeadersChecker, CORSChecker, XSSChecker,
         ]:
             self._checkers.append(cls(self.target_url))
 
@@ -65,6 +68,7 @@ class OWASPEngine:
             self.register_all()
 
         all_findings = []
+        check_results = []
 
         with ThreadPoolExecutor(max_workers=self.threads) as pool:
             futures = {
@@ -77,12 +81,18 @@ class OWASPEngine:
                 try:
                     findings = future.result()
                     all_findings.extend(findings)
+                    check_results.append({"check_name": name, "findings": findings})
                     print(f"  [{name}] {len(findings)} finding(s)")
                 except Exception as e:
                     print(f"  [{name}] ERROR: {e}")
 
         self.results["vulnerabilities"] = all_findings
         self.results["summary"]         = self._build_summary(all_findings)
+
+        from engine.modules.web_security.vuln_correlator import VulnCorrelator
+        correlator = VulnCorrelator(check_results)
+        self.results["correlation"] = correlator.summarize()
+
         self._print_summary()
         return self.results
 
@@ -132,6 +142,13 @@ class OWASPEngine:
         print(f"  Low     : {s.get('low', 0)}")
         print(f"  Categories: {s.get('owasp_categories', [])}")
         print(f"  Risk Score: {s.get('risk_score', 0)}/100")
+
+        corr = self.results.get("correlation", {})
+        if corr:
+            print(f"  Threat Score (correlated): {corr.get('threat_score', 0)}/100 "
+                  f"[{corr.get('threat_band', 'NONE')}]")
+            for c in corr.get("compound_correlations", []):
+                print(f"    [Correlation] {c['label']} (+{c['bonus_points']} pts)")
 
     def save_report(self, filename: str = None) -> str:
         import os

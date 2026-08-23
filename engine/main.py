@@ -140,6 +140,12 @@ def run_owasp_web_scan(target_url):
     engine.register_checker(VulnerableComponentsChecker(target_url))
     engine.register_checker(CryptographicFailureChecker(target_url))
     engine.register_checker(SSRFChecker(target_url))
+    from engine.modules.web_security.security_headers import SecurityHeadersChecker
+    from engine.modules.web_security.cors_checker import CORSChecker
+    from engine.modules.web_security.xss_checker import XSSChecker
+    engine.register_checker(SecurityHeadersChecker(target_url))
+    engine.register_checker(CORSChecker(target_url))
+    engine.register_checker(XSSChecker(target_url))
     
     # Run checks
     results = engine.run_all_checks()
@@ -258,17 +264,25 @@ def run_pipeline(target: str, lhost: str):
     )
 
     # Merge OWASP findings into vulnerability list
+    _CHECK_TYPE_TO_METHOD = {
+        "sql_injection": "sqlmap",
+    }
     if owasp_results.get('owasp_findings'):
         for owasp_vuln in owasp_results['owasp_findings']:
+            check_type = owasp_vuln.get('check_type', '')
             vuln_findings.append({
                 'host': target,
                 'port': 443 if 'https' in target else 80,
                 'service': 'web',
+                'type': _CHECK_TYPE_TO_METHOD.get(check_type, ''),
+                'path': owasp_vuln.get('url', ''),
+                'affected_params': owasp_vuln.get('affected_params', []),
                 'vulnerability': owasp_vuln.get('title', 'Unknown'),
                 'description': owasp_vuln.get('description', ''),
-                'severity': owasp_vuln.get('risk', 'MEDIUM').lower(),
+                'severity': owasp_vuln.get('risk_level', 'MEDIUM').lower(),
                 'cve': owasp_vuln.get('cwe_id', ''),
                 'remediation': owasp_vuln.get('remediation', ''),
+                'checker_status': owasp_vuln.get('status', ''),
                 'source': 'OWASP Web Security'
             })
         print(f"  [+] Added {len(owasp_results['owasp_findings'])} OWASP findings")

@@ -208,7 +208,15 @@ class SecurityMisconfigurationChecker:
     def run_check(self) -> dict:
         print(f"[*] Testing A05:2025 - Security Misconfiguration on: {self.target_url}")
 
-        self._check_headers()
+        # NOTE: self._check_headers() is intentionally NOT called here.
+        # Header checks (missing CSP/X-Frame-Options/etc.) and CORS
+        # checks now live in dedicated checkers -- security_headers.py's
+        # SecurityHeadersChecker and cors_checker.py's CORSChecker --
+        # registered separately in owasp_engine.py. Calling
+        # _check_headers() here as well would report the same missing
+        # header / permissive CORS finding twice per scan. The method
+        # itself is left in place (unused) rather than deleted, in case
+        # something else still references it directly.
         self._check_directory_listing()
         self._check_version_disclosure()
         self._check_verbose_errors()

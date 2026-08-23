@@ -1,5 +1,24 @@
 """
 cors_checker.py  (A05:2025 - Security Misconfiguration, CORS slice)
+
+NEW FILE. Previously CORS was one `if acao == "*"` check buried inside
+security_misconfiguration_checker.py's `_check_headers`, with a flat
+LOW severity regardless of context. This version:
+
+  - Reflects an arbitrary Origin back at the server (not just checking
+    the homepage's static header) to catch reflected-origin CORS,
+    which is a materially worse misconfiguration than a static
+    wildcard when combined with credentials.
+  - Checks Access-Control-Allow-Credentials alongside the origin
+    policy -- wildcard/reflected origin + credentials=true is the
+    genuinely dangerous combination. Severity follows that distinction
+    instead of flagging every wildcard as equally bad.
+  - Probes both the homepage and any explicitly-authenticated endpoint
+    path passed in.
+
+security_misconfiguration_checker.py's CORS branch inside
+`_check_headers` should be deleted once this file is wired in, to
+avoid a duplicate finding.
 """
 
 from typing import List, Optional

@@ -108,6 +108,7 @@ class WebFinding:
     nvd_cves:        List[dict] = field(default_factory=list)
     evidence:        List[str]  = field(default_factory=list)
     affected_params: List[str]  = field(default_factory=list)
+    url:             str        = ""
     remediation:     str        = ""
     host:            Optional[str] = None
     port:            Optional[int] = None
@@ -135,6 +136,7 @@ class WebFinding:
             "nvd_cves":        self.nvd_cves,
             "evidence":        self.evidence,
             "affected_params": self.affected_params,
+            "url":             self.url,
             "remediation":     self.remediation,
             "host":            self.host,
             "port":            self.port,
@@ -183,6 +185,7 @@ def confidence_band(confidence: float) -> str:
 def build_finding(check_type: str, title: str, evidence: List[str],
                   confidence: float, host: str = None, port: int = None,
                   service: str = None, affected_params: List[str] = None,
+                  url: str = "",
                   remediation: str = "",
                   enrich_nvd: bool = True,
                   variant: str = "",
@@ -235,6 +238,7 @@ def build_finding(check_type: str, title: str, evidence: List[str],
         nvd_cves        = nvd_cves,
         evidence        = evidence,
         affected_params = affected_params or [],
+        url             = url,
         remediation     = remediation,
         host            = host,
         port            = port,

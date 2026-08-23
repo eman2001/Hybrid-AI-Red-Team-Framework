@@ -1,5 +1,20 @@
 """
 security_headers.py  (A05:2025 - Security Misconfiguration, headers slice)
+
+NEW FILE. Previously, header checking was one small method
+(`_check_headers`) inside security_misconfiguration_checker.py,
+covering only 3 headers and reporting every missing header as a
+single flat MEDIUM finding. This is now its own checker so it can be
+run/tuned/tested independently, with:
+
+  - a wider header set (CSP, HSTS, X-Content-Type-Options,
+    Referrer-Policy, Permissions-Policy, frame protection)
+  - risk-based severity PER HEADER instead of one flat severity
+  - HSTS only evaluated meaningfully over HTTPS targets
+
+security_misconfiguration_checker.py's own `_check_headers` method
+should be deleted once this file is wired into the engine, to avoid
+reporting the same missing-header finding twice.
 """
 
 from typing import Optional
@@ -33,8 +48,6 @@ _HEADER_SPEC = {
     ),
 }
 
-_FRAME_PROTECTION_HEADERS = ("x-frame-options",)
-
 
 class SecurityHeadersChecker:
 
@@ -43,7 +56,6 @@ class SecurityHeadersChecker:
         self.timeout = timeout
         self.findings = []
         self.client = HttpClient(self.target_url, timeout=timeout)
-        self._host = urlparse(self.target_url).hostname
 
     def _check_frame_protection(self, headers: dict):
         csp = headers.get("content-security-policy", "")
@@ -55,7 +67,6 @@ class SecurityHeadersChecker:
                 title="Missing Clickjacking Protection",
                 evidence=["Neither X-Frame-Options nor CSP frame-ancestors is present"],
                 confidence=compute_confidence(error_evidence=False, behavioral_evidence=True, validated=True),
-                host=self._host,
                 status=STATUS_CONFIRMED,
                 variant="MISSING_FRAME_PROTECTION",
                 remediation="Set X-Frame-Options: DENY/SAMEORIGIN or a CSP frame-ancestors directive.",
@@ -72,7 +83,6 @@ class SecurityHeadersChecker:
                 title="Missing HTTP Strict-Transport-Security",
                 evidence=["Target served over HTTPS without a Strict-Transport-Security header"],
                 confidence=compute_confidence(error_evidence=False, behavioral_evidence=True, validated=True),
-                host=self._host,
                 status=STATUS_CONFIRMED,
                 variant="MISSING_HSTS",
                 remediation="Return Strict-Transport-Security: max-age=63072000; includeSubDomains "
@@ -104,7 +114,6 @@ class SecurityHeadersChecker:
                 title=f"Missing Security Header: {display}",
                 evidence=[f"Response did not include a '{display}' header"],
                 confidence=compute_confidence(error_evidence=False, behavioral_evidence=True, validated=True),
-                host=self._host,
                 status=STATUS_CONFIRMED,
                 variant="MISSING_HEADER",
                 remediation=remediation,
