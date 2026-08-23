@@ -71,6 +71,7 @@ class RiskEngine:
         scored.sort(key=lambda x: (x["risk_score"], x.get("cvss",0)), reverse=True)
         print(f"  [+] High-risk: {len(scored)}  |  Deferred: {len(deferred)}")
         for i, f in enumerate(scored, 1):
+            _epss_str = f"{f.get('epss', 0):.3f}" if f.get('epss_applicable', True) else "N/A"
             print(f"  #{i} {f['host']}:{f['port']} | Score={f['risk_score']} "
-                  f"CVSS={f.get('cvss','?')} EPSS={f.get('epss',0):.3f}")
+                  f"CVSS={f.get('cvss','?')} EPSS={_epss_str}")
         return scored

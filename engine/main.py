@@ -283,6 +283,7 @@ def run_pipeline(target: str, lhost: str):
                 'cve': owasp_vuln.get('cwe_id', ''),
                 'remediation': owasp_vuln.get('remediation', ''),
                 'checker_status': owasp_vuln.get('status', ''),
+                'cvss': owasp_vuln.get('cvss_base', 0),
                 'source': 'OWASP Web Security'
             })
         print(f"  [+] Added {len(owasp_results['owasp_findings'])} OWASP findings")
@@ -310,9 +311,10 @@ def run_pipeline(target: str, lhost: str):
         f["threat_score_label"] = ts_scorer.label(f["threat_score"])
         if f.get("in_kev"):
             f["severity"] = "critical"
+        _epss_str = f"{f.get('epss', 0):.3f}" if f.get('epss_applicable', True) else "N/A"
         print(f"  [TI] {f['host']}:{f['port']} | "
               f"CVSS={f.get('cvss_live', f.get('cvss', 0))} "
-              f"EPSS={f.get('epss', 0):.3f} "
+              f"EPSS={_epss_str} "
               f"KEV={'YES' if f.get('in_kev') else 'no'} "
               f"TScore={f['threat_score']}")
     add_activity(

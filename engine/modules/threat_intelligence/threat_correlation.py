@@ -26,18 +26,40 @@ class ThreatCorrelation:
         product = finding.get("product", "")
         version = finding.get("version", "")
 
-        cvss_found = self._cvss.score(cve)
-        # No CVE-based score found (common for old backdoors with no CVE record) ->
-        # keep the finding's own CVSS estimate from vulnerability mapping (Phase 3)
-        # instead of silently overwriting it with a generic default.
-        cvss   = cvss_found if cvss_found is not None else finding.get("cvss", 5.0)
-        epss   = self._epss.score(cve)
-        is_kev = self._kev.is_kev(cve)
+        # CWE identifiers (e.g. "CWE-89") are a weakness *category*, not a
+        # specific tracked vulnerability -- CVE-based lookups (CVSS-by-CVE,
+        # EPSS, KEV) don't apply to them and would silently return the same
+        # generic default for every finding. Treat these findings' own
+        # OWASP-derived CVSS estimate (Phase 3) as authoritative, and mark
+        # EPSS/KEV as not applicable rather than showing a fabricated number.
+        is_cwe_based = cve.upper().startswith("CWE-")
 
-        finding["cvss_live"]    = cvss
-        finding["epss"]         = round(epss, 4)
-        finding["epss_label"]   = self._epss.risk_label(epss)
-        finding["in_kev"]       = is_kev
+        if is_cwe_based:
+            cvss   = finding.get("cvss", 5.0)
+            # EPSS/KEV are CVE-specific by definition and don't apply to a CWE
+            # category. Keep epss numeric (0.0, not a fabricated 0.1) so every
+            # downstream sum/multiplication that already assumes a float stays
+            # correct; `epss_applicable=False` is the flag report/print code
+            # should check before displaying this as a real EPSS score.
+            epss             = 0.0
+            epss_applicable  = False
+            is_kev = False
+        else:
+            cvss_found = self._cvss.score(cve)
+            # No CVE-based score found (common for old backdoors with no CVE record) ->
+            # keep the finding's own CVSS estimate from vulnerability mapping (Phase 3)
+            # instead of silently overwriting it with a generic default.
+            cvss   = cvss_found if cvss_found is not None else finding.get("cvss", 5.0)
+            epss             = self._epss.score(cve)
+            epss_applicable  = True
+            is_kev = self._kev.is_kev(cve)
+
+        finding["cvss_live"]      = cvss
+        finding["is_cwe_based"]   = is_cwe_based
+        finding["epss"]           = round(epss, 4)
+        finding["epss_applicable"] = epss_applicable
+        finding["epss_label"]     = self._epss.risk_label(epss) if epss_applicable else "N/A"
+        finding["in_kev"]         = is_kev
         finding["eol_risk"]     = self._product.eol_risk(product, version)
         self._vendor.enrich_finding(finding)
 
