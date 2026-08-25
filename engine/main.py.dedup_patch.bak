@@ -222,25 +222,6 @@ def run_pipeline(target: str, lhost: str):
     scan_results = scan_results or {}
     owasp_results = owasp_results or {}
 
-    # If SMB (139/445) is open, try anonymous-share username discovery --
-    # best-effort, read-only. Any names found are passed to Hydra later
-    # (Phase 6) alongside its standard default-credential list.
-    discovered_usernames = []
-    has_smb = any(
-        isinstance(host_data, dict)
-        and any(p.get("port") in (139, 445) for p in host_data.get("ports", []))
-        for host_data in scan_results.values()
-    )
-    if has_smb:
-        from engine.modules.recon.smb_enum import enumerate_anonymous_usernames
-        print("\n[Recon] SMB detected -- checking for anonymous share access...")
-        discovered_usernames = enumerate_anonymous_usernames(live_hosts[0])
-        if discovered_usernames:
-            print(f"  [+] Discovered {len(discovered_usernames)} candidate username(s) "
-                  f"from anonymous SMB share(s): {', '.join(discovered_usernames)}")
-        else:
-            print("  [-] No anonymous SMB access or no usable text files found")
-
     has_open_ports = any(
         isinstance(host_data, dict)
         and bool(host_data.get("ports"))
@@ -306,35 +287,7 @@ def run_pipeline(target: str, lhost: str):
                 'source': 'OWASP Web Security'
             })
         print(f"  [+] Added {len(owasp_results['owasp_findings'])} OWASP findings")
-
-    # ── Dedup: merge OWASP findings that are exact duplicates ───────────
-    # (same host, port, CWE/CVE id, and title) into one canonical finding
-    # with a merged evidence/description list, instead of feeding N
-    # identical entries into Threat Intel / Risk Scoring / MITRE downstream.
-    # Additive only — does not touch findings from vuln_mapper (Nmap/EDB).
-    def _dedup_owasp_findings(findings: list[dict]) -> list[dict]:
-        owasp_ones   = [f for f in findings if f.get('source') == 'OWASP Web Security']
-        non_owasp    = [f for f in findings if f.get('source') != 'OWASP Web Security']
-
-        merged: dict[tuple, dict] = {}
-        for f in owasp_ones:
-            key = (f['host'], f['port'], f.get('cve', ''), f.get('vulnerability', ''))
-            if key not in merged:
-                merged[key] = {**f, '_duplicate_count': 1, '_evidence': [f.get('description', '')]}
-            else:
-                merged[key]['_duplicate_count'] += 1
-                if f.get('description') and f['description'] not in merged[key]['_evidence']:
-                    merged[key]['_evidence'].append(f['description'])
-
-        deduped = list(merged.values())
-        removed = len(owasp_ones) - len(deduped)
-        if removed:
-            print(f"  [Dedup] Merged {removed} duplicate OWASP finding(s) "
-                  f"({len(owasp_ones)} -> {len(deduped)})")
-        return non_owasp + deduped
-
-    vuln_findings = _dedup_owasp_findings(vuln_findings)
-
+    
     if not vuln_findings:
         print("[-] No vulnerabilities mapped. Halting."); return
     add_activity(
@@ -393,7 +346,7 @@ def run_pipeline(target: str, lhost: str):
     "Exploitation",
     50
     )
-    exploiter       = ExploiterModule(lhost, discovered_usernames=discovered_usernames)
+    exploiter       = ExploiterModule(lhost)
     exploit_results = exploiter.run_exploits(high_risk_findings)
     log.info("Exploitation complete — %d attempts", len(exploit_results))
     add_activity(
