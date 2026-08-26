@@ -1,0 +1,16 @@
+=== id ===
+uid=1(daemon) gid=1(daemon) groups=1(daemon)
+
+=== uname -a ===
+Linux 740310e1d8fc 4.4.0-119-generic #143-Ubuntu SMP Mon Apr 2 16:08:24 UTC 2018 x86_64 GNU/Linux
+
+=== hostname ===
+740310e1d8fc
+
+=== ifconfig | head -5 ===
+eth0      Link encap:Ethernet  HWaddr 02:42:ac:11:00:02  
+          inet addr:172.17.0.2  Bcast:172.17.255.255  Mask:255.255.0.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:136 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:97 errors:0 dropped:0 overruns:0 carrier:0
+

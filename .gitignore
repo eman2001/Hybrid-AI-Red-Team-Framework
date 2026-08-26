@@ -257,3 +257,10 @@ logs/
 data/nvd_raw.json
 hydra.restore
 *.restore
+
+# Backups and local evidence
+*.bak_before_retry_patch
+*.bak_before_distcc_patch
+evidence/raw_logs/*.log
+__pycache__/
+*.pyc
