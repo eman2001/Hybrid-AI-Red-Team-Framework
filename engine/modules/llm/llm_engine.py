@@ -16,7 +16,7 @@ import requests
 
 logger = logging.getLogger(__name__)
 
-OLLAMA_HOST      = os.getenv("OLLAMA_HOST", "http://192.168.56.104:11434")
+OLLAMA_HOST      = os.getenv("OLLAMA_HOST", "http://192.168.187.1:11434")
 OLLAMA_MODEL     = os.getenv("OLLAMA_MODEL", "qwen2.5:3b")
 REQUEST_TIMEOUT  = int(os.getenv("LLM_TIMEOUT", "300"))
 
